@@ -1,0 +1,92 @@
+{
+  "settings": [
+    {
+      "id": "F",
+      "title": "setting 00",
+      "rooms": [
+        {
+          "id": "28",
+          "title": "room 28",
+          "description": "room 28 d",
+          "doors": [
+            {
+              "room_id": "3C",
+              "description": "door 28 - 3C"
+            },
+            {
+              "room_id": "E9",
+              "description": "door 28 - E9"
+            },
+            {
+              "room_id": "AF",
+              "description": "door 28 - AF"
+            },
+            {
+              "room_id": "99",
+              "description": "door 28 - 99"
+            }
+          ]
+        },
+        {
+          "id": "3C",
+          "title": "room 3C",
+          "description": "room 3C d",
+          "doors": [
+            {
+              "room_id": "28",
+              "description": "door 3C - 28"
+            },
+            {
+              "room_id": "54",
+              "description": "door 3C - 54"
+            }
+          ]
+        },
+        {
+          "id": "E9",
+          "title": "room E9",
+          "description": "room E9 d",
+          "doors": [
+            {
+              "room_id": "28",
+              "description": "door E9 - 28"
+            }
+          ]
+        },
+        {
+          "id": "AF",
+          "title": "room AF",
+          "description": "room AF d",
+          "doors": [
+            {
+              "room_id": "28",
+              "description": "door AF - 28"
+            }
+          ]
+        },
+        {
+          "id": "54",
+          "title": "room 54",
+          "description": "room 54 d",
+          "doors": [
+            {
+              "room_id": "3C",
+              "description": "door 54 - 3C"
+            }
+          ]
+        },
+        {
+          "id": "99",
+          "title": "room 99",
+          "description": "room 99 d",
+          "doors": [
+            {
+              "room_id": "28",
+              "description": "door 99 - 28"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

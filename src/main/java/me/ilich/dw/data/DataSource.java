@@ -1,10 +1,11 @@
 package me.ilich.dw.data;
 
-import java.util.List;
-
+import me.ilich.dw.commands.Command;
 import me.ilich.dw.entities.Door;
 import me.ilich.dw.entities.Room;
 import me.ilich.dw.entities.Setting;
+
+import java.util.List;
 
 
 public interface DataSource {
@@ -15,4 +16,5 @@ public interface DataSource {
 
     List<Door> getDoors(String settingId, String sourceRoomId, List<String> directionSeeds);
 
+    List<Command> getSuitableCommands(String s);
 }

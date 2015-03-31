@@ -3,18 +3,25 @@ package me.ilich.dw.commands;
 
 public class ExitCommand extends Command {
 
-    private static final String[] aliases = {
-            "exit",
-            "quit",
-            "выход"
-    };
+    private String[] positive;
 
-    public ExitCommand(Controller controller) {
-        super(controller, aliases);
+    public ExitCommand(String[] aliases, String actionText, String[] positive) {
+        super(aliases, actionText);
+        this.positive = positive;
     }
 
     @Override
     protected void onExecute(Controller controller) {
-        controller.stop();
+        String in = controller.in();
+        boolean exit = false;
+        for (String s : positive) {
+            if (s.equalsIgnoreCase(in)) {
+                exit = true;
+            }
+        }
+        if (exit) {
+            controller.stop();
+        }
     }
+
 }

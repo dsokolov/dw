@@ -1,25 +1,16 @@
 package me.ilich.dw;
 
-import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
 import me.ilich.dw.commands.Command;
 import me.ilich.dw.commands.Controller;
-import me.ilich.dw.commands.ExitCommand;
-import me.ilich.dw.commands.JumpCommand;
-import me.ilich.dw.commands.LookAroundCommand;
 import me.ilich.dw.data.DataSeedAdapter;
 import me.ilich.dw.data.JsonDataSource;
 import me.ilich.dw.data.Seed;
 import me.ilich.dw.data.UuidSeed;
-import me.ilich.dw.entities.Door;
-import me.ilich.dw.entities.Room;
-import me.ilich.dw.entities.Scene;
-import me.ilich.dw.entities.Sceneable;
-import me.ilich.dw.entities.Setting;
-import org.apache.commons.io.IOUtils;
+import me.ilich.dw.entities.*;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 
 public class App {
@@ -27,12 +18,8 @@ public class App {
     public static void main(String[] params) {
 
         Controller controller = new Controller();
-        List<Command> commandList = new ArrayList<Command>();
-        commandList.add(new ExitCommand(controller));
-        commandList.add(new JumpCommand(controller));
-        commandList.add(new LookAroundCommand(controller));
 
-        System.out.println("begin");
+        System.out.println("dw v0.1");
 
         // https://api.vk.com/method/users.get?user_id=2682551
         // https://api.vk.com/method/friends.get?user_id=2682551
@@ -69,28 +56,16 @@ public class App {
 
         boolean working = true;
         while (working) {
-            try {
-                BufferedReader bufferRead = new BufferedReader(new InputStreamReader(System.in));
-                String s = bufferRead.readLine();
-                System.out.println(s);
-                int suitableCommandsCount = 0;
-                Command suitableCommand = null;
-                for (Command command : commandList) {
-                    if (command.isSuitable(s)) {
-                        suitableCommandsCount++;
-                        suitableCommand = command;
-                    }
-                }
-                if (suitableCommandsCount == 1) {
-                    suitableCommand.execute();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
+            String s = controller.in();
+            List<Command> suitableCommands = dataSeedAdapter.getSuitableCommands(s);
+            if (suitableCommands.size() == 1) {
+                Command command = suitableCommands.get(0);
+                command.execute(controller);
             }
             working = controller.isWorking();
         }
 
-        System.out.println("end");
+        System.out.println("");
     }
 
 }

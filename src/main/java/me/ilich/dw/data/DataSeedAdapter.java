@@ -1,11 +1,12 @@
 package me.ilich.dw.data;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import me.ilich.dw.commands.Command;
 import me.ilich.dw.entities.Door;
 import me.ilich.dw.entities.Room;
 import me.ilich.dw.entities.Setting;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class DataSeedAdapter {
@@ -35,4 +36,7 @@ public class DataSeedAdapter {
         return dataSource.getDoors(seed.getSettingId(), seed.getRoomId(), destinationRoomIds);
     }
 
+    public List<Command> getSuitableCommands(String s) {
+        return dataSource.getSuitableCommands(s);
+    }
 }

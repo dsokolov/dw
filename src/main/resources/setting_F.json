@@ -2,16 +2,16 @@
   "settings": [
     {
       "id": "F",
-      "title": "setting 00",
+      "title": "Город",
       "rooms": [
         {
           "id": "28",
-          "title": "room 28",
-          "description": "room 28 d",
+          "title": "Тихий переулок",
+          "description": "Здесь пусто.",
           "doors": [
             {
               "room_id": "3C",
-              "description": "door 28 - 3C"
+              "description": "Переулок сворачивает."
             },
             {
               "room_id": "E9",
@@ -29,8 +29,8 @@
         },
         {
           "id": "3C",
-          "title": "room 3C",
-          "description": "room 3C d",
+          "title": "За домом",
+          "description": "Вы стоите за домом.",
           "doors": [
             {
               "room_id": "28",
@@ -44,19 +44,19 @@
         },
         {
           "id": "E9",
-          "title": "room E9",
-          "description": "room E9 d",
+          "title": "Пустырь",
+          "description": "Здесь пусто",
           "doors": [
             {
               "room_id": "28",
-              "description": "door E9 - 28"
+              "description": "Вернуться в тихий переулок."
             }
           ]
         },
         {
           "id": "AF",
-          "title": "room AF",
-          "description": "room AF d",
+          "title": "За гаражами",
+          "description": "Здесь самое интересное.",
           "doors": [
             {
               "room_id": "28",
@@ -66,8 +66,8 @@
         },
         {
           "id": "54",
-          "title": "room 54",
-          "description": "room 54 d",
+          "title": "У входа в парк",
+          "description": "Вы стоите у входа в парк.",
           "doors": [
             {
               "room_id": "3C",
@@ -77,8 +77,8 @@
         },
         {
           "id": "99",
-          "title": "room 99",
-          "description": "room 99 d",
+          "title": "За оградой парка",
+          "description": "Вы в парке, за оградой.",
           "doors": [
             {
               "room_id": "28",

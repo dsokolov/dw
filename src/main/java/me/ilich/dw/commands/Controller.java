@@ -1,5 +1,9 @@
 package me.ilich.dw.commands;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
 public class Controller {
 
     private boolean working = true;
@@ -14,5 +18,16 @@ public class Controller {
 
     void stop() {
         working = false;
+    }
+
+    public String in() {
+        String s = null;
+        try {
+            BufferedReader bufferRead = new BufferedReader(new InputStreamReader(System.in));
+            s = bufferRead.readLine();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return s;
     }
 }

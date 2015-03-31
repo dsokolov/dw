@@ -1,14 +1,22 @@
 package me.ilich.dw.commands;
 
 
+import java.security.InvalidParameterException;
+
 public abstract class Command {
 
-    private final Controller controller;
     private final String[] aliases;
+    private final String actionText;
 
-    public Command(Controller controller, String[] aliases) {
-        this.controller = controller;
+    public Command(String[] aliases, String actionText) {
+        if (aliases == null) {
+            throw new NullPointerException("aliases");
+        }
+        if (aliases.length < 1) {
+            throw new InvalidParameterException("aliases array should have one element at last");
+        }
         this.aliases = aliases;
+        this.actionText = actionText;
     }
 
     public boolean isSuitable(String s) {
@@ -17,7 +25,7 @@ public abstract class Command {
         for (String alias : aliases) {
             boolean contains = true;
             for (String input : inputs) {
-                if (!alias.contains(input)) {
+                if (!alias.toLowerCase().contains(input.toLowerCase())) {
                     contains = false;
                     break;
                 }
@@ -30,7 +38,9 @@ public abstract class Command {
         return suitable;
     }
 
-    public void execute() {
+    public void execute(Controller controller) {
+        controller.out("> " + aliases[0]);
+        controller.out(actionText);
         onExecute(controller);
     }
 

@@ -1,9 +1,9 @@
 package me.ilich.dw.commands;
 
 
-public class JumpCommand extends Command {
+public class HelpCommand extends Command {
 
-    public JumpCommand(String[] aliases, String actionText) {
+    public HelpCommand(String[] aliases, String actionText) {
         super(aliases, actionText);
     }
 
@@ -11,4 +11,5 @@ public class JumpCommand extends Command {
     protected void onExecute(Controller controller) {
 
     }
+
 }

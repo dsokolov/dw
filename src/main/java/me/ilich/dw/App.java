@@ -17,7 +17,8 @@ public class App {
         System.out.println("dw v0.1");
         Controller controller = new Controller();
         DataSeedAdapter dataSeedAdapter = new DataSeedAdapter(new JsonDataSource());
-        SeedSource seedSource = new HardcodeSeedSource();
+        //SeedSource seedSource = new HardcodeSeedSource();
+        SeedSource seedSource = new VkSeedSource();
 
         boolean working = true;
         while (working) {

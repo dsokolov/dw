@@ -55,7 +55,7 @@ public class JsonDataSource implements DataSource {
                     }
                 }
             }
-        } catch (IOException | ParseException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

@@ -1,0 +1,17 @@
+{
+  "settings": [
+    {
+      "id": "default",
+      "title": "Молчание",
+      "rooms": [
+        {
+          "id": "default",
+          "title": "В пустоте",
+          "description": "Здесь нет абсолютно ничего.",
+          "doors": [
+          ]
+        }
+      ]
+    }
+  ]
+}

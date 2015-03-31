@@ -3,7 +3,6 @@ package me.ilich.dw.entities;
 
 public class Room implements Sceneable {
 
-    public static final Room DEFAULT = new Room("", "", "Default room", "Default room description");
     private final String settingId;
     private final String roomId;
     private final String title;

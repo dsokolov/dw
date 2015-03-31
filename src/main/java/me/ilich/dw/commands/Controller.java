@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 public class Controller {
 
     private boolean working = true;
+    private boolean shouldReloadScene = true;
 
     public boolean isWorking() {
         return working;
@@ -29,5 +30,17 @@ public class Controller {
             e.printStackTrace();
         }
         return s;
+    }
+
+    public boolean isShouldReloadScene() {
+        return shouldReloadScene;
+    }
+
+    public void setShouldReloadScene(boolean b) {
+        shouldReloadScene = b;
+    }
+
+    public String getCurrentTag() {
+        return "2682551";
     }
 }

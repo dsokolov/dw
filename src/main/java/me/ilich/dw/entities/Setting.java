@@ -3,7 +3,6 @@ package me.ilich.dw.entities;
 
 public class Setting implements Sceneable {
 
-    public static final Setting DEFAULT = new Setting("", "Default setting");
     private final String id;
     private final String title;
 

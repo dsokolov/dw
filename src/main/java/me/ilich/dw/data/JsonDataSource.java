@@ -20,6 +20,8 @@ import java.util.List;
 
 public class JsonDataSource implements DataSource {
 
+    private static final String DEFAULT_ID = "default";
+
     private List<Command> commandList = new ArrayList<>();
     private List<Setting> settingList = new ArrayList<>();
     private List<Room> roomList = new ArrayList<>();
@@ -28,6 +30,7 @@ public class JsonDataSource implements DataSource {
     public JsonDataSource() {
         String[] fileNames = new String[]{
                 "commands.json",
+                "setting_default.json",
                 "setting_F.json"
         };
         for (String fileName : fileNames) {
@@ -136,14 +139,18 @@ public class JsonDataSource implements DataSource {
     @Override
     public Setting getSetting(String settingId) {
         Setting result = null;
+        Setting defaultSetting = null;
         for (Setting setting : settingList) {
-            if (setting.getId().equals(settingId)) {
+            if (setting.getId().equalsIgnoreCase(settingId)) {
                 result = setting;
                 break;
             }
+            if (setting.getId().equalsIgnoreCase(DEFAULT_ID)) {
+                defaultSetting = setting;
+            }
         }
         if (result == null) {
-            result = Setting.DEFAULT;
+            result = defaultSetting;
         }
         return result;
     }
@@ -151,6 +158,8 @@ public class JsonDataSource implements DataSource {
     @Override
     public Room getRoom(String settingId, String roomId) {
         Room result = null;
+        Room defaultSettingRoom = null;
+        Room defaultRoom = null;
         for (Room room : roomList) {
             String currentSettingId = room.getSettingId();
             String currentRoomId = room.getId();
@@ -158,9 +167,18 @@ public class JsonDataSource implements DataSource {
                 result = room;
                 break;
             }
+            if (currentSettingId.equals(settingId) && currentRoomId.equals(DEFAULT_ID)) {
+                defaultSettingRoom = room;
+            }
+            if (currentSettingId.equals(DEFAULT_ID) && currentRoomId.equals(DEFAULT_ID)) {
+                defaultRoom = room;
+            }
         }
         if (result == null) {
-            result = Room.DEFAULT;
+            result = defaultSettingRoom;
+        }
+        if (result == null) {
+            result = defaultRoom;
         }
         return result;
     }

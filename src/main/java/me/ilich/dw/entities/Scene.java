@@ -40,4 +40,5 @@ public class Scene {
     public void addDoor(String description) {
         doors.add(description);
     }
+
 }

@@ -1,20 +1,27 @@
 package me.ilich.dw.entities;
 
+import me.ilich.dw.commands.Controller;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class Scene {
 
+    private final Controller controller;
     private String settingTitle;
     private String roomTitle;
     private String description;
     private List<String> doors = new ArrayList<>();
 
+    public Scene(Controller controller) {
+        this.controller = controller;
+    }
+
     public void render() {
-        System.out.println(roomTitle + " (" + settingTitle + ")");
-        System.out.println(description);
+        controller.out(roomTitle + " (" + settingTitle + ")");
+        controller.out(description);
         for (String door : doors) {
-            System.out.println(door);
+            controller.out(door);
         }
     }
 

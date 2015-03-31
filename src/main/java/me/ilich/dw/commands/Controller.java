@@ -8,8 +8,8 @@ public class Controller {
         return working;
     }
 
-    public void out(String lookAroundCommand) {
-        //TODO
+    public void out(String s) {
+        System.out.println(s);
     }
 
     void stop() {

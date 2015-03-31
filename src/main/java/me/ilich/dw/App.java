@@ -1,8 +1,6 @@
 package me.ilich.dw;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -21,6 +19,7 @@ import me.ilich.dw.entities.Room;
 import me.ilich.dw.entities.Scene;
 import me.ilich.dw.entities.Sceneable;
 import me.ilich.dw.entities.Setting;
+import org.apache.commons.io.IOUtils;
 
 
 public class App {
@@ -46,7 +45,6 @@ public class App {
         for (long id : ids) {
             String s = Long.toString(id);
             Seed seed = new UuidSeed(UUID.nameUUIDFromBytes(s.getBytes()));
-            System.out.println(seed.getSettingId());
             if (seed.getSettingId().equals(currentSeed.getSettingId())) {
                 directionSeeds.add(seed);
             }
@@ -63,13 +61,14 @@ public class App {
         List<Door> doors = dataSeedAdapter.getDoors(currentSeed, directionSeeds);
         sceneableList.addAll(doors);
 
-        Scene scene = new Scene();
+        Scene scene = new Scene(controller);
         for (Sceneable sceneable : sceneableList) {
             sceneable.processScene(scene);
         }
         scene.render();
 
-        do {
+        boolean working = true;
+        while (working) {
             try {
                 BufferedReader bufferRead = new BufferedReader(new InputStreamReader(System.in));
                 String s = bufferRead.readLine();
@@ -88,12 +87,9 @@ public class App {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        } while (controller.isWorking());
+            working = controller.isWorking();
+        }
 
-/*        DataConnector dataSource = new DataConnector();
-        dataSource.init();
-        Scene scene = dataSource.createScene(currentSeed, directionSeeds);
-        scene.render();*/
         System.out.println("end");
     }
 

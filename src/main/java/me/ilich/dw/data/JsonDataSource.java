@@ -1,17 +1,15 @@
 package me.ilich.dw.data;
 
+import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.text.ParseException;
+import java.io.InputStream;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-import me.ilich.dw.data.DataSource;
 import me.ilich.dw.entities.Door;
 import me.ilich.dw.entities.Room;
 import me.ilich.dw.entities.Setting;
@@ -25,38 +23,41 @@ public class JsonDataSource implements DataSource {
 
     public JsonDataSource() {
         String[] fileNames = new String[]{
-                "setting_FA.json"
+                "setting_F.json"
         };
         for (String fileName : fileNames) {
-            File f = new File(fileName);
-            readFromFile(f);
+            try (
+                    InputStream inputStream = getClass().getClassLoader().getResourceAsStream(fileName);
+                    StringWriter writer = new StringWriter();
+            ) {
+                IOUtils.copy(inputStream, writer);
+                String s = writer.toString();
+                JSONObject jsonObject = new JSONObject(s);
+                parse(jsonObject);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
-    private void readFromFile(File file) {
-        try {
-            byte[] b = Files.readAllBytes(file.toPath());
-            JSONObject jsonObject = new JSONObject(new String(b));
-            JSONArray settingsJsonArray = jsonObject.optJSONArray("settings");
-            for (int settingIndex = 0; settingIndex < settingsJsonArray.length(); settingIndex++) {
-                JSONObject settingJsonObject = settingsJsonArray.optJSONObject(settingIndex);
-                final Setting setting = parseSetting(settingJsonObject);
-                settingList.add(setting);
-                JSONArray roomsJsonArray = settingJsonObject.optJSONArray("rooms");
-                for (int roomIndex = 0; roomIndex < roomsJsonArray.length(); roomIndex++) {
-                    JSONObject roomJsonObject = roomsJsonArray.optJSONObject(roomIndex);
-                    final Room room = parseRoom(setting, roomJsonObject);
-                    roomList.add(room);
-                    JSONArray doorsJsonArray = roomJsonObject.optJSONArray("doors");
-                    for (int doorIndex = 0; doorIndex < doorsJsonArray.length(); doorIndex++) {
-                        JSONObject doorJsonObject = doorsJsonArray.optJSONObject(doorIndex);
-                        final Door door = parseDoor(setting, room, doorJsonObject);
-                        doorList.add(door);
-                    }
+    private void parse(JSONObject jsonObject) {
+        JSONArray settingsJsonArray = jsonObject.optJSONArray("settings");
+        for (int settingIndex = 0; settingIndex < settingsJsonArray.length(); settingIndex++) {
+            JSONObject settingJsonObject = settingsJsonArray.optJSONObject(settingIndex);
+            final Setting setting = parseSetting(settingJsonObject);
+            settingList.add(setting);
+            JSONArray roomsJsonArray = settingJsonObject.optJSONArray("rooms");
+            for (int roomIndex = 0; roomIndex < roomsJsonArray.length(); roomIndex++) {
+                JSONObject roomJsonObject = roomsJsonArray.optJSONObject(roomIndex);
+                final Room room = parseRoom(setting, roomJsonObject);
+                roomList.add(room);
+                JSONArray doorsJsonArray = roomJsonObject.optJSONArray("doors");
+                for (int doorIndex = 0; doorIndex < doorsJsonArray.length(); doorIndex++) {
+                    JSONObject doorJsonObject = doorsJsonArray.optJSONObject(doorIndex);
+                    final Door door = parseDoor(setting, room, doorJsonObject);
+                    doorList.add(door);
                 }
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 

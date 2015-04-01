@@ -8,4 +8,6 @@ public interface Seed {
 
     String getRoomId();
 
+    String getEventId();
+
 }

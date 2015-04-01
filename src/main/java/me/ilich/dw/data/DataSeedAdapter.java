@@ -2,6 +2,7 @@ package me.ilich.dw.data;
 
 import me.ilich.dw.commands.Command;
 import me.ilich.dw.entities.Door;
+import me.ilich.dw.entities.Event;
 import me.ilich.dw.entities.Room;
 import me.ilich.dw.entities.Setting;
 
@@ -38,5 +39,9 @@ public class DataSeedAdapter {
 
     public List<Command> getSuitableCommands(String s) {
         return dataSource.getSuitableCommands(s);
+    }
+
+    public List<Event> getEvents(Seed seed) {
+        return dataSource.getEvents(seed.getSettingId(), seed.getEventId());
     }
 }

@@ -35,6 +35,9 @@ public class App {
                 sceneableList.add(setting);
                 Room room = dataSeedAdapter.getRoom(currentSeed);
                 sceneableList.add(room);
+                List<Event> events = dataSeedAdapter.getEvents(currentSeed);
+                System.out.println(currentSeed.getEventId());
+                sceneableList.addAll(events);
                 List<Door> doors = dataSeedAdapter.getDoors(currentSeed, directionSeeds);
                 sceneableList.addAll(doors);
                 Scene scene = new Scene(controller);

@@ -12,6 +12,7 @@ public class Scene {
     private String roomTitle;
     private String description;
     private List<String> doors = new ArrayList<>();
+    private List<String> events = new ArrayList<>();
 
     public Scene(Controller controller) {
         this.controller = controller;
@@ -20,6 +21,9 @@ public class Scene {
     public void render() {
         controller.out(roomTitle + " (" + settingTitle + ")");
         controller.out(description);
+        for (String event : events) {
+            controller.out(event);
+        }
         for (String door : doors) {
             controller.out(door);
         }
@@ -39,6 +43,10 @@ public class Scene {
 
     public void addDoor(String description) {
         doors.add(description);
+    }
+
+    public void addEvent(String event) {
+        events.add(event);
     }
 
 }

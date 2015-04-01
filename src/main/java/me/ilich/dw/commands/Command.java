@@ -19,21 +19,15 @@ public abstract class Command {
         this.actionText = actionText;
     }
 
-    public boolean isSuitable(String s) {
-        final String[] inputs = s.split(" ");
+    public boolean isSuitable(String command) {
         boolean suitable = false;
         for (String alias : aliases) {
-            boolean contains = true;
-            for (String input : inputs) {
-                if (!alias.toLowerCase().contains(input.toLowerCase())) {
-                    contains = false;
-                    break;
-                }
-            }
-            if (contains) {
-                suitable = true;
+            if (!alias.toLowerCase().contains(command.toLowerCase())) {
+                suitable = false;
                 break;
             }
+            suitable = true;
+            break;
         }
         return suitable;
     }

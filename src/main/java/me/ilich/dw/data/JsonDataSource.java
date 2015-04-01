@@ -5,6 +5,7 @@ import me.ilich.dw.commands.EmptyCommand;
 import me.ilich.dw.commands.ExitCommand;
 import me.ilich.dw.commands.HelpCommand;
 import me.ilich.dw.entities.Door;
+import me.ilich.dw.entities.Event;
 import me.ilich.dw.entities.Room;
 import me.ilich.dw.entities.Setting;
 import org.apache.commons.io.IOUtils;
@@ -26,11 +27,13 @@ public class JsonDataSource implements DataSource {
     private List<Setting> settingList = new ArrayList<>();
     private List<Room> roomList = new ArrayList<>();
     private List<Door> doorList = new ArrayList<>();
+    private List<Event> eventList = new ArrayList<>();
 
     public JsonDataSource() {
         String[] fileNames = new String[]{
                 "commands.json",
                 "setting_default.json",
+                "setting_0.json",
                 "setting_F.json"
         };
         for (String fileName : fileNames) {
@@ -99,15 +102,29 @@ public class JsonDataSource implements DataSource {
                 final Setting setting = parseSetting(settingJsonObject);
                 settingList.add(setting);
                 JSONArray roomsJsonArray = settingJsonObject.optJSONArray("rooms");
-                for (int roomIndex = 0; roomIndex < roomsJsonArray.length(); roomIndex++) {
-                    JSONObject roomJsonObject = roomsJsonArray.optJSONObject(roomIndex);
-                    final Room room = parseRoom(setting, roomJsonObject);
-                    roomList.add(room);
-                    JSONArray doorsJsonArray = roomJsonObject.optJSONArray("doors");
-                    for (int doorIndex = 0; doorIndex < doorsJsonArray.length(); doorIndex++) {
-                        JSONObject doorJsonObject = doorsJsonArray.optJSONObject(doorIndex);
-                        final Door door = parseDoor(setting, room, doorJsonObject);
-                        doorList.add(door);
+                if (roomsJsonArray != null) {
+                    for (int roomIndex = 0; roomIndex < roomsJsonArray.length(); roomIndex++) {
+                        JSONObject roomJsonObject = roomsJsonArray.optJSONObject(roomIndex);
+                        final Room room = parseRoom(setting, roomJsonObject);
+                        roomList.add(room);
+                        JSONArray doorsJsonArray = roomJsonObject.optJSONArray("doors");
+                        if (doorsJsonArray != null) {
+                            for (int doorIndex = 0; doorIndex < doorsJsonArray.length(); doorIndex++) {
+                                JSONObject doorJsonObject = doorsJsonArray.optJSONObject(doorIndex);
+                                final Door door = parseDoor(setting, room, doorJsonObject);
+                                doorList.add(door);
+                            }
+                        }
+                    }
+                }
+                JSONArray eventsJsonArray = settingJsonObject.optJSONArray("events");
+                if (eventsJsonArray != null) {
+                    for (int i = 0; i < eventsJsonArray.length(); i++) {
+                        JSONObject eventJsonObject = eventsJsonArray.optJSONObject(i);
+                        String eventId = eventJsonObject.optString("id");
+                        String eventText = eventJsonObject.optString("text");
+                        final Event event = new Event(setting.getId(), eventId, eventText);
+                        eventList.add(event);
                     }
                 }
             }
@@ -198,11 +215,28 @@ public class JsonDataSource implements DataSource {
     }
 
     @Override
-    public List<Command> getSuitableCommands(String s) {
+    public List<Event> getEvents(String settingId, String eventId) {
+        List<Event> result = new ArrayList<>();
+        for (Event event : eventList) {
+            String currentSettingId = event.getSettingId();
+            String currentEventId = event.getId();
+            if (currentSettingId.equals(settingId) && currentEventId.equals(eventId)) {
+                result.add(event);
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public List<Command> getSuitableCommands(String inputString) {
         List<Command> suitableCommandList = new ArrayList<>();
-        for (Command command : commandList) {
-            if (command.isSuitable(s)) {
-                suitableCommandList.add(command);
+        String[] inputs = inputString.split(" ");
+        if (inputs.length > 0) {
+            String commandBody = inputs[0];
+            for (Command command : commandList) {
+                if (command.isSuitable(commandBody)) {
+                    suitableCommandList.add(command);
+                }
             }
         }
         return suitableCommandList;

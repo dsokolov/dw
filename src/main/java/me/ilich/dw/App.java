@@ -36,7 +36,6 @@ public class App {
                 Room room = dataSeedAdapter.getRoom(currentSeed);
                 sceneableList.add(room);
                 List<Event> events = dataSeedAdapter.getEvents(currentSeed);
-                System.out.println(currentSeed.getEventId());
                 sceneableList.addAll(events);
                 List<Door> doors = dataSeedAdapter.getDoors(currentSeed, directionSeeds);
                 sceneableList.addAll(doors);
@@ -49,10 +48,25 @@ public class App {
             }
 
             String s = controller.in();
-            List<Command> suitableCommands = dataSeedAdapter.getSuitableCommands(s);
-            if (suitableCommands.size() == 1) {
-                Command command = suitableCommands.get(0);
-                command.execute(controller);
+            String[] inputs = s.split(" ");
+            String commandBody = inputs[0];
+
+            List<Command> suitableCommands = dataSeedAdapter.getSuitableCommands(commandBody);
+            switch (suitableCommands.size()) {
+                case 0:
+                    controller.out(String.format("Что значит %s?", commandBody));
+                    break;
+                case 1:
+                    Command command = suitableCommands.get(0);
+                    command.execute(controller, inputs);
+                    break;
+                case 2:
+                    controller.out("Возможно, вы имели ввиду:");
+                    controller.out(suitableCommands.get(0).getAlias());
+                    controller.out(suitableCommands.get(1).getAlias());
+                    break;
+                default:
+                    controller.out(String.format("%s допускает много трактований.", commandBody));
             }
             working = controller.isWorking();
         }

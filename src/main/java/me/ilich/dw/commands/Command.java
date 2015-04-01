@@ -1,6 +1,8 @@
 package me.ilich.dw.commands;
 
 
+import com.sun.deploy.util.ArrayUtil;
+
 import java.security.InvalidParameterException;
 
 public abstract class Command {
@@ -32,12 +34,16 @@ public abstract class Command {
         return suitable;
     }
 
-    public void execute(Controller controller) {
-        controller.out("> " + aliases[0]);
+    public void execute(Controller controller, String[] params) {
+        String output = String.format("> %s %s", aliases[0], ArrayUtil.arrayToString(params));
+        controller.out(output);
         controller.out(actionText);
-        onExecute(controller);
+        onExecute(controller, params);
     }
 
-    protected abstract void onExecute(Controller controller);
+    protected abstract void onExecute(Controller controller, String[] params);
 
+    public String getAlias() {
+        return aliases[0];
+    }
 }

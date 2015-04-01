@@ -11,7 +11,7 @@ public class ExitCommand extends Command {
     }
 
     @Override
-    protected void onExecute(Controller controller) {
+    protected void onExecute(Controller controller, String[] params) {
         String in = controller.in();
         boolean exit = false;
         for (String s : positive) {

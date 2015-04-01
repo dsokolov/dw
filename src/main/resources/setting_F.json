@@ -11,83 +11,134 @@
         },
         {
           "id": "28",
-          "title": "Тихий переулок",
-          "description": "Здесь пусто.",
+          "title": "Центральная площадь.",
+          "description": "Вы стоите посреди центральной площади города.",
           "doors": [
             {
               "room_id": "3C",
-              "description": "Переулок сворачивает."
+              "description": "Идти к скверу на краю площади.",
+              "commands": [
+                "walk"
+              ],
+              "aliases": [
+                "сквер"
+              ]
             },
             {
               "room_id": "E9",
-              "description": "door 28 - E9"
+              "description": "Подойти к памятнику в центре площади.",
+              "commands": [
+                "walk"
+              ],
+              "aliases": [
+                "памятник"
+              ]
             },
             {
               "room_id": "AF",
-              "description": "door 28 - AF"
+              "description": "Пойти по главной улице.",
+              "commands": [
+                "walk"
+              ],
+              "aliases": [
+                "улица"
+              ]
             },
             {
               "room_id": "99",
-              "description": "door 28 - 99"
+              "description": "Подойти в постройкам на краю площади.",
+              "commands": [
+                "walk"
+              ]
             }
           ]
         },
         {
           "id": "3C",
-          "title": "За домом",
-          "description": "Вы стоите за домом.",
+          "title": "Центральная площадь, у входа в сквер",
+          "description": "Вы стоите перед входом в сквер. Калитка привтеливо распахнута.",
           "doors": [
             {
               "room_id": "28",
-              "description": "door 3C - 28"
+              "description": "Идти к центру площади",
+              "commands": [
+                "walk"
+              ]
             },
             {
               "room_id": "54",
-              "description": "door 3C - 54"
+              "description": "Зайти в сквер",
+              "commands": [
+                "walk"
+              ]
             }
           ]
         },
         {
           "id": "E9",
-          "title": "Пустырь",
-          "description": "Здесь пусто",
+          "title": "У памятника на центральной площади",
+          "description": "Вы разглядываете памятник, но не находите чего-либо интересного.",
           "doors": [
             {
               "room_id": "28",
-              "description": "Вернуться в тихий переулок."
+              "description": "Идти в центр площади.",
+              "commands": [
+                "walk"
+              ]
+            },
+            {
+              "room_id": "EA",
+              "description": "Залезть на памятник.",
+              "commands": [
+                "climb"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "EA",
+          "title": "На памятнике",
+          "description": "Вы сидите на вершине памятника. Отсюда хороший вид на город.",
+          "doors": [
+            {
+              "room_id": "E9",
+              "description": "Слезть с памятника.",
+              "commands": [
+                "climb"
+              ]
             }
           ]
         },
         {
           "id": "AF",
-          "title": "За гаражами",
-          "description": "Здесь самое интересное.",
+          "title": "В начале главной улицы",
+          "description": "Широкая и светлая улица уходит куда-то вдаль.",
           "doors": [
             {
               "room_id": "28",
-              "description": "door AF - 28"
+              "description": "Вернуться на площадь."
             }
           ]
         },
         {
           "id": "54",
-          "title": "У входа в парк",
-          "description": "Вы стоите у входа в парк.",
+          "title": "Сквер на центральной площади",
+          "description": "Вдоль единственной аллеи ровными рядамя растут деревья.",
           "doors": [
             {
               "room_id": "3C",
-              "description": "door 54 - 3C"
+              "description": "Покинуть сквер."
             }
           ]
         },
         {
           "id": "99",
-          "title": "За оградой парка",
-          "description": "Вы в парке, за оградой.",
+          "title": "Постройки около центральной площади",
+          "description": "Вы стоите перед постройками.",
           "doors": [
             {
               "room_id": "28",
-              "description": "door 99 - 28"
+              "description": "Идти на центральную площадь."
             }
           ]
         }

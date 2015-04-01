@@ -19,6 +19,7 @@ public class Scene {
     }
 
     public void render() {
+        controller.out();
         controller.out(roomTitle + " (" + settingTitle + ")");
         controller.out(description);
         for (String event : events) {

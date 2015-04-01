@@ -17,6 +17,10 @@ public class Controller {
         System.out.println(s);
     }
 
+    public void out() {
+        System.out.println();
+    }
+
     void stop() {
         working = false;
     }
@@ -43,4 +47,5 @@ public class Controller {
     public String getCurrentTag() {
         return "2682551";
     }
+
 }

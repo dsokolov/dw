@@ -20,4 +20,5 @@ public interface DataSource {
     List<Event> getEvents(String settingId, String eventId);
 
     List<Command> getSuitableCommands(String s);
+
 }

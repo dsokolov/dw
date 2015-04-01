@@ -20,7 +20,6 @@ public class UuidSeed implements Seed {
         this.tag = tag;
         UUID uuid = UUID.nameUUIDFromBytes(tag.getBytes());
         this.seed = uuid.toString().toUpperCase();
-        System.out.println(seed);
     }
 
     @Override

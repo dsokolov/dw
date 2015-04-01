@@ -1,9 +1,7 @@
 package me.ilich.dw.data;
 
-import me.ilich.dw.commands.Command;
-import me.ilich.dw.commands.EmptyCommand;
-import me.ilich.dw.commands.ExitCommand;
-import me.ilich.dw.commands.HelpCommand;
+import me.ilich.dw.Utils;
+import me.ilich.dw.commands.*;
 import me.ilich.dw.entities.Door;
 import me.ilich.dw.entities.Event;
 import me.ilich.dw.entities.Room;
@@ -89,6 +87,9 @@ public class JsonDataSource implements DataSource {
             case "help":
                 command = new HelpCommand(aliases, actionText);
                 break;
+            case "walk":
+                command = new WalkCommand(aliases, actionText);
+                break;
             default:
                 command = new EmptyCommand();
         }
@@ -150,7 +151,11 @@ public class JsonDataSource implements DataSource {
         String sourceRoomId = room.getId();
         String destinationRoomId = jsonObject.optString("room_id");
         String doorDescription = jsonObject.optString("description");
-        return new Door(settingId, sourceRoomId, destinationRoomId, doorDescription);
+        JSONArray commandIdsJsonArray = jsonObject.optJSONArray("commands");
+        String[] commandIds = Utils.jsonArrayToStringArray(commandIdsJsonArray);
+        JSONArray aliasesJsonArray = jsonObject.optJSONArray("aliases");
+        String[] aliases = Utils.jsonArrayToStringArray(aliasesJsonArray);
+        return new Door(settingId, sourceRoomId, destinationRoomId, doorDescription, commandIds, aliases);
     }
 
     @Override
@@ -228,15 +233,11 @@ public class JsonDataSource implements DataSource {
     }
 
     @Override
-    public List<Command> getSuitableCommands(String inputString) {
+    public List<Command> getSuitableCommands(String commandBody) {
         List<Command> suitableCommandList = new ArrayList<>();
-        String[] inputs = inputString.split(" ");
-        if (inputs.length > 0) {
-            String commandBody = inputs[0];
-            for (Command command : commandList) {
-                if (command.isSuitable(commandBody)) {
-                    suitableCommandList.add(command);
-                }
+        for (Command command : commandList) {
+            if (command.isSuitable(commandBody)) {
+                suitableCommandList.add(command);
             }
         }
         return suitableCommandList;

@@ -8,7 +8,7 @@ public class HelpCommand extends Command {
     }
 
     @Override
-    protected void onExecute(Controller controller) {
+    protected void onExecute(Controller controller, String[] params) {
 
     }
 

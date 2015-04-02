@@ -1,4 +1,4 @@
-package me.ilich.dw;
+package me.ilich.dw.seeds;
 
 import me.ilich.dw.data.Seed;
 import me.ilich.dw.data.UuidSeed;
@@ -19,6 +19,14 @@ public class VkSeedSource extends SeedSource {
     // https://api.vk.com/method/users.get?user_id=2682551
     // https://api.vk.com/method/friends.get?user_id=2682551
     private final String PATTERN = "https://api.vk.com/method/friends.get?user_id=%s";
+
+    public VkSeedSource() {
+    }
+
+    @Override
+    public String getStartTag() {
+        return "2682551";
+    }
 
     @Override
     public void load(String tag) {

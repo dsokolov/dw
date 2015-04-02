@@ -19,14 +19,14 @@ public class Scene {
     }
 
     public void render() {
-        controller.out();
-        controller.out(roomTitle + " (" + settingTitle + ")");
-        controller.out(description);
+        controller.getIO().out();
+        controller.getIO().out(roomTitle + " (" + settingTitle + ")");
+        controller.getIO().out(description);
         for (String event : events) {
-            controller.out(event);
+            controller.getIO().out(event);
         }
         for (String door : doors) {
-            controller.out(door);
+            controller.getIO().out(door);
         }
     }
 

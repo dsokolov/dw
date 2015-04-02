@@ -1,4 +1,4 @@
-package me.ilich.dw;
+package me.ilich.dw.seeds;
 
 import me.ilich.dw.data.Seed;
 import me.ilich.dw.data.UuidSeed;
@@ -7,6 +7,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HardcodeSeedSource extends SeedSource {
+
+    @Override
+    public String getStartTag() {
+        return "2682551";
+    }
 
     @Override
     public void load(String tag) {

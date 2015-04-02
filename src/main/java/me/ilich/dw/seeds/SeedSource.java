@@ -1,4 +1,4 @@
-package me.ilich.dw;
+package me.ilich.dw.seeds;
 
 import me.ilich.dw.data.Seed;
 
@@ -8,6 +8,8 @@ public abstract class SeedSource {
 
     private Seed currentSeed;
     private List<Seed> directionSeeds;
+
+    public abstract String getStartTag();
 
     public abstract void load(String tag);
 
@@ -26,4 +28,6 @@ public abstract class SeedSource {
     protected void setDirectionSeeds(List<Seed> directionSeeds) {
         this.directionSeeds = directionSeeds;
     }
+
+
 }

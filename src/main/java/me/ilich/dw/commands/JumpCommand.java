@@ -3,12 +3,13 @@ package me.ilich.dw.commands;
 
 public class JumpCommand extends Command {
 
-    public JumpCommand(String[] aliases, String actionText) {
-        super(aliases, actionText);
+    public JumpCommand(String[] aliases) {
+        super(aliases);
     }
 
     @Override
-    protected void onExecute(Controller controller, String[] params) {
+    protected void onExecute(Controller controller, Alias[] params) {
 
     }
+
 }

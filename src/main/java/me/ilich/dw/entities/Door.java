@@ -1,22 +1,21 @@
 package me.ilich.dw.entities;
 
 
-public class Door implements Sceneable {
+public class Door extends Entity implements Sceneable {
 
     private final String settingId;
     private final String sourceRoomId;
     private final String destinationRoomId;
     private final String description;
     private final String[] commandIds;
-    private final String[] aliases;
 
-    public Door(String settingId, String sourceRoomId, String destinationRoomId, String description, String[] commandIds, String[] aliases) {
+    public Door(String[] aliases, String settingId, String sourceRoomId, String destinationRoomId, String description, String[] commandIds) {
+        super(aliases, description);
         this.settingId = settingId;
         this.sourceRoomId = sourceRoomId;
         this.destinationRoomId = destinationRoomId;
         this.description = description;
         this.commandIds = commandIds;
-        this.aliases = aliases;
     }
 
     public String getSettingId() {

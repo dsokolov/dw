@@ -1,10 +1,7 @@
 package me.ilich.dw.data;
 
 import me.ilich.dw.commands.Command;
-import me.ilich.dw.entities.Door;
-import me.ilich.dw.entities.Event;
-import me.ilich.dw.entities.Room;
-import me.ilich.dw.entities.Setting;
+import me.ilich.dw.entities.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,11 +34,18 @@ public class DataSeedAdapter {
         return dataSource.getDoors(seed.getSettingId(), seed.getRoomId(), destinationRoomIds);
     }
 
-    public List<Command> getSuitableCommands(String s) {
-        return dataSource.getSuitableCommands(s);
-    }
-
     public List<Event> getEvents(Seed seed) {
         return dataSource.getEvents(seed.getSettingId(), seed.getEventId());
+    }
+
+    public List<Command.Alias> getSuitableCommands(String alias) {
+        return dataSource.getSuitableCommands(alias);
+    }
+
+    public List<Entity.Alias> getSuitableParams(String alias) {
+        List<Entity.Alias> result = new ArrayList<>();
+        result.addAll(dataSource.getSuitableDoors(alias));
+        result.addAll(dataSource.getSuitableCommands(alias));
+        return result;
     }
 }

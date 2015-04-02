@@ -1,10 +1,7 @@
 package me.ilich.dw.data;
 
 import me.ilich.dw.commands.Command;
-import me.ilich.dw.entities.Door;
-import me.ilich.dw.entities.Event;
-import me.ilich.dw.entities.Room;
-import me.ilich.dw.entities.Setting;
+import me.ilich.dw.entities.*;
 
 import java.util.List;
 
@@ -19,6 +16,7 @@ public interface DataSource {
 
     List<Event> getEvents(String settingId, String eventId);
 
-    List<Command> getSuitableCommands(String s);
+    List<Command.Alias> getSuitableCommands(String s);
 
+    List<Entity.Alias> getSuitableDoors(String alias);
 }

@@ -2,10 +2,7 @@ package me.ilich.dw.data;
 
 import me.ilich.dw.Utils;
 import me.ilich.dw.commands.*;
-import me.ilich.dw.entities.Door;
-import me.ilich.dw.entities.Event;
-import me.ilich.dw.entities.Room;
-import me.ilich.dw.entities.Setting;
+import me.ilich.dw.entities.*;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -67,28 +64,30 @@ public class JsonDataSource implements DataSource {
     }
 
     private Command parseCommand(JSONObject commandJsonObject) {
-        String id = commandJsonObject.optString("id");
-        JSONArray aliasesJsonArray = commandJsonObject.optJSONArray("aliases");
-        String[] aliases = new String[aliasesJsonArray.length()];
-        for (int i = 0; i < aliasesJsonArray.length(); i++) {
-            aliases[i] = aliasesJsonArray.optString(i);
-        }
-        String actionText = commandJsonObject.optString("actionText");
+        String id = commandJsonObject.optString("id").toLowerCase();
+        String[] aliases = Utils.jsonArrayToStringArray(commandJsonObject.optJSONArray("aliases"));
         final Command command;
         switch (id) {
             case "exit":
-                JSONArray positiveJsonArray = commandJsonObject.optJSONArray("positive");
-                String[] positive = new String[positiveJsonArray.length()];
-                for (int i = 0; i < positiveJsonArray.length(); i++) {
-                    positive[i] = positiveJsonArray.optString(i);
-                }
-                command = new ExitCommand(aliases, actionText, positive);
+                String promt = commandJsonObject.optString("promt");
+                String[] positive = Utils.jsonArrayToStringArray(commandJsonObject.optJSONArray("positive"));
+                String[] negative = Utils.jsonArrayToStringArray(commandJsonObject.optJSONArray("negative"));
+                String unknown = commandJsonObject.optString("unknown");
+                command = new ExitCommand(aliases, promt, positive, negative, unknown);
                 break;
             case "help":
-                command = new HelpCommand(aliases, actionText);
+                command = new HelpCommand(aliases);
+                break;
+            case "look":
+                String failText = commandJsonObject.optString("fail");
+                String lookAtItemText = commandJsonObject.optString("lookAtItem");
+                command = new LookAroundCommand(aliases, lookAtItemText, failText);
                 break;
             case "walk":
-                command = new WalkCommand(aliases, actionText);
+                command = new WalkCommand(aliases);
+                break;
+            case "jump":
+                command = new JumpCommand(aliases);
                 break;
             default:
                 command = new EmptyCommand();
@@ -155,7 +154,7 @@ public class JsonDataSource implements DataSource {
         String[] commandIds = Utils.jsonArrayToStringArray(commandIdsJsonArray);
         JSONArray aliasesJsonArray = jsonObject.optJSONArray("aliases");
         String[] aliases = Utils.jsonArrayToStringArray(aliasesJsonArray);
-        return new Door(settingId, sourceRoomId, destinationRoomId, doorDescription, commandIds, aliases);
+        return new Door(aliases, settingId, sourceRoomId, destinationRoomId, doorDescription, commandIds);
     }
 
     @Override
@@ -233,14 +232,27 @@ public class JsonDataSource implements DataSource {
     }
 
     @Override
-    public List<Command> getSuitableCommands(String commandBody) {
-        List<Command> suitableCommandList = new ArrayList<>();
+    public List<Command.Alias> getSuitableCommands(String commandBody) {
+        List<Entity.Alias> suitableCommandList = new ArrayList<>();
         for (Command command : commandList) {
-            if (command.isSuitable(commandBody)) {
-                suitableCommandList.add(command);
+            Entity.Alias alias = command.getSuitableAlias(commandBody);
+            if (alias != null) {
+                suitableCommandList.add(alias);
             }
         }
         return suitableCommandList;
+    }
+
+    @Override
+    public List<Entity.Alias> getSuitableDoors(String alias) {
+        List<Entity.Alias> result = new ArrayList<>();
+        for (Door door : doorList) {
+            Entity.Alias suitableAlias = door.getSuitableAlias(alias);
+            if (suitableAlias != null) {
+                result.add(suitableAlias);
+            }
+        }
+        return result;
     }
 
 }

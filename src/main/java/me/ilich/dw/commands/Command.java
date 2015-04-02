@@ -1,49 +1,22 @@
 package me.ilich.dw.commands;
 
 
-import com.sun.deploy.util.ArrayUtil;
+import me.ilich.dw.entities.Entity;
 
-import java.security.InvalidParameterException;
+public abstract class Command extends Entity {
 
-public abstract class Command {
-
-    private final String[] aliases;
-    private final String actionText;
-
-    public Command(String[] aliases, String actionText) {
-        if (aliases == null) {
-            throw new NullPointerException("aliases");
-        }
-        if (aliases.length < 1) {
-            throw new InvalidParameterException("aliases array should have one element at last");
-        }
-        this.aliases = aliases;
-        this.actionText = actionText;
+    public Command(String[] aliases, String description) {
+        super(aliases, description);
     }
 
-    public boolean isSuitable(String command) {
-        boolean suitable = false;
-        for (String alias : aliases) {
-            if (!alias.toLowerCase().contains(command.toLowerCase())) {
-                suitable = false;
-                break;
-            }
-            suitable = true;
-            break;
-        }
-        return suitable;
+    public Command(String[] aliases) {
+        super(aliases);
     }
 
-    public void execute(Controller controller, String[] params) {
-        String output = String.format("> %s %s", aliases[0], ArrayUtil.arrayToString(params));
-        controller.out(output);
-        controller.out(actionText);
+    public void execute(Controller controller, Alias[] params) {
         onExecute(controller, params);
     }
 
-    protected abstract void onExecute(Controller controller, String[] params);
+    protected abstract void onExecute(Controller controller, Alias[] params);
 
-    public String getAlias() {
-        return aliases[0];
-    }
 }

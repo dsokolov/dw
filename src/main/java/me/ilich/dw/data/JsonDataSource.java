@@ -84,7 +84,10 @@ public class JsonDataSource implements DataSource {
                 command = new LookAroundCommand(aliases, lookAtItemText, failText);
                 break;
             case "walk":
-                command = new WalkCommand(aliases);
+                String noParams = commandJsonObject.optString("noParams");
+                String manyParams = commandJsonObject.optString("manyParams");
+                String invalidType = commandJsonObject.optString("invalidType");
+                command = new WalkCommand(aliases, noParams, manyParams, invalidType);
                 break;
             case "jump":
                 command = new JumpCommand(aliases);
@@ -205,14 +208,22 @@ public class JsonDataSource implements DataSource {
     }
 
     @Override
-    public List<Door> getDoors(String settingId, String sourceRoomId, List<String> directionSeeds) {
+    public List<Door> getDoors(Seed seed, List<Seed> directionSeeds) {
+        String settingId = seed.getSettingId();
+        String sourceRoomId = seed.getRoomId();
         List<Door> result = new ArrayList<>();
         for (Door door : doorList) {
-            String currentSettingId = door.getSettingId();
-            String currentSourceRoomId = door.getSourceRoomId();
-            String currentDestinationRoomId = door.getDestinationRoomId();
-            if (currentSettingId.equals(settingId) && currentSourceRoomId.equals(sourceRoomId) && directionSeeds.contains(currentDestinationRoomId)) {
-                result.add(door);
+            String doorSettingId = door.getSettingId();
+            String doorSourceRoomId = door.getSourceRoomId();
+            String doorDestinationRoomId = door.getDestinationRoomId();
+            if (settingId.equals(doorSettingId) && sourceRoomId.equals(doorSourceRoomId)) {
+                for (Seed directionSeed : directionSeeds) {
+                    String directionSettingId = directionSeed.getSettingId();
+                    String directionRoomId = directionSeed.getRoomId();
+                    if (settingId.equals(directionSettingId) && doorDestinationRoomId.equals(directionRoomId)) {
+                        result.add(door.copy(directionSeed.getTag()));
+                    }
+                }
             }
         }
         return result;

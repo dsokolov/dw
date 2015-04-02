@@ -12,7 +12,7 @@ public interface DataSource {
 
     Room getRoom(String settingId, String roomId);
 
-    List<Door> getDoors(String settingId, String sourceRoomId, List<String> directionSeeds);
+    List<Door> getDoors(Seed seed, List<Seed> directionSeeds);
 
     List<Event> getEvents(String settingId, String eventId);
 

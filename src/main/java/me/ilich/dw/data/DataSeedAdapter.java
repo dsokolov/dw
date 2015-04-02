@@ -27,11 +27,7 @@ public class DataSeedAdapter {
     }
 
     public List<Door> getDoors(Seed seed, List<Seed> directionSeeds) {
-        List<String> destinationRoomIds = new ArrayList<>();
-        for (Seed direstionSeed : directionSeeds) {
-            destinationRoomIds.add(direstionSeed.getRoomId());
-        }
-        return dataSource.getDoors(seed.getSettingId(), seed.getRoomId(), destinationRoomIds);
+        return dataSource.getDoors(seed, directionSeeds);
     }
 
     public List<Event> getEvents(Seed seed) {

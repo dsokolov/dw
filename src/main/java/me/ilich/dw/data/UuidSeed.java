@@ -42,4 +42,8 @@ public class UuidSeed implements Seed {
         return seed.substring(4, 6);
     }
 
+    @Override
+    public String toString() {
+        return seed + " " + tag;
+    }
 }

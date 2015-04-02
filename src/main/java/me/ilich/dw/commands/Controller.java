@@ -43,7 +43,11 @@ public class Controller {
 
             Seed currentSeed = seedSource.getCurrentSeed();
             List<Seed> directionSeeds = seedSource.getDirectionSeeds();
-
+            for (Seed seed : directionSeeds) {
+                if (currentSeed.getSettingId().equals(seed.getSettingId())) {
+                    ioController.out(seed + "");
+                }
+            }
             currentSetting = dataSeedAdapter.getSetting(currentSeed);
             currentRoom = dataSeedAdapter.getRoom(currentSeed);
             currentEvents = dataSeedAdapter.getEvents(currentSeed);
@@ -80,7 +84,13 @@ public class Controller {
             if (i == 0) {
                 aliasList = dataSeedAdapter.getSuitableCommands(input);
             } else {
-                aliasList = dataSeedAdapter.getSuitableParams(input);
+                aliasList = new ArrayList<>();
+                for (Door door : currentDoors) {
+                    Entity.Alias suitableAlias = door.getSuitableAlias(input);
+                    if (suitableAlias != null) {
+                        aliasList.add(suitableAlias);
+                    }
+                }
             }
             final boolean found;
             int count = aliasList.size();
@@ -128,34 +138,15 @@ public class Controller {
                 command.execute(this, params);
             }
         }
+    }
 
-/*        String commandBody = inputs[0];
 
-        List<Command.Alias> suitableCommands = dataSeedAdapter.getSuitableCommands(commandBody);
-        switch (suitableCommands.size()) {
-            case 0:
-                ioController.out(String.format("Что значит %s?", commandBody));
-                break;
-            case 1:
-                Command command = (Command) suitableCommands.get(0).getEntity();
-                if (inputs.length > 1) {
-                    for (int i = 1; i < inputs.length; i++) {
-                        String input = inputs[i];
-                        List<Entity.Alias> suitableParams = dataSeedAdapter.getSuitableParams(input);
-                    }
-                    //command.execute(this, suitableParams);
-                } else {
-                    command.execute(this);
-                }
-                break;
-            case 2:
-                ioController.out("Возможно, вы имели ввиду:");
-                ioController.out(suitableCommands.get(0).getAliasText());
-                ioController.out(suitableCommands.get(1).getAliasText());
-                break;
-            default:
-                ioController.out(String.format("%s допускает много трактований.", commandBody));
-        }*/
+    public void setCurrentTag(String tag) {
+        if (tag == null) {
+            throw new NullPointerException("tag");
+        }
+        currentTag = tag;
+        shouldReloadScene = true;
     }
 
     public IOController getIO() {

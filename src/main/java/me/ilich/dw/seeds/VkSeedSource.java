@@ -1,5 +1,6 @@
 package me.ilich.dw.seeds;
 
+import me.ilich.dw.Constans;
 import me.ilich.dw.data.Seed;
 import me.ilich.dw.data.UuidSeed;
 import org.apache.commons.io.IOUtils;
@@ -31,6 +32,9 @@ public class VkSeedSource extends SeedSource {
     @Override
     public void load(String tag) {
         Seed currentSeed = new UuidSeed(tag);
+        if (Constans.DEBUG) {
+            System.out.println("loading " + currentSeed);
+        }
         setCurrentSeed(currentSeed);
         try {
             URL url = new URL(String.format(PATTERN, tag));

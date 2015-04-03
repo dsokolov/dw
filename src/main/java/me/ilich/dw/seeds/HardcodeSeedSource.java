@@ -14,6 +14,11 @@ public class HardcodeSeedSource extends SeedSource {
     }
 
     @Override
+    public String getRandomTag() {
+        return "123";
+    }
+
+    @Override
     public void load(String tag) {
         //Seed currentSeed = new UuidSeed(UUID.nameUUIDFromBytes("2682551".getBytes()));
         Seed currentSeed = new UuidSeed(tag);

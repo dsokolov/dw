@@ -1,6 +1,8 @@
 package me.ilich.dw.commands;
 
 
+import java.util.List;
+
 public class ExitCommand extends Command {
 
     private final String promt;
@@ -8,8 +10,8 @@ public class ExitCommand extends Command {
     private final String[] negative;
     private final String unknown;
 
-    public ExitCommand(String[] aliases, String promt, String[] positive, String[] negative, String unknown) {
-        super(aliases);
+    public ExitCommand(String id, String[] aliases, String promt, String[] positive, String[] negative, String unknown) {
+        super(id, aliases);
         this.promt = promt;
         this.positive = positive;
         this.negative = negative;
@@ -17,12 +19,27 @@ public class ExitCommand extends Command {
     }
 
     @Override
-    protected void onExecute(Controller controller, Alias[] params) {
+    protected void onExecute(Controller controller) {
         doExit(controller);
     }
 
+    @Override
+    protected void onExecute(Controller controller, Alias param) {
+        //TODO fail
+    }
+
+    @Override
+    protected void onExecute(Controller controller, Alias param1, Alias param2) {
+        //TODO fail
+    }
+
+    @Override
+    protected void onExecute(Controller controller, List<Alias> params) {
+        //TODO fail
+    }
+
     private void doExit(Controller controller) {
-        controller.getIO().out(promt);
+        controller.getIO().outln(promt);
         boolean found = false;
         int retryTimes = 0;
         while (!found) {
@@ -49,7 +66,7 @@ public class ExitCommand extends Command {
                 if (retryTimes == 3) {
                     break;
                 } else {
-                    controller.getIO().out(unknown);
+                    controller.getIO().outln(unknown);
                 }
             }
             retryTimes++;

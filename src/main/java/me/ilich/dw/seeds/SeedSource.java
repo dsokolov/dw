@@ -11,6 +11,8 @@ public abstract class SeedSource {
 
     public abstract String getStartTag();
 
+    public abstract String getRandomTag();
+
     public abstract void load(String tag);
 
     public Seed getCurrentSeed() {

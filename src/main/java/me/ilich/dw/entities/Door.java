@@ -1,7 +1,9 @@
 package me.ilich.dw.entities;
 
 
-public class Door extends Entity implements Sceneable {
+import java.util.List;
+
+public class Door extends CommandableEntity implements Sceneable {
 
     private final String settingId;
     private final String sourceRoomId;
@@ -10,8 +12,8 @@ public class Door extends Entity implements Sceneable {
     private final String[] commandIds;
     private String tag;
 
-    public Door(String[] aliases, String settingId, String sourceRoomId, String destinationRoomId, String description, String[] commandIds) {
-        super(aliases, description);
+    public Door(String[] aliases, String settingId, String sourceRoomId, String destinationRoomId, String description, String[] commandIds, List<CommandPattern> commandPatterns) {
+        super(aliases, description, commandPatterns);
         this.settingId = settingId;
         this.sourceRoomId = sourceRoomId;
         this.destinationRoomId = destinationRoomId;
@@ -40,8 +42,8 @@ public class Door extends Entity implements Sceneable {
         return tag;
     }
 
-    public Door copy(String tag) {
-        Door door = new Door(getAliases(), settingId, sourceRoomId, destinationRoomId, description, commandIds);
+    public Door copyWithTag(String tag) {
+        Door door = new Door(getAliases(), settingId, sourceRoomId, destinationRoomId, description, commandIds, getCommandPatterns());
         door.tag = tag;
         return door;
     }

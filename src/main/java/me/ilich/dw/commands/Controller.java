@@ -24,6 +24,7 @@ public class Controller {
     private Room currentRoom;
     private List<Event> currentEvents;
     private List<Door> currentDoors;
+    private Teleport currentTeleport;
 
     public Controller() {
         currentTag = seedSource.getStartTag();
@@ -40,20 +41,19 @@ public class Controller {
     public void loadSceneIfNeed() {
         if (shouldReloadScene) {
             seedSource.load(currentTag);
-
             Seed currentSeed = seedSource.getCurrentSeed();
             List<Seed> directionSeeds = seedSource.getDirectionSeeds();
-            for (Seed seed : directionSeeds) {
-                if (currentSeed.getSettingId().equals(seed.getSettingId())) {
-                    ioController.out(seed + "");
-                }
-            }
             currentSetting = dataSeedAdapter.getSetting(currentSeed);
             currentRoom = dataSeedAdapter.getRoom(currentSeed);
             currentEvents = dataSeedAdapter.getEvents(currentSeed);
             currentDoors = dataSeedAdapter.getDoors(currentSeed, directionSeeds);
-
+            if (currentDoors.size() == 0) {
+                currentTeleport = dataSeedAdapter.getTeleport(currentSeed);
+            } else {
+                currentTeleport = null;
+            }
             renderCurrentScene();
+            ioController.debug("loaded " + currentSeed);
             shouldReloadScene = false;
         }
     }
@@ -62,8 +62,15 @@ public class Controller {
         List<Sceneable> sceneableList = new ArrayList<>();
         sceneableList.add(currentSetting);
         sceneableList.add(currentRoom);
-        sceneableList.addAll(currentEvents);
-        sceneableList.addAll(currentDoors);
+        if (currentEvents.size() > 0) {
+            sceneableList.addAll(currentEvents);
+        }
+        if (currentDoors.size() > 0) {
+            sceneableList.addAll(currentDoors);
+        }
+        if (currentTeleport != null) {
+            sceneableList.add(currentTeleport);
+        }
 
         Scene scene = new Scene(this);
         for (Sceneable sceneable : sceneableList) {
@@ -74,68 +81,78 @@ public class Controller {
 
     public void processCommand() {
         String s = ioController.in();
-        String[] inputs = s.split(" ");
-        Entity.Alias commandAlias = null;
-        Entity.Alias[] params = new Entity.Alias[inputs.length - 1];
-        boolean commandParsed = true;
-        for (int i = 0; i < inputs.length; i++) {
-            String input = inputs[i];
-            List<Entity.Alias> aliasList;
-            if (i == 0) {
-                aliasList = dataSeedAdapter.getSuitableCommands(input);
-            } else {
-                aliasList = new ArrayList<>();
-                for (Door door : currentDoors) {
-                    Entity.Alias suitableAlias = door.getSuitableAlias(input);
-                    if (suitableAlias != null) {
-                        aliasList.add(suitableAlias);
-                    }
-                }
-            }
-            final boolean found;
-            int count = aliasList.size();
-            switch (count) {
-                case 0:
-                    ioController.out(String.format("Что значит %s?", input));
-                    found = false;
-                    break;
-                case 1:
+        if (!s.isEmpty()) {
+            String[] inputs = s.split(" ");
+            if (inputs.length > 0) {
+                Entity.Alias commandAlias = null;
+                List<Entity.Alias> params = new ArrayList<>();
+                boolean commandParsed = true;
+                for (int i = 0; i < inputs.length; i++) {
+                    String input = inputs[i].trim();
+                    List<Entity.Alias> aliasList;
                     if (i == 0) {
-                        commandAlias = aliasList.get(0);
+                        aliasList = dataSeedAdapter.getSuitableCommands(input);
                     } else {
-                        params[i - 1] = aliasList.get(0);
+                        aliasList = new ArrayList<>();
+                        for (Door door : currentDoors) {
+                            Entity.Alias suitableAlias = door.getSuitableAlias(input);
+                            if (suitableAlias != null) {
+                                aliasList.add(suitableAlias);
+                            }
+                        }
+                        if (currentTeleport != null) {
+                            Entity.Alias suitableAlias = currentTeleport.getSuitableAlias(input);
+                            if (suitableAlias != null) {
+                                aliasList.add(suitableAlias);
+                            }
+                        }
                     }
-                    found = true;
-                    break;
-                case 2:
-                case 3:
-                    ioController.out(String.format("Что значит %s? Возможные варианты:", input));
-                    for (Entity.Alias entityAlias : aliasList) {
-                        ioController.out(entityAlias.getAliasText());
+                    final boolean found;
+                    int count = aliasList.size();
+                    switch (count) {
+                        case 0:
+                            ioController.outln(String.format("Что значит %s?", input));
+                            found = false;
+                            break;
+                        case 1:
+                            if (i == 0) {
+                                commandAlias = aliasList.get(0);
+                            } else {
+                                params.add(aliasList.get(0));
+                            }
+                            found = true;
+                            break;
+                        case 2:
+                        case 3:
+                            ioController.out(String.format("Что значит %s? Возможные варианты:", input));
+                            for (Entity.Alias entityAlias : aliasList) {
+                                ioController.out(entityAlias.getAliasText());
+                            }
+                            found = false;
+                            break;
+                        default:
+                            ioController.out(String.format("%s допускает много трактований.", input));
+                            found = false;
                     }
-                    found = false;
-                    break;
-                default:
-                    ioController.out(String.format("%s допускает много трактований.", input));
-                    found = false;
-            }
-            if (!found) {
-                commandParsed = false;
-                break;
-            }
-        }
-        if (commandParsed) {
-            if (commandAlias != null) {
-                StringBuilder sb = new StringBuilder();
-                sb.append("> ");
-                sb.append(commandAlias.getAliasText());
-                for (Entity.Alias alias : params) {
-                    sb.append(" ");
-                    sb.append(alias.getAliasText());
+                    if (!found) {
+                        commandParsed = false;
+                        break;
+                    }
                 }
-                ioController.out(sb.toString());
-                Command command = (Command) commandAlias.getEntity();
-                command.execute(this, params);
+                if (commandParsed) {
+                    if (commandAlias != null) {
+                        StringBuilder sb = new StringBuilder();
+                        sb.append("> ");
+                        sb.append(commandAlias.getAliasText());
+                        for (Entity.Alias alias : params) {
+                            sb.append(" ");
+                            sb.append(alias.getAliasText());
+                        }
+                        ioController.outln(sb.toString());
+                        Command command = (Command) commandAlias.getEntity();
+                        command.execute(this, params);
+                    }
+                }
             }
         }
     }
@@ -153,4 +170,7 @@ public class Controller {
         return ioController;
     }
 
+    public String randomTag() {
+        return seedSource.getRandomTag();
+    }
 }

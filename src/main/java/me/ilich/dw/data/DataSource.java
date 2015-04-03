@@ -16,6 +16,8 @@ public interface DataSource {
 
     List<Event> getEvents(String settingId, String eventId);
 
+    Teleport getTeleport(Seed seed);
+
     List<Command.Alias> getSuitableCommands(String s);
 
     List<Entity.Alias> getSuitableDoors(String alias);

@@ -8,7 +8,7 @@ import java.util.UUID;
  * <p/>
  * 0  - setting
  * 1 - ?
- * 23 - room
+ * 2 - room
  * 45 - event
  */
 public class UuidSeed implements Seed {
@@ -34,7 +34,7 @@ public class UuidSeed implements Seed {
 
     @Override
     public String getRoomId() {
-        return seed.substring(2, 4);
+        return seed.substring(2, 3);
     }
 
     @Override

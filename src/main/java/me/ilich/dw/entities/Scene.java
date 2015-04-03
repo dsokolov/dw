@@ -13,20 +13,25 @@ public class Scene {
     private String description;
     private List<String> doors = new ArrayList<>();
     private List<String> events = new ArrayList<>();
+    private String teleport = "";
 
     public Scene(Controller controller) {
         this.controller = controller;
     }
 
     public void render() {
-        controller.getIO().out();
-        controller.getIO().out(roomTitle + " (" + settingTitle + ")");
-        controller.getIO().out(description);
-        for (String event : events) {
-            controller.getIO().out(event);
+        controller.getIO().ln();
+        String header = String.format("%s (%s)", roomTitle, settingTitle);
+        controller.getIO().outln(header);
+        controller.getIO().outln(description);
+        if (events.size() > 0) {
+            controller.getIO().outln(events);
         }
-        for (String door : doors) {
-            controller.getIO().out(door);
+        if (doors.size() > 0) {
+            controller.getIO().outln(doors);
+        }
+        if (!teleport.isEmpty()) {
+            controller.getIO().outln(teleport);
         }
     }
 
@@ -48,6 +53,10 @@ public class Scene {
 
     public void addEvent(String event) {
         events.add(event);
+    }
+
+    public void addTeleport(String description) {
+        this.teleport = description;
     }
 
 }

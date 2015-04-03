@@ -1,6 +1,5 @@
 package me.ilich.dw.seeds;
 
-import me.ilich.dw.Constans;
 import me.ilich.dw.data.Seed;
 import me.ilich.dw.data.UuidSeed;
 import org.apache.commons.io.IOUtils;
@@ -14,6 +13,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class VkSeedSource extends SeedSource {
 
@@ -26,15 +26,21 @@ public class VkSeedSource extends SeedSource {
 
     @Override
     public String getStartTag() {
-        return "2682551";
+        //int id = new Random().nextInt(9999999);
+        int id = 2682551;
+        //int id = 46810449;
+        return Integer.toString(id);
+    }
+
+    @Override
+    public String getRandomTag() {
+        int id = new Random().nextInt(9999999);
+        return Integer.toString(id);
     }
 
     @Override
     public void load(String tag) {
         Seed currentSeed = new UuidSeed(tag);
-        if (Constans.DEBUG) {
-            System.out.println("loading " + currentSeed);
-        }
         setCurrentSeed(currentSeed);
         try {
             URL url = new URL(String.format(PATTERN, tag));
@@ -59,10 +65,12 @@ public class VkSeedSource extends SeedSource {
     private List<Seed> parse(JSONObject jsonObject) {
         List<Seed> seedList = new ArrayList<>();
         JSONArray jsonArray = jsonObject.optJSONArray("response");
-        for (int i = 0; i < jsonArray.length(); i++) {
-            long l = jsonArray.optLong(i);
-            Seed seed = new UuidSeed(Long.toString(l));
-            seedList.add(seed);
+        if (jsonArray != null) {
+            for (int i = 0; i < jsonArray.length(); i++) {
+                long l = jsonArray.optLong(i);
+                Seed seed = new UuidSeed(Long.toString(l));
+                seedList.add(seed);
+            }
         }
         return seedList;
     }

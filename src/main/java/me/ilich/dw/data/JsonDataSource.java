@@ -23,6 +23,7 @@ public class JsonDataSource implements DataSource {
     private List<Room> roomList = new ArrayList<>();
     private List<Door> doorList = new ArrayList<>();
     private List<Event> eventList = new ArrayList<>();
+    private List<Teleport> teleports = new ArrayList<>();
 
     public JsonDataSource() {
         String[] fileNames = new String[]{
@@ -73,28 +74,46 @@ public class JsonDataSource implements DataSource {
                 String[] positive = Utils.jsonArrayToStringArray(commandJsonObject.optJSONArray("positive"));
                 String[] negative = Utils.jsonArrayToStringArray(commandJsonObject.optJSONArray("negative"));
                 String unknown = commandJsonObject.optString("unknown");
-                command = new ExitCommand(aliases, promt, positive, negative, unknown);
+                command = new ExitCommand(id, aliases, promt, positive, negative, unknown);
                 break;
             case "help":
-                command = new HelpCommand(aliases);
+                command = new HelpCommand(id, aliases);
                 break;
             case "look":
                 String failText = commandJsonObject.optString("fail");
                 String lookAtItemText = commandJsonObject.optString("lookAtItem");
-                command = new LookAroundCommand(aliases, lookAtItemText, failText);
+                command = new LookCommand(id, aliases, lookAtItemText, failText);
                 break;
-            case "walk":
-                String noParams = commandJsonObject.optString("noParams");
-                String manyParams = commandJsonObject.optString("manyParams");
-                String invalidType = commandJsonObject.optString("invalidType");
-                command = new WalkCommand(aliases, noParams, manyParams, invalidType);
+            case "go":
+                command = parseCommandGo(id, commandJsonObject, aliases);
+                break;
+            case "godown":
+                command = parseCommandGoDown(id, commandJsonObject, aliases);
                 break;
             case "jump":
-                command = new JumpCommand(aliases);
+                command = new JumpCommand(id, aliases);
                 break;
             default:
-                command = new EmptyCommand();
+                command = new EmptyCommand(id);
         }
+        return command;
+    }
+
+    private Command parseCommandGo(String id, JSONObject commandJsonObject, String[] aliases) {
+        Command command;
+        String noParams = commandJsonObject.optString("noParams");
+        String manyParams = commandJsonObject.optString("manyParams");
+        String invalidType = commandJsonObject.optString("invalidType");
+        command = new GoCommand(id, aliases, noParams, manyParams, invalidType);
+        return command;
+    }
+
+    private Command parseCommandGoDown(String id, JSONObject commandJsonObject, String[] aliases) {
+        Command command;
+        String noParams = commandJsonObject.optString("noParams");
+        String manyParams = commandJsonObject.optString("manyParams");
+        String invalidType = commandJsonObject.optString("invalidType");
+        command = new GoDownCommand(id, aliases, noParams, manyParams, invalidType);
         return command;
     }
 
@@ -104,30 +123,64 @@ public class JsonDataSource implements DataSource {
                 JSONObject settingJsonObject = settingsJsonArray.optJSONObject(settingIndex);
                 final Setting setting = parseSetting(settingJsonObject);
                 settingList.add(setting);
-                JSONArray roomsJsonArray = settingJsonObject.optJSONArray("rooms");
-                if (roomsJsonArray != null) {
-                    for (int roomIndex = 0; roomIndex < roomsJsonArray.length(); roomIndex++) {
-                        JSONObject roomJsonObject = roomsJsonArray.optJSONObject(roomIndex);
-                        final Room room = parseRoom(setting, roomJsonObject);
-                        roomList.add(room);
-                        JSONArray doorsJsonArray = roomJsonObject.optJSONArray("doors");
-                        if (doorsJsonArray != null) {
-                            for (int doorIndex = 0; doorIndex < doorsJsonArray.length(); doorIndex++) {
-                                JSONObject doorJsonObject = doorsJsonArray.optJSONObject(doorIndex);
-                                final Door door = parseDoor(setting, room, doorJsonObject);
-                                doorList.add(door);
-                            }
-                        }
-                    }
-                }
-                JSONArray eventsJsonArray = settingJsonObject.optJSONArray("events");
-                if (eventsJsonArray != null) {
-                    for (int i = 0; i < eventsJsonArray.length(); i++) {
-                        JSONObject eventJsonObject = eventsJsonArray.optJSONObject(i);
-                        String eventId = eventJsonObject.optString("id");
-                        String eventText = eventJsonObject.optString("text");
-                        final Event event = new Event(setting.getId(), eventId, eventText);
-                        eventList.add(event);
+                parseRooms(settingJsonObject, setting);
+                parseEvents(settingJsonObject, setting);
+                parseTeleport(settingJsonObject, setting);
+            }
+        }
+    }
+
+    private void parseTeleport(JSONObject settingJsonObject, Setting setting) {
+        JSONObject teleportJsonObject = settingJsonObject.optJSONObject("teleport");
+        if (teleportJsonObject != null) {
+            String[] aliases = Utils.jsonArrayToStringArray(teleportJsonObject.optJSONArray("aliases"));
+            String shortText = teleportJsonObject.optString("short");
+            String longText = teleportJsonObject.optString("long");
+            List<CommandableEntity.CommandPattern> commandPatterns = parseCommandPattenrs(teleportJsonObject);
+            Teleport teleport = new Teleport(setting.getId(), aliases, shortText, longText, commandPatterns);
+            teleports.add(teleport);
+        }
+    }
+
+    private List<CommandableEntity.CommandPattern> parseCommandPattenrs(JSONObject jsonObject) {
+        List<CommandableEntity.CommandPattern> result = new ArrayList<>();
+        JSONArray commandsJsonArray = jsonObject.optJSONArray("commands");
+        for (int i = 0; i < commandsJsonArray.length(); i++) {
+            JSONObject commandJsonObject = commandsJsonArray.optJSONObject(i);
+            String id = commandJsonObject.optString("id");
+            String action = commandJsonObject.optString("action");
+            CommandableEntity.CommandPattern commandPattern = new CommandableEntity.CommandPattern(id, action);
+            result.add(commandPattern);
+        }
+        return result;
+    }
+
+    private void parseEvents(JSONObject settingJsonObject, Setting setting) {
+        JSONArray eventsJsonArray = settingJsonObject.optJSONArray("events");
+        if (eventsJsonArray != null) {
+            for (int i = 0; i < eventsJsonArray.length(); i++) {
+                JSONObject eventJsonObject = eventsJsonArray.optJSONObject(i);
+                String eventId = eventJsonObject.optString("id");
+                String eventText = eventJsonObject.optString("text");
+                final Event event = new Event(setting.getId(), eventId, eventText);
+                eventList.add(event);
+            }
+        }
+    }
+
+    private void parseRooms(JSONObject settingJsonObject, Setting setting) {
+        JSONArray roomsJsonArray = settingJsonObject.optJSONArray("rooms");
+        if (roomsJsonArray != null) {
+            for (int roomIndex = 0; roomIndex < roomsJsonArray.length(); roomIndex++) {
+                JSONObject roomJsonObject = roomsJsonArray.optJSONObject(roomIndex);
+                final Room room = parseRoom(setting, roomJsonObject);
+                roomList.add(room);
+                JSONArray doorsJsonArray = roomJsonObject.optJSONArray("doors");
+                if (doorsJsonArray != null) {
+                    for (int doorIndex = 0; doorIndex < doorsJsonArray.length(); doorIndex++) {
+                        JSONObject doorJsonObject = doorsJsonArray.optJSONObject(doorIndex);
+                        final Door door = parseDoor(setting, room, doorJsonObject);
+                        doorList.add(door);
                     }
                 }
             }
@@ -157,7 +210,8 @@ public class JsonDataSource implements DataSource {
         String[] commandIds = Utils.jsonArrayToStringArray(commandIdsJsonArray);
         JSONArray aliasesJsonArray = jsonObject.optJSONArray("aliases");
         String[] aliases = Utils.jsonArrayToStringArray(aliasesJsonArray);
-        return new Door(aliases, settingId, sourceRoomId, destinationRoomId, doorDescription, commandIds);
+        List<CommandableEntity.CommandPattern> commandPatterns = parseCommandPattenrs(jsonObject);
+        return new Door(aliases, settingId, sourceRoomId, destinationRoomId, doorDescription, commandIds, commandPatterns);
     }
 
     @Override
@@ -217,12 +271,18 @@ public class JsonDataSource implements DataSource {
             String doorSourceRoomId = door.getSourceRoomId();
             String doorDestinationRoomId = door.getDestinationRoomId();
             if (settingId.equals(doorSettingId) && sourceRoomId.equals(doorSourceRoomId)) {
+                int count = 0;
+                String tag = null;
                 for (Seed directionSeed : directionSeeds) {
                     String directionSettingId = directionSeed.getSettingId();
                     String directionRoomId = directionSeed.getRoomId();
                     if (settingId.equals(directionSettingId) && doorDestinationRoomId.equals(directionRoomId)) {
-                        result.add(door.copy(directionSeed.getTag()));
+                        tag = directionSeed.getTag();
+                        count++;
                     }
+                }
+                if (count == 1) {
+                    result.add(door.copyWithTag(tag));
                 }
             }
         }
@@ -238,6 +298,25 @@ public class JsonDataSource implements DataSource {
             if (currentSettingId.equals(settingId) && currentEventId.equals(eventId)) {
                 result.add(event);
             }
+        }
+        return result;
+    }
+
+    @Override
+    public Teleport getTeleport(Seed seed) {
+        Teleport result = null;
+        Teleport defaultTeleport = null;
+        for (Teleport teleport : teleports) {
+            if (teleport.getSettingId().equals(seed.getSettingId())) {
+                result = teleport;
+                break;
+            }
+            if (teleport.getSettingId().equals(DEFAULT_ID)) {
+                defaultTeleport = teleport;
+            }
+        }
+        if (result == null) {
+            result = defaultTeleport;
         }
         return result;
     }

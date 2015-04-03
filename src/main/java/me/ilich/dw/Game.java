@@ -14,4 +14,5 @@ public class Game {
         controller.loadSceneIfNeed();
         controller.processCommand();
     }
+
 }

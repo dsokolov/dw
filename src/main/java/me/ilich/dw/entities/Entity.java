@@ -3,16 +3,25 @@ package me.ilich.dw.entities;
 public abstract class Entity {
 
     private final String[] aliases;
-    private final String description;
-
-    public Entity(String[] aliases, String description) {
-        this.aliases = aliases;
-        this.description = description;
-    }
+    private final String shortText;
+    private final String longText;
 
     public Entity(String[] aliases) {
         this.aliases = aliases;
-        this.description = null;
+        this.shortText = null;
+        this.longText = null;
+    }
+
+    public Entity(String[] aliases, String shortText) {
+        this.aliases = aliases;
+        this.shortText = shortText;
+        this.longText = null;
+    }
+
+    public Entity(String[] aliases, String shortText, String longText) {
+        this.aliases = aliases;
+        this.shortText = shortText;
+        this.longText = longText;
     }
 
     public Alias getSuitableAlias(String alias) {
@@ -30,8 +39,12 @@ public abstract class Entity {
         return aliases;
     }
 
-    public String getDescription() {
-        return description;
+    public String getShortText() {
+        return shortText;
+    }
+
+    public String getLongText() {
+        return longText;
     }
 
     public static class Alias {

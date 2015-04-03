@@ -44,4 +44,8 @@ public class DataSeedAdapter {
         result.addAll(dataSource.getSuitableCommands(alias));
         return result;
     }
+
+    public Teleport getTeleport(Seed seed) {
+        return dataSource.getTeleport(seed);
+    }
 }

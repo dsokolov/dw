@@ -87,6 +87,9 @@ public class JsonDataSource implements DataSource {
             case "go":
                 command = parseCommandGo(id, commandJsonObject, aliases);
                 break;
+            case "goup":
+                command = parseCommandGoUp(id, commandJsonObject, aliases);
+                break;
             case "godown":
                 command = parseCommandGoDown(id, commandJsonObject, aliases);
                 break;
@@ -117,6 +120,15 @@ public class JsonDataSource implements DataSource {
         String manyParams = commandJsonObject.optString("manyParams");
         String invalidType = commandJsonObject.optString("invalidType");
         command = new GoCommand(id, aliases, noParams, manyParams, invalidType);
+        return command;
+    }
+
+    private Command parseCommandGoUp(String id, JSONObject commandJsonObject, String[] aliases) {
+        Command command;
+        String noParams = commandJsonObject.optString("noParams");
+        String manyParams = commandJsonObject.optString("manyParams");
+        String invalidType = commandJsonObject.optString("invalidType");
+        command = new GoDownCommand(id, aliases, noParams, manyParams, invalidType);
         return command;
     }
 
@@ -217,13 +229,14 @@ public class JsonDataSource implements DataSource {
         String settingId = setting.getSettingId();
         String sourceRoomId = room.getId();
         String destinationRoomId = jsonObject.optString("room_id");
-        String doorDescription = jsonObject.optString("description");
+        String doorShortText = jsonObject.optString("short");
+        String doorLongText = jsonObject.optString("long");
         JSONArray commandIdsJsonArray = jsonObject.optJSONArray("commands");
         String[] commandIds = Utils.jsonArrayToStringArray(commandIdsJsonArray);
         JSONArray aliasesJsonArray = jsonObject.optJSONArray("aliases");
         String[] aliases = Utils.jsonArrayToStringArray(aliasesJsonArray);
         List<CommandableEntity.CommandPattern> commandPatterns = parseCommandPattenrs(jsonObject);
-        return new Door(aliases, settingId, sourceRoomId, destinationRoomId, doorDescription, commandIds, commandPatterns);
+        return new Door(aliases, settingId, sourceRoomId, destinationRoomId, doorShortText, commandIds, commandPatterns);
     }
 
     @Override

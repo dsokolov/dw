@@ -124,14 +124,14 @@ public class Controller {
                             break;
                         case 2:
                         case 3:
-                            ioController.out(String.format("Что значит %s? Возможные варианты:", input));
+                            ioController.outln(String.format("Что значит %s? Возможные варианты:", input));
                             for (Entity.Alias entityAlias : aliasList) {
                                 ioController.out(entityAlias.getAliasText());
                             }
                             found = false;
                             break;
                         default:
-                            ioController.out(String.format("%s допускает много трактований.", input));
+                            ioController.outln(String.format("%s допускает много трактований.", input));
                             found = false;
                     }
                     if (!found) {

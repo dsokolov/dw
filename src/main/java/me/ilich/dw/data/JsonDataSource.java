@@ -90,12 +90,24 @@ public class JsonDataSource implements DataSource {
             case "godown":
                 command = parseCommandGoDown(id, commandJsonObject, aliases);
                 break;
+            case "touch":
+                command = parseTouchCommand(commandJsonObject, id, aliases);
+                break;
             case "jump":
                 command = new JumpCommand(id, aliases);
                 break;
             default:
                 command = new EmptyCommand(id);
         }
+        return command;
+    }
+
+    private Command parseTouchCommand(JSONObject commandJsonObject, String id, String[] aliases) {
+        Command command;
+        String noParams = commandJsonObject.optString("noParams");
+        String manyParams = commandJsonObject.optString("manyParams");
+        String invalidType = commandJsonObject.optString("invalidType");
+        command = new TouchCommand(id, aliases, noParams, manyParams, invalidType);
         return command;
     }
 

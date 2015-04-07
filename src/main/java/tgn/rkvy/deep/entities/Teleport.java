@@ -20,4 +20,7 @@ public class Teleport extends CommandableEntity implements Sceneable {
         scene.addTeleport(getShortText());
     }
 
+    public Teleport copy() {
+        return new Teleport(settingId, getAliases(), getShortText(), getLongText(), getCommandPatterns());
+    }
 }

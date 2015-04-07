@@ -12,11 +12,11 @@ public interface DataSource {
 
     Room getRoom(String settingId, String roomId);
 
-    List<Door> getDoors(Seed seed, List<Seed> directionSeeds);
+    List<Door> getDoors(String settingId, String sourceRoomId);
 
     List<Event> getEvents(String settingId, String eventId);
 
-    Teleport getTeleport(Seed seed);
+    Teleport getTeleport(String settingId);
 
     List<Command.Alias> getSuitableCommands(String s);
 

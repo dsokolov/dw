@@ -28,4 +28,7 @@ public class Setting implements Sceneable {
         return this.settingId.equalsIgnoreCase(settingId);
     }
 
+    public Setting copy() {
+        return new Setting(settingId, title);
+    }
 }

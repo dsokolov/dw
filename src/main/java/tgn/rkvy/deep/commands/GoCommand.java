@@ -30,7 +30,8 @@ public class GoCommand extends Command {
         if (entity instanceof Door) {
             Door door = (Door) entity;
             String tag = door.getTag();
-            controller.setCurrentTag(tag);
+            //controller.setCurrentTag(tag);
+            controller.setIds(door.getSettingId(), door.getDestinationRoomId());
         } else if (entity instanceof Teleport) {
             Teleport teleport = (Teleport) entity;
             Teleport.CommandPattern commandPattern = teleport.getSuitablePattern(this);
@@ -39,7 +40,8 @@ public class GoCommand extends Command {
             } else {
                 controller.getIO().outln(commandPattern.getActionText());
                 String tag = controller.randomTag();
-                controller.setCurrentTag(tag);
+                //controller.setCurrentTag(tag);
+                //TODO телепорт
             }
         } else {
             controller.getIO().outln(String.format(invalidType, param.getAliasText()));

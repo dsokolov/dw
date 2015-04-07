@@ -1,9 +1,11 @@
 package tgn.rkvy.deep.commands;
 
 import tgn.rkvy.deep.IOController;
+import tgn.rkvy.deep.data.AllDataSeedFilter;
 import tgn.rkvy.deep.data.DataSeedAdapter;
-import tgn.rkvy.deep.data.JsonDataSource;
+import tgn.rkvy.deep.data.DataSource;
 import tgn.rkvy.deep.data.Seed;
+import tgn.rkvy.deep.data.json.JsonDataSource;
 import tgn.rkvy.deep.entities.*;
 import tgn.rkvy.deep.seeds.SeedSource;
 import tgn.rkvy.deep.seeds.VkSeedSource;
@@ -14,20 +16,23 @@ import java.util.List;
 public class Controller {
 
     private final SeedSource seedSource = new VkSeedSource();
-    private final DataSeedAdapter dataSeedAdapter = new DataSeedAdapter(new JsonDataSource());
+    private final DataSource dataSource = new JsonDataSource();
+    private final DataSeedAdapter dataSeedAdapter = new DataSeedAdapter(dataSource, new AllDataSeedFilter());
     private IOController ioController = new IOController();
-
     private boolean working = true;
     private boolean shouldReloadScene = true;
+    private LoadMode loadMode = LoadMode.ID;
     private String currentTag;
+    private String currentSettingId;
+    private String currentRoomId;
     private Setting currentSetting;
     private Room currentRoom;
     private List<Event> currentEvents;
     private List<Door> currentDoors;
     private Teleport currentTeleport;
-
     public Controller() {
-        currentTag = seedSource.getStartTag();
+        //setCurrentTag(seedSource.getStartTag());
+        setIds("F", "1");
     }
 
     public boolean isWorking() {
@@ -40,20 +45,35 @@ public class Controller {
 
     public void loadSceneIfNeed() {
         if (shouldReloadScene) {
-            seedSource.load(currentTag);
-            Seed currentSeed = seedSource.getCurrentSeed();
-            List<Seed> directionSeeds = seedSource.getDirectionSeeds();
-            currentSetting = dataSeedAdapter.getSetting(currentSeed);
-            currentRoom = dataSeedAdapter.getRoom(currentSeed);
-            currentEvents = dataSeedAdapter.getEvents(currentSeed);
-            currentDoors = dataSeedAdapter.getDoors(currentSeed, directionSeeds);
-            if (currentDoors.size() == 0) {
-                currentTeleport = dataSeedAdapter.getTeleport(currentSeed);
-            } else {
-                currentTeleport = null;
+            switch (loadMode) {
+                case SEED:
+                    seedSource.load(currentTag);
+                    Seed currentSeed = seedSource.getCurrentSeed();
+                    List<Seed> directionSeeds = seedSource.getDirectionSeeds();
+                    currentSetting = dataSeedAdapter.getSetting(currentSeed);
+                    currentRoom = dataSeedAdapter.getRoom(currentSeed);
+                    currentEvents = dataSeedAdapter.getEvents(currentSeed);
+                    currentDoors = dataSeedAdapter.getDoors(currentSeed);
+                    if (currentDoors.size() == 0) {
+                        currentTeleport = dataSeedAdapter.getTeleport(currentSeed);
+                    } else {
+                        currentTeleport = null;
+                    }
+                    ioController.debug("loaded " + currentSeed);
+                    break;
+                case ID:
+                    currentSetting = dataSource.getSetting(currentSettingId);
+                    currentRoom = dataSource.getRoom(currentSettingId, currentRoomId);
+                    currentEvents = dataSource.getEvents(currentSettingId, null); //TODO
+                    currentDoors = dataSource.getDoors(currentSettingId, currentRoomId);
+                    if (currentDoors.size() == 0) {
+                        currentTeleport = dataSource.getTeleport(currentSettingId);
+                    } else {
+                        currentTeleport = null;
+                    }
+                    break;
             }
             renderCurrentScene();
-            ioController.debug("loaded " + currentSeed);
             shouldReloadScene = false;
         }
     }
@@ -157,13 +177,17 @@ public class Controller {
         }
     }
 
-
     public void setCurrentTag(String tag) {
-        if (tag == null) {
-            throw new NullPointerException("tag");
-        }
         currentTag = tag;
         shouldReloadScene = true;
+        loadMode = LoadMode.SEED;
+    }
+
+    public void setIds(String settingId, String roomId) {
+        currentSettingId = settingId;
+        currentRoomId = roomId;
+        shouldReloadScene = true;
+        loadMode = LoadMode.ID;
     }
 
     public IOController getIO() {
@@ -172,5 +196,10 @@ public class Controller {
 
     public String randomTag() {
         return seedSource.getRandomTag();
+    }
+
+    private enum LoadMode {
+        SEED,
+        ID
     }
 }

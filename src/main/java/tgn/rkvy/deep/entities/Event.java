@@ -28,4 +28,8 @@ public class Event implements Sceneable {
     public void processScene(Scene scene) {
         scene.addEvent(text);
     }
+
+    public Event copy() {
+        return new Event(settingId, id, text);
+    }
 }

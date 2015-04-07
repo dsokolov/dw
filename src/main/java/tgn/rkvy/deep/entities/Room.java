@@ -32,4 +32,8 @@ public class Room implements Sceneable {
     public boolean isSame(String settingId, String roomId) {
         return this.settingId.equalsIgnoreCase(settingId) && this.roomId.equalsIgnoreCase(roomId);
     }
+
+    public Room copy() {
+        return new Room(settingId, roomId, title, description);
+    }
 }

@@ -10,12 +10,14 @@ import java.util.List;
 public class DataSeedAdapter {
 
     private final DataSource dataSource;
+    private final DataSeedFilter dataSeedFilter;
 
-    public DataSeedAdapter(DataSource dataSource) {
+    public DataSeedAdapter(DataSource dataSource, DataSeedFilter dataSeedFilter) {
         if (dataSource == null) {
             throw new NullPointerException("dataSource");
         }
         this.dataSource = dataSource;
+        this.dataSeedFilter = dataSeedFilter;
     }
 
     public Setting getSetting(Seed seed) {
@@ -26,8 +28,10 @@ public class DataSeedAdapter {
         return dataSource.getRoom(seed.getSettingId(), seed.getRoomId());
     }
 
-    public List<Door> getDoors(Seed seed, List<Seed> directionSeeds) {
-        return dataSource.getDoors(seed, directionSeeds);
+    public List<Door> getDoors(Seed seed) {
+        List<Door> doors = dataSource.getDoors(seed.getSettingId(), seed.getRoomId());
+        doors = dataSeedFilter.filterDoors(doors);
+        return doors;
     }
 
     public List<Event> getEvents(Seed seed) {
@@ -46,6 +50,6 @@ public class DataSeedAdapter {
     }
 
     public Teleport getTeleport(Seed seed) {
-        return dataSource.getTeleport(seed);
+        return dataSource.getTeleport(seed.getSettingId());
     }
 }

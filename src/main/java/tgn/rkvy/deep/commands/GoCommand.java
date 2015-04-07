@@ -1,5 +1,6 @@
 package tgn.rkvy.deep.commands;
 
+import tgn.rkvy.deep.actions.Action;
 import tgn.rkvy.deep.entities.Door;
 import tgn.rkvy.deep.entities.Entity;
 import tgn.rkvy.deep.entities.Teleport;
@@ -12,8 +13,8 @@ public class GoCommand extends Command {
     private final String manyParams;
     private final String invalidType;
 
-    public GoCommand(String id, String[] aliases, String noParams, String manyParams, String invalidType) {
-        super(id, aliases);
+    public GoCommand(String id, String[] aliases, Action defaultAction, String noParams, String manyParams, String invalidType) {
+        super(id, aliases, defaultAction);
         this.noParams = noParams;
         this.manyParams = manyParams;
         this.invalidType = invalidType;

@@ -1,6 +1,7 @@
 package tgn.rkvy.deep.commands;
 
 
+import tgn.rkvy.deep.actions.Action;
 import tgn.rkvy.deep.entities.Entity;
 
 import java.util.List;
@@ -10,8 +11,8 @@ public class LookCommand extends Command {
     private final String lookAtItem;
     private final String failText;
 
-    public LookCommand(String id, String[] aliases, String lookAtItem, String failtText) {
-        super(id, aliases);
+    public LookCommand(String id, String[] aliases, Action defaultAction, String lookAtItem, String failtText) {
+        super(id, aliases, defaultAction);
         this.lookAtItem = lookAtItem;
         this.failText = failtText;
     }

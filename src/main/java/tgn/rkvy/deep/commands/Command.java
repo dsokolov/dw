@@ -1,6 +1,7 @@
 package tgn.rkvy.deep.commands;
 
 
+import tgn.rkvy.deep.actions.Action;
 import tgn.rkvy.deep.entities.Entity;
 
 import java.util.List;
@@ -8,15 +9,18 @@ import java.util.List;
 public abstract class Command extends Entity {
 
     private final String id;
+    private final Action defaultAction;
 
-    public Command(String id, String[] aliases, String description) {
+    public Command(String id, String[] aliases, String description, Action defaultAction) {
         super(aliases, description);
         this.id = id;
+        this.defaultAction = defaultAction;
     }
 
-    public Command(String id, String[] aliases) {
+    public Command(String id, String[] aliases, Action defaultAction) {
         super(aliases);
         this.id = id;
+        this.defaultAction = defaultAction;
     }
 
     public String getId() {

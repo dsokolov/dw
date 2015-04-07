@@ -1,5 +1,6 @@
 package tgn.rkvy.deep.commands;
 
+import tgn.rkvy.deep.actions.Action;
 import tgn.rkvy.deep.entities.CommandableEntity;
 import tgn.rkvy.deep.entities.Entity;
 
@@ -11,8 +12,8 @@ public class TouchCommand extends Command {
     private final String manyParams;
     private final String invalidType;
 
-    public TouchCommand(String id, String[] aliases, String noParams, String manyParams, String invalidType) {
-        super(id, aliases);
+    public TouchCommand(String id, String[] aliases, String noParams, String manyParams, String invalidType, Action defaultAction) {
+        super(id, aliases, defaultAction);
         this.noParams = noParams;
         this.manyParams = manyParams;
         this.invalidType = invalidType;

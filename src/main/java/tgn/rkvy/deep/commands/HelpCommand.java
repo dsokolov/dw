@@ -1,12 +1,14 @@
 package tgn.rkvy.deep.commands;
 
 
+import tgn.rkvy.deep.actions.Action;
+
 import java.util.List;
 
 public class HelpCommand extends Command {
 
-    public HelpCommand(String id, String[] aliases) {
-        super(id, aliases);
+    public HelpCommand(String id, String[] aliases, Action defaultAction) {
+        super(id, aliases, defaultAction);
     }
 
     @Override

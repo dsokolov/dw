@@ -1,11 +1,13 @@
 package tgn.rkvy.deep.commands;
 
+import tgn.rkvy.deep.actions.Action;
+
 import java.util.List;
 
 public class WaitCommand extends Command {
 
-    public WaitCommand(String id, String[] aliases, String description) {
-        super(id, aliases, description);
+    public WaitCommand(String id, String[] aliases, String description, Action defaultAction) {
+        super(id, aliases, description, defaultAction);
     }
 
     @Override

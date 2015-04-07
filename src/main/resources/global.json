@@ -1,0 +1,5 @@
+{
+  "global": {
+    "invalidCommand": "Что значит %s?"
+  }
+}

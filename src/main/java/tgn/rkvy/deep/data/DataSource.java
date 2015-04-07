@@ -21,4 +21,8 @@ public interface DataSource {
     List<Command.Alias> getSuitableCommands(String s);
 
     List<Entity.Alias> getSuitableDoors(String alias);
+
+
+    String getTextInvalidCommand(String s);
+
 }

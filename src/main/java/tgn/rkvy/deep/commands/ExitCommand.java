@@ -1,6 +1,8 @@
 package tgn.rkvy.deep.commands;
 
 
+import tgn.rkvy.deep.actions.Action;
+
 import java.util.List;
 
 public class ExitCommand extends Command {
@@ -10,8 +12,8 @@ public class ExitCommand extends Command {
     private final String[] negative;
     private final String unknown;
 
-    public ExitCommand(String id, String[] aliases, String promt, String[] positive, String[] negative, String unknown) {
-        super(id, aliases);
+    public ExitCommand(String id, String[] aliases, Action defaultAction, String promt, String[] positive, String[] negative, String unknown) {
+        super(id, aliases, defaultAction);
         this.promt = promt;
         this.positive = positive;
         this.negative = negative;

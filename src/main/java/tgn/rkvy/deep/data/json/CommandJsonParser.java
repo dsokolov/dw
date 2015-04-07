@@ -3,6 +3,7 @@ package tgn.rkvy.deep.data.json;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import tgn.rkvy.deep.Utils;
+import tgn.rkvy.deep.actions.Action;
 import tgn.rkvy.deep.commands.*;
 
 import java.util.HashMap;
@@ -44,95 +45,96 @@ class CommandJsonParser {
         final Command command;
         if (commandFactoryMap.containsKey(id)) {
             CommandFactory commandFactory = commandFactoryMap.get(id);
-            command = commandFactory.create(id, aliases, commandJsonObject);
+            Action defaultAction = null;
+            command = commandFactory.create(id, aliases, defaultAction, commandJsonObject);
         } else {
-            command = new EmptyCommand(id);
+            command = new EmptyCommand(id, null);
         }
         return command;
     }
 
     private interface CommandFactory {
-        Command create(String id, String[] aliases, JSONObject commandJsonObject);
+        Command create(String id, String[] aliases, Action defaultAction, JSONObject commandJsonObject);
     }
 
     private class ExitCommandFactory implements CommandFactory {
         @Override
-        public Command create(String id, String[] aliases, JSONObject commandJsonObject) {
+        public Command create(String id, String[] aliases, Action defaultAction, JSONObject commandJsonObject) {
             String promt = commandJsonObject.optString("promt");
             String[] positive = Utils.jsonArrayToStringArray(commandJsonObject.optJSONArray("positive"));
             String[] negative = Utils.jsonArrayToStringArray(commandJsonObject.optJSONArray("negative"));
             String unknown = commandJsonObject.optString("unknown");
-            return new ExitCommand(id, aliases, promt, positive, negative, unknown);
+            return new ExitCommand(id, aliases, defaultAction, promt, positive, negative, unknown);
         }
     }
 
     private class HelpCommandFactory implements CommandFactory {
         @Override
-        public Command create(String id, String[] aliases, JSONObject commandJsonObject) {
-            return new HelpCommand(id, aliases);
+        public Command create(String id, String[] aliases, Action defaultAction, JSONObject commandJsonObject) {
+            return new HelpCommand(id, aliases, defaultAction);
         }
     }
 
     private class LookCommandFactory implements CommandFactory {
         @Override
-        public Command create(String id, String[] aliases, JSONObject commandJsonObject) {
+        public Command create(String id, String[] aliases, Action defaultAction, JSONObject commandJsonObject) {
             String failText = commandJsonObject.optString("fail");
             String lookAtItemText = commandJsonObject.optString("lookAtItem");
-            return new LookCommand(id, aliases, lookAtItemText, failText);
+            return new LookCommand(id, aliases, defaultAction, lookAtItemText, failText);
         }
     }
 
     private class WaitCommandFactory implements CommandFactory {
         @Override
-        public Command create(String id, String[] aliases, JSONObject commandJsonObject) {
-            return new WaitCommand(id, aliases, "");
+        public Command create(String id, String[] aliases, Action defaultAction, JSONObject commandJsonObject) {
+            return new WaitCommand(id, aliases, "", defaultAction);
         }
     }
 
     private class GoCommandFactory implements CommandFactory {
         @Override
-        public Command create(String id, String[] aliases, JSONObject commandJsonObject) {
+        public Command create(String id, String[] aliases, Action defaultAction, JSONObject commandJsonObject) {
             String noParams = commandJsonObject.optString("noParams");
             String manyParams = commandJsonObject.optString("manyParams");
             String invalidType = commandJsonObject.optString("invalidType");
-            return new GoCommand(id, aliases, noParams, manyParams, invalidType);
+            return new GoCommand(id, aliases, defaultAction, noParams, manyParams, invalidType);
         }
     }
 
     private class GoUpCommandFactory implements CommandFactory {
         @Override
-        public Command create(String id, String[] aliases, JSONObject commandJsonObject) {
+        public Command create(String id, String[] aliases, Action defaultAction, JSONObject commandJsonObject) {
             String noParams = commandJsonObject.optString("noParams");
             String manyParams = commandJsonObject.optString("manyParams");
             String invalidType = commandJsonObject.optString("invalidType");
-            return new GoDownCommand(id, aliases, noParams, manyParams, invalidType);
+            return new GoDownCommand(id, aliases, defaultAction, noParams, manyParams, invalidType);
         }
     }
 
     private class GoDownCommandFactory implements CommandFactory {
         @Override
-        public Command create(String id, String[] aliases, JSONObject commandJsonObject) {
+        public Command create(String id, String[] aliases, Action defaultAction, JSONObject commandJsonObject) {
             String noParams = commandJsonObject.optString("noParams");
             String manyParams = commandJsonObject.optString("manyParams");
             String invalidType = commandJsonObject.optString("invalidType");
-            return new GoDownCommand(id, aliases, noParams, manyParams, invalidType);
+            return new GoDownCommand(id, aliases, defaultAction, noParams, manyParams, invalidType);
         }
     }
 
     private class TouchCommandFactory implements CommandFactory {
         @Override
-        public Command create(String id, String[] aliases, JSONObject commandJsonObject) {
+        public Command create(String id, String[] aliases, Action defaultAction, JSONObject commandJsonObject) {
             String noParams = commandJsonObject.optString("noParams");
             String manyParams = commandJsonObject.optString("manyParams");
             String invalidType = commandJsonObject.optString("invalidType");
-            return new TouchCommand(id, aliases, noParams, manyParams, invalidType);
+            return new TouchCommand(id, aliases, noParams, manyParams, invalidType, defaultAction);
         }
     }
 
     private class JumpCommandFactory implements CommandFactory {
         @Override
-        public Command create(String id, String[] aliases, JSONObject commandJsonObject) {
-            return new JumpCommand(id, aliases);
+        public Command create(String id, String[] aliases, Action defaultAction, JSONObject commandJsonObject) {
+            return new JumpCommand(id, aliases, defaultAction);
         }
     }
 

@@ -10,7 +10,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class JsonDataSource implements DataSource {
@@ -23,11 +25,13 @@ public class JsonDataSource implements DataSource {
     private List<Door> doorList = new ArrayList<>();
     private List<Event> eventList = new ArrayList<>();
     private List<Teleport> teleports = new ArrayList<>();
+    private Map<String, String> globalConstants = new HashMap<>();
 
-    private final JsonParser jsonParser = new JsonParser(settingList, commandList, roomList, doorList, eventList, teleports);
+    private final JsonParser jsonParser = new JsonParser(settingList, commandList, roomList, doorList, eventList, teleports, globalConstants);
 
     public JsonDataSource() {
         String[] fileNames = new String[]{
+                "global.json",
                 "commands.json",
                 "actions.json",
                 "setting_default.json",
@@ -189,6 +193,11 @@ public class JsonDataSource implements DataSource {
             }
         }
         return result;
+    }
+
+    @Override
+    public String getTextInvalidCommand(String s) {
+        return String.format(globalConstants.get("invalidCommand"), s);
     }
 
 }

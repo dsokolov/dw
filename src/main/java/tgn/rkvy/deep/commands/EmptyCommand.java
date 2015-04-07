@@ -1,11 +1,13 @@
 package tgn.rkvy.deep.commands;
 
+import tgn.rkvy.deep.actions.Action;
+
 import java.util.List;
 
 public class EmptyCommand extends Command {
 
-    public EmptyCommand(String id) {
-        super(id, new String[]{""});
+    public EmptyCommand(String id, Action defaultAction) {
+        super(id, new String[]{""}, defaultAction);
     }
 
     @Override

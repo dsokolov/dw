@@ -24,12 +24,12 @@ public class DataSeedAdapter {
         return dataSource.getSetting(seed.getSettingId());
     }
 
-    public Room getRoom(Seed seed) {
-        return dataSource.getRoom(seed.getSettingId(), seed.getRoomId());
+    public Location getLocation(Seed seed) {
+        return dataSource.getLocation(seed.getSettingId(), seed.getLocationId());
     }
 
     public List<Door> getDoors(Seed seed) {
-        List<Door> doors = dataSource.getDoors(seed.getSettingId(), seed.getRoomId());
+        List<Door> doors = dataSource.getDoors(seed.getPoint());
         doors = dataSeedFilter.filterDoors(doors);
         return doors;
     }

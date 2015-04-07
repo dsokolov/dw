@@ -19,17 +19,21 @@ public class Controller {
     private final DataSource dataSource = new JsonDataSource();
     private final DataSeedAdapter dataSeedAdapter = new DataSeedAdapter(dataSource, new AllDataSeedFilter());
     private IOController ioController = new IOController();
+    //
     private boolean working = true;
     private boolean shouldReloadScene = true;
     private LoadMode loadMode = LoadMode.ID;
+    //
     private String currentTag;
-    private String currentSettingId;
-    private String currentRoomId;
+    private Point currentPoint;
+    //
     private Setting currentSetting;
+    private Location currentLocation;
     private Room currentRoom;
     private List<Event> currentEvents;
     private List<Door> currentDoors;
     private Teleport currentTeleport;
+    //
     private CommandProcessor commandProcessor = new CommandProcessor(new CommandProcessor.Source() {
         @Override
         public List<Entity.Alias> getSuitableCommands(String input) {
@@ -59,7 +63,7 @@ public class Controller {
 
     public Controller() {
         //setCurrentTag(seedSource.getStartTag());
-        setIds("F", "1");
+        setIds(new Point("F", "1", "0"));
     }
 
     public boolean isWorking() {
@@ -78,7 +82,7 @@ public class Controller {
                     Seed currentSeed = seedSource.getCurrentSeed();
                     List<Seed> directionSeeds = seedSource.getDirectionSeeds();
                     currentSetting = dataSeedAdapter.getSetting(currentSeed);
-                    currentRoom = dataSeedAdapter.getRoom(currentSeed);
+                    currentLocation = dataSeedAdapter.getLocation(currentSeed);
                     currentEvents = dataSeedAdapter.getEvents(currentSeed);
                     currentDoors = dataSeedAdapter.getDoors(currentSeed);
                     if (currentDoors.size() == 0) {
@@ -89,12 +93,13 @@ public class Controller {
                     ioController.debug("loaded " + currentSeed);
                     break;
                 case ID:
-                    currentSetting = dataSource.getSetting(currentSettingId);
-                    currentRoom = dataSource.getRoom(currentSettingId, currentRoomId);
-                    currentEvents = dataSource.getEvents(currentSettingId, null); //TODO
-                    currentDoors = dataSource.getDoors(currentSettingId, currentRoomId);
+                    currentSetting = dataSource.getSetting(currentPoint.getSettingId());
+                    currentLocation = dataSource.getLocation(currentPoint.getSettingId(), currentPoint.getLocationId());
+                    currentRoom = dataSource.getRoom(currentPoint);
+                    currentEvents = dataSource.getEvents(currentPoint.getSettingId(), null); //TODO
+                    currentDoors = dataSource.getDoors(currentPoint);
                     if (currentDoors.size() == 0) {
-                        currentTeleport = dataSource.getTeleport(currentSettingId);
+                        currentTeleport = dataSource.getTeleport(currentPoint.getSettingId());
                     } else {
                         currentTeleport = null;
                     }
@@ -108,7 +113,7 @@ public class Controller {
     public void renderCurrentScene() {
         List<Sceneable> sceneableList = new ArrayList<>();
         sceneableList.add(currentSetting);
-        sceneableList.add(currentRoom);
+        sceneableList.add(currentLocation);
         if (currentEvents.size() > 0) {
             sceneableList.addAll(currentEvents);
         }
@@ -119,7 +124,7 @@ public class Controller {
             sceneableList.add(currentTeleport);
         }
 
-        Scene scene = new Scene(this);
+        Scene scene = new Scene(this.ioController);
         for (Sceneable sceneable : sceneableList) {
             sceneable.processScene(scene);
         }
@@ -142,9 +147,8 @@ public class Controller {
         loadMode = LoadMode.SEED;
     }
 
-    public void setIds(String settingId, String roomId) {
-        currentSettingId = settingId;
-        currentRoomId = roomId;
+    public void setIds(Point point) {
+        currentPoint = point;
         shouldReloadScene = true;
         loadMode = LoadMode.ID;
     }

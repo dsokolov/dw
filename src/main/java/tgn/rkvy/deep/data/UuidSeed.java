@@ -1,5 +1,7 @@
 package tgn.rkvy.deep.data;
 
+import tgn.rkvy.deep.entities.Point;
+
 import java.util.UUID;
 
 /**
@@ -8,7 +10,7 @@ import java.util.UUID;
  * <p/>
  * 0  - setting
  * 1 - ?
- * 2 - room
+ * 2 - location
  * 45 - event
  */
 public class UuidSeed implements Seed {
@@ -33,8 +35,18 @@ public class UuidSeed implements Seed {
     }
 
     @Override
-    public String getRoomId() {
+    public String getLocationId() {
         return seed.substring(2, 3);
+    }
+
+    @Override
+    public String getRoomId() {
+        return seed.substring(3, 4);
+    }
+
+    @Override
+    public Point getPoint() {
+        return new Point(getSettingId(), getLocationId(), getRoomId());
     }
 
     @Override

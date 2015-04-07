@@ -10,9 +10,11 @@ public interface DataSource {
 
     Setting getSetting(String settingId);
 
-    Room getRoom(String settingId, String roomId);
+    Location getLocation(String settingId, String locationId);
 
-    List<Door> getDoors(String settingId, String sourceRoomId);
+    Room getRoom(Point point);
+
+    List<Door> getDoors(Point sourcePoint);
 
     List<Event> getEvents(String settingId, String eventId);
 

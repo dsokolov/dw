@@ -61,7 +61,7 @@ public class CommandProcessor {
                     case 3:
                         source.getIoController().outln(String.format("Что значит %s? Возможные варианты:", input));
                         for (Entity.Alias entityAlias : aliasList) {
-                            source.getIoController().out(entityAlias.getAliasText());
+                            source.getIoController().outln(entityAlias.getAliasText());
                         }
                         found = false;
                         break;
@@ -88,6 +88,8 @@ public class CommandProcessor {
                     command.execute(source.getController(), params);
                 }
             }
+        } else {
+
         }
     }
 

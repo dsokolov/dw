@@ -32,7 +32,7 @@ public class GoDownCommand extends Command {
             Door door = (Door) entity;
             String tag = door.getTag();
             //controller.setCurrentTag(tag);
-            controller.setIds(door.getSettingId(), door.getDestinationRoomId());
+            controller.setIds(door.getSettingId(), door.getDestinationLocationId());
         } else if (entity instanceof Teleport) {
             Teleport teleport = (Teleport) entity;
             Teleport.CommandPattern commandPattern = teleport.getSuitablePattern(this);

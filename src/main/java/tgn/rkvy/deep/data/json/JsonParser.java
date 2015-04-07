@@ -2,11 +2,9 @@ package tgn.rkvy.deep.data.json;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import tgn.rkvy.deep.actions.Action;
 import tgn.rkvy.deep.commands.Command;
 import tgn.rkvy.deep.entities.*;
-
-import java.util.List;
-import java.util.Map;
 
 public class JsonParser {
 
@@ -14,10 +12,10 @@ public class JsonParser {
     private final CommandJsonParser commandJsonParser;
     private final GlobalJsonParser globalJsonParser;
 
-    public JsonParser(List<Setting> settingList, List<Command> commandList, List<Room> roomList, List<Door> doorList, List<Event> eventList, List<Teleport> teleports, Map<String, String> globalConstants) {
-        settingJsonParser = new SettingJsonParser(settingList, roomList, doorList, eventList, teleports);
-        commandJsonParser = new CommandJsonParser(commandList);
-        globalJsonParser = new GlobalJsonParser(globalConstants);
+    public JsonParser(OnParsedListener onParsedListener) {
+        settingJsonParser = new SettingJsonParser(onParsedListener);
+        commandJsonParser = new CommandJsonParser(onParsedListener);
+        globalJsonParser = new GlobalJsonParser(onParsedListener);
     }
 
     public void parse(JSONObject jsonObject) {
@@ -27,6 +25,28 @@ public class JsonParser {
         commandJsonParser.parseCommands(commandsJsonArray);
         JSONObject globalJsonObject = jsonObject.optJSONObject("global");
         globalJsonParser.parse(globalJsonObject);
+    }
+
+    public interface OnParsedListener {
+
+        void onSetting(Setting setting);
+
+        void onLocation(Location location);
+
+        void onRoom(Room room);
+
+        void onDoor(Door door);
+
+        void onEvent(Event event);
+
+        void onTeleport(Teleport teleport);
+
+        void onCommand(Command command);
+
+        void onAction(Action action);
+
+        void onGlobalConstant(String key, String value);
+
     }
 
 }

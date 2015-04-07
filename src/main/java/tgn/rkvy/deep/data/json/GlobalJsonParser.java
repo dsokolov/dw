@@ -3,14 +3,13 @@ package tgn.rkvy.deep.data.json;
 import org.json.JSONObject;
 
 import java.util.Iterator;
-import java.util.Map;
 
 class GlobalJsonParser {
 
-    private final Map<String, String> globalConstants;
+    private JsonParser.OnParsedListener onParsedListener;
 
-    public GlobalJsonParser(Map<String, String> globalConstants) {
-        this.globalConstants = globalConstants;
+    public GlobalJsonParser(JsonParser.OnParsedListener onParsedListener) {
+        this.onParsedListener = onParsedListener;
     }
 
     public void parse(JSONObject globalJsonObject) {
@@ -19,7 +18,7 @@ class GlobalJsonParser {
             while (iterator.hasNext()) {
                 String key = iterator.next() + "";
                 String value = globalJsonObject.optString(key);
-                globalConstants.put(key, value);
+                onParsedListener.onGlobalConstant(key, value);
             }
         }
     }

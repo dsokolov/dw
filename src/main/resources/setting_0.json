@@ -3,7 +3,7 @@
     {
       "id": "0",
       "title": "Холод",
-      "rooms": [
+      "locations": [
         {
           "id": "default",
           "title": "Снежная равнина",

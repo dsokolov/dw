@@ -10,18 +10,10 @@ import java.util.List;
 
 class SettingJsonParser {
 
-    private final List<Setting> settingList;
-    private final List<Room> roomList;
-    private final List<Door> doorList;
-    private final List<Event> eventList;
-    private final List<Teleport> teleports;
+    private final JsonParser.OnParsedListener onParsedListener;
 
-    SettingJsonParser(List<Setting> settingList, List<Room> roomList, List<Door> doorList, List<Event> eventList, List<Teleport> teleports) {
-        this.settingList = settingList;
-        this.roomList = roomList;
-        this.doorList = doorList;
-        this.eventList = eventList;
-        this.teleports = teleports;
+    SettingJsonParser(JsonParser.OnParsedListener onParsedListener) {
+        this.onParsedListener = onParsedListener;
     }
 
     public void parseSettings(JSONArray settingsJsonArray) {
@@ -29,8 +21,8 @@ class SettingJsonParser {
             for (int settingIndex = 0; settingIndex < settingsJsonArray.length(); settingIndex++) {
                 JSONObject settingJsonObject = settingsJsonArray.optJSONObject(settingIndex);
                 final Setting setting = parseSetting(settingJsonObject);
-                settingList.add(setting);
-                parseRooms(settingJsonObject, setting);
+                onParsedListener.onSetting(setting);
+                parseLocations(settingJsonObject, setting);
                 parseEvents(settingJsonObject, setting);
                 parseTeleport(settingJsonObject, setting);
             }
@@ -51,28 +43,48 @@ class SettingJsonParser {
                 String eventId = eventJsonObject.optString("id");
                 String eventText = eventJsonObject.optString("text");
                 final Event event = new Event(setting.getSettingId(), eventId, eventText);
-                eventList.add(event);
+                onParsedListener.onEvent(event);
             }
         }
     }
 
-    private void parseRooms(JSONObject settingJsonObject, Setting setting) {
-        JSONArray roomsJsonArray = settingJsonObject.optJSONArray("rooms");
+    private void parseLocations(JSONObject settingJsonObject, Setting setting) {
+        JSONArray locationsJsonArray = settingJsonObject.optJSONArray("locations");
+        if (locationsJsonArray != null) {
+            for (int locationIndex = 0; locationIndex < locationsJsonArray.length(); locationIndex++) {
+                JSONObject locationJsonObject = locationsJsonArray.optJSONObject(locationIndex);
+                final Location location = parseLocation(setting, locationJsonObject);
+                onParsedListener.onLocation(location);
+                JSONArray roomsJsonArray = locationJsonObject.optJSONArray("rooms");
+                parseRooms(roomsJsonArray, setting, location);
+            }
+        }
+    }
+
+    private void parseRooms(JSONArray roomsJsonArray, Setting setting, Location location) {
         if (roomsJsonArray != null) {
-            for (int roomIndex = 0; roomIndex < roomsJsonArray.length(); roomIndex++) {
-                JSONObject roomJsonObject = roomsJsonArray.optJSONObject(roomIndex);
-                final Room room = parseRoom(setting, roomJsonObject);
-                roomList.add(room);
+            for (int i = 0; i < roomsJsonArray.length(); i++) {
+                JSONObject roomJsonObject = roomsJsonArray.optJSONObject(i);
+                Room room = parseRoom(roomJsonObject, setting, location);
+                onParsedListener.onRoom(room);
                 JSONArray doorsJsonArray = roomJsonObject.optJSONArray("doors");
                 if (doorsJsonArray != null) {
                     for (int doorIndex = 0; doorIndex < doorsJsonArray.length(); doorIndex++) {
                         JSONObject doorJsonObject = doorsJsonArray.optJSONObject(doorIndex);
-                        final Door door = parseDoor(setting, room, doorJsonObject);
-                        doorList.add(door);
+                        final Door door = parseDoor(setting, location, room, doorJsonObject);
+                        onParsedListener.onDoor(door);
                     }
                 }
             }
         }
+    }
+
+    private Room parseRoom(JSONObject roomJsonObject, Setting setting, Location location) {
+        String roomId = roomJsonObject.optString("room_id");
+        String shortText = roomJsonObject.optString("short");
+        Point p = new Point(setting.getSettingId(), location.getId(), roomId);
+        Room room = new Room(p, shortText);
+        return room;
     }
 
     private void parseTeleport(JSONObject settingJsonObject, Setting setting) {
@@ -83,16 +95,16 @@ class SettingJsonParser {
             String longText = teleportJsonObject.optString("long");
             List<CommandableEntity.CommandPattern> commandPatterns = parseCommandPattenrs(teleportJsonObject);
             Teleport teleport = new Teleport(setting.getSettingId(), aliases, shortText, longText, commandPatterns);
-            teleports.add(teleport);
+            onParsedListener.onTeleport(teleport);
         }
     }
 
-    private Room parseRoom(Setting setting, JSONObject jsonObject) {
+    private Location parseLocation(Setting setting, JSONObject jsonObject) {
         String settingId = setting.getSettingId();
-        String roomId = jsonObject.optString("id");
-        String roomTitle = jsonObject.optString("title");
-        String roomDescription = jsonObject.optString("description");
-        return new Room(settingId, roomId, roomTitle, roomDescription);
+        String locationId = jsonObject.optString("id");
+        String locationTitle = jsonObject.optString("title");
+        String locationDescription = jsonObject.optString("description");
+        return new Location(settingId, locationId, locationTitle, locationDescription);
     }
 
     private List<CommandableEntity.CommandPattern> parseCommandPattenrs(JSONObject jsonObject) {
@@ -108,10 +120,13 @@ class SettingJsonParser {
         return result;
     }
 
-    private Door parseDoor(Setting setting, Room room, JSONObject jsonObject) {
+    private Door parseDoor(Setting setting, Location location, Room sourceRoom, JSONObject jsonObject) {
+        Point sourcePoint = sourceRoom.getPoint();
         String settingId = setting.getSettingId();
-        String sourceRoomId = room.getId();
+        String sourceLocationId = location.getId();
+        String destinationLocationId = jsonObject.optString("location_id");
         String destinationRoomId = jsonObject.optString("room_id");
+        Point destinationPoint = new Point(settingId, sourceLocationId, destinationRoomId);
         String doorShortText = jsonObject.optString("short");
         String doorLongText = jsonObject.optString("long");
         JSONArray commandIdsJsonArray = jsonObject.optJSONArray("commands");
@@ -119,7 +134,7 @@ class SettingJsonParser {
         JSONArray aliasesJsonArray = jsonObject.optJSONArray("aliases");
         String[] aliases = Utils.jsonArrayToStringArray(aliasesJsonArray);
         List<CommandableEntity.CommandPattern> commandPatterns = parseCommandPattenrs(jsonObject);
-        return new Door(aliases, settingId, sourceRoomId, destinationRoomId, doorShortText, commandIds, commandPatterns);
+        return new Door(aliases, sourcePoint, destinationPoint, doorShortText, commandIds, commandPatterns);
     }
 
 

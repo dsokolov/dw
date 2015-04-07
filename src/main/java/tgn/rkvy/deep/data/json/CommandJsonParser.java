@@ -7,17 +7,15 @@ import tgn.rkvy.deep.actions.Action;
 import tgn.rkvy.deep.commands.*;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 class CommandJsonParser {
 
     private final Map<String, CommandFactory> commandFactoryMap = new HashMap<>();
+    private final JsonParser.OnParsedListener onParsedListener;
 
-    private final List<Command> commandList;
-
-    CommandJsonParser(List<Command> commandList) {
-        this.commandList = commandList;
+    CommandJsonParser(JsonParser.OnParsedListener onParsedListener) {
+        this.onParsedListener = onParsedListener;
         commandFactoryMap.put("exit", new ExitCommandFactory());
         commandFactoryMap.put("help", new HelpCommandFactory());
         commandFactoryMap.put("look", new LookCommandFactory());
@@ -34,7 +32,7 @@ class CommandJsonParser {
             for (int commandIndex = 0; commandIndex < commandsJsonArray.length(); commandIndex++) {
                 JSONObject commandJsonObject = commandsJsonArray.optJSONObject(commandIndex);
                 final Command command = parseCommand(commandJsonObject);
-                commandList.add(command);
+                onParsedListener.onCommand(command);
             }
         }
     }

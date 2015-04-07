@@ -5,32 +5,26 @@ import java.util.List;
 
 public class Door extends CommandableEntity implements Sceneable {
 
-    private final String settingId;
-    private final String sourceRoomId;
-    private final String destinationRoomId;
+    private final Point sourcePoint;
+    private final Point destinationPoint;
     private final String description;
     private final String[] commandIds;
     private String tag;
 
-    public Door(String[] aliases, String settingId, String sourceRoomId, String destinationRoomId, String description, String[] commandIds, List<CommandPattern> commandPatterns) {
+    public Door(String[] aliases, Point sourcePoint, Point destinationPoint, String description, String[] commandIds, List<CommandPattern> commandPatterns) {
         super(aliases, description, commandPatterns);
-        this.settingId = settingId;
-        this.sourceRoomId = sourceRoomId;
-        this.destinationRoomId = destinationRoomId;
+        this.sourcePoint = sourcePoint;
+        this.destinationPoint = destinationPoint;
         this.description = description;
         this.commandIds = commandIds;
     }
 
-    public String getSettingId() {
-        return settingId;
+    public Point getSourcePoint() {
+        return sourcePoint;
     }
 
-    public String getSourceRoomId() {
-        return sourceRoomId;
-    }
-
-    public String getDestinationRoomId() {
-        return destinationRoomId;
+    public Point getDestinationPoint() {
+        return destinationPoint;
     }
 
     @Override
@@ -43,7 +37,7 @@ public class Door extends CommandableEntity implements Sceneable {
     }
 
     public Door copyWithTag(String tag) {
-        Door door = new Door(getAliases(), settingId, sourceRoomId, destinationRoomId, description, commandIds, getCommandPatterns());
+        Door door = new Door(getAliases(), sourcePoint, destinationPoint, description, commandIds, getCommandPatterns());
         door.tag = tag;
         return door;
     }

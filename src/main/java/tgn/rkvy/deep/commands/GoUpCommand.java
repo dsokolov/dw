@@ -32,7 +32,7 @@ public class GoUpCommand extends Command {
             Door door = (Door) entity;
             String tag = door.getTag();
             //controller.setCurrentTag(tag);
-            controller.setIds(door.getSettingId(), door.getDestinationRoomId());
+            controller.setIds(door.getDestinationPoint());
         } else if (entity instanceof Teleport) {
             Teleport teleport = (Teleport) entity;
             Teleport.CommandPattern commandPattern = teleport.getSuitablePattern(this);

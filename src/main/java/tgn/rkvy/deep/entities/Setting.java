@@ -3,11 +3,11 @@ package tgn.rkvy.deep.entities;
 
 public class Setting implements Sceneable {
 
-    private final String settingId;
+    private final Point point;
     private final String title;
 
-    public Setting(String id, String title) {
-        this.settingId = id;
+    public Setting(Point point, String title) {
+        this.point = point;
         this.title = title;
     }
 
@@ -15,20 +15,16 @@ public class Setting implements Sceneable {
         return title;
     }
 
-    public String getSettingId() {
-        return settingId;
-    }
-
     @Override
     public void processScene(Scene scene) {
         scene.setSettingTitle(title);
     }
 
-    public boolean isSame(String settingId) {
-        return this.settingId.equalsIgnoreCase(settingId);
+    public Setting copy() {
+        return new Setting(point, title);
     }
 
-    public Setting copy() {
-        return new Setting(settingId, title);
+    public Point getPoint() {
+        return point;
     }
 }

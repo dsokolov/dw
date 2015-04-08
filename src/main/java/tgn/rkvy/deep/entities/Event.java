@@ -2,18 +2,18 @@ package tgn.rkvy.deep.entities;
 
 public class Event implements Sceneable {
 
-    private final String settingId;
+    private final Point point;
     private final String id;
     private final String text;
 
-    public Event(String settingId, String id, String text) {
-        this.settingId = settingId;
+    public Event(Point point, String id, String text) {
+        this.point = point;
         this.id = id;
         this.text = text;
     }
 
-    public String getSettingId() {
-        return settingId;
+    public Point getPoint() {
+        return point;
     }
 
     public String getId() {
@@ -30,6 +30,6 @@ public class Event implements Sceneable {
     }
 
     public Event copy() {
-        return new Event(settingId, id, text);
+        return new Event(point, id, text);
     }
 }

@@ -4,15 +4,11 @@ import java.util.List;
 
 public class Teleport extends CommandableEntity implements Sceneable {
 
-    private final String settingId;
+    private final Point point;
 
-    public Teleport(String settingId, String[] aliases, String shortText, String longText, List<CommandPattern> commandPatterns) {
+    public Teleport(Point point, String[] aliases, String shortText, String longText, List<CommandPattern> commandPatterns) {
         super(aliases, shortText, longText, commandPatterns);
-        this.settingId = settingId;
-    }
-
-    public String getSettingId() {
-        return settingId;
+        this.point = point;
     }
 
     @Override
@@ -21,6 +17,10 @@ public class Teleport extends CommandableEntity implements Sceneable {
     }
 
     public Teleport copy() {
-        return new Teleport(settingId, getAliases(), getShortText(), getLongText(), getCommandPatterns());
+        return new Teleport(point, getAliases(), getShortText(), getLongText(), getCommandPatterns());
+    }
+
+    public Point getPoint() {
+        return point;
     }
 }

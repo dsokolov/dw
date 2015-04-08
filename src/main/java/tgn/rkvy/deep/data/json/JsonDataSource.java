@@ -19,6 +19,9 @@ import java.util.Map;
 public class JsonDataSource implements DataSource {
 
     private static final String DEFAULT_ID = "default";
+    private static final Point POINT_DEFAULT_SETTING = new Point(DEFAULT_ID);
+    private static final Point POINT_DEFAULT_LOCATION = new Point(DEFAULT_ID, DEFAULT_ID);
+    private static final Point POINT_DEFAULT_ROOM = new Point(DEFAULT_ID, DEFAULT_ID, DEFAULT_ID);
 
     private List<Command> commandList = new ArrayList<>();
     private List<Action> actionList = new ArrayList<>();
@@ -102,15 +105,15 @@ public class JsonDataSource implements DataSource {
     }
 
     @Override
-    public Setting getSetting(String settingId) {
+    public Setting getSetting(Point point) {
         Setting result = null;
         Setting defaultSetting = null;
         for (Setting setting : settingList) {
-            if (setting.isSame(settingId)) {
+            if (setting.getPoint().sameSetting(point)) {
                 result = setting.copy();
                 break;
             }
-            if (setting.isSame(DEFAULT_ID)) {
+            if (setting.getPoint().sameSetting(POINT_DEFAULT_SETTING)) {
                 defaultSetting = setting;
             }
         }
@@ -121,19 +124,19 @@ public class JsonDataSource implements DataSource {
     }
 
     @Override
-    public Location getLocation(String settingId, String locationId) {
+    public Location getLocation(Point point) {
         Location result = null;
         Location defaultSettingLocation = null;
         Location defaultLocation = null;
         for (Location location : locationList) {
-            if (location.isSame(settingId, locationId)) {
+            if (location.getPoint().sameLocation(point)) {
                 result = location.copy();
                 break;
             }
-            if (location.isSame(settingId, DEFAULT_ID)) {
+            if (location.getPoint().sameLocationOnly(POINT_DEFAULT_LOCATION)) {
                 defaultSettingLocation = location;
             }
-            if (location.isSame(DEFAULT_ID, DEFAULT_ID)) {
+            if (location.getPoint().sameLocation(POINT_DEFAULT_LOCATION)) {
                 defaultLocation = location;
             }
         }
@@ -198,12 +201,11 @@ public class JsonDataSource implements DataSource {
     }*/
 
     @Override
-    public List<Event> getEvents(String settingId, String eventId) {
+    public List<Event> getEvents(Point point, String eventId) {
         List<Event> result = new ArrayList<>();
         for (Event event : eventList) {
-            String currentSettingId = event.getSettingId();
             String currentEventId = event.getId();
-            if (currentSettingId.equals(settingId) && currentEventId.equals(eventId)) {
+            if (event.getPoint().sameSetting(point) && currentEventId.equalsIgnoreCase(eventId)) {
                 result.add(event.copy());
             }
         }
@@ -211,15 +213,15 @@ public class JsonDataSource implements DataSource {
     }
 
     @Override
-    public Teleport getTeleport(String settingId) {
+    public Teleport getTeleport(Point point) {
         Teleport result = null;
         Teleport defaultTeleport = null;
         for (Teleport teleport : teleportList) {
-            if (teleport.getSettingId().equals(settingId)) {
+            if (teleport.getPoint().sameSetting(point)) {
                 result = teleport.copy();
                 break;
             }
-            if (teleport.getSettingId().equals(DEFAULT_ID)) {
+            if (teleport.getPoint().sameSetting(POINT_DEFAULT_SETTING)) {
                 defaultTeleport = teleport;
             }
         }

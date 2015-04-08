@@ -21,11 +21,11 @@ public class DataSeedAdapter {
     }
 
     public Setting getSetting(Seed seed) {
-        return dataSource.getSetting(seed.getSettingId());
+        return dataSource.getSetting(seed.getPoint());
     }
 
     public Location getLocation(Seed seed) {
-        return dataSource.getLocation(seed.getSettingId(), seed.getLocationId());
+        return dataSource.getLocation(seed.getPoint());
     }
 
     public List<Door> getDoors(Seed seed) {
@@ -35,7 +35,7 @@ public class DataSeedAdapter {
     }
 
     public List<Event> getEvents(Seed seed) {
-        return dataSource.getEvents(seed.getSettingId(), seed.getEventId());
+        return dataSource.getEvents(seed.getPoint(), seed.getEventId());
     }
 
     public List<Command.Alias> getSuitableCommands(String alias) {
@@ -50,6 +50,6 @@ public class DataSeedAdapter {
     }
 
     public Teleport getTeleport(Seed seed) {
-        return dataSource.getTeleport(seed.getSettingId());
+        return dataSource.getTeleport(seed.getPoint());
     }
 }

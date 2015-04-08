@@ -1,8 +1,8 @@
 package tgn.rkvy.deep.entities;
 
-public class Point {
+public final class Point {
 
-    private final String EMPTY = "";
+    private final String EMPTY = "EMPTY";
 
     private final String settingId;
     private final String locationId;
@@ -46,15 +46,32 @@ public class Point {
         return sameSetting(point) && locationId.equalsIgnoreCase(point.locationId);
     }
 
+    public boolean sameLocationOnly(Point point) {
+        return locationId.equalsIgnoreCase(point.locationId);
+    }
+
     public boolean sameRoom(Point point) {
         return sameLocation(point) && roomId.equalsIgnoreCase(roomId);
     }
 
-    public String getSettingId() {
-        return settingId;
+    @Override
+    public String toString() {
+        return settingId + " " + locationId + " " + roomId;
     }
 
-    public String getLocationId() {
-        return locationId;
+    public Point copy(String newSettingId, String newLocationId, String newRoomId) {
+        final String settingId = newSettingId == null || newSettingId.isEmpty() ? this.settingId : newSettingId;
+        final String locationId = newLocationId == null || newLocationId.isEmpty() ? this.locationId : newLocationId;
+        final String roomId = newRoomId == null || newRoomId.isEmpty() ? this.roomId : newRoomId;
+        return new Point(settingId, locationId, roomId);
     }
+
+    public Point copyRoom(String roomId) {
+        return new Point(settingId, locationId, roomId);
+    }
+
+    public Point copyLocation(String locationId) {
+        return new Point(settingId, locationId, EMPTY);
+    }
+
 }

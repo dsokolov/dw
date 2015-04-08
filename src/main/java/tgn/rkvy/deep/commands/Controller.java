@@ -93,13 +93,13 @@ public class Controller {
                     ioController.debug("loaded " + currentSeed);
                     break;
                 case ID:
-                    currentSetting = dataSource.getSetting(currentPoint.getSettingId());
-                    currentLocation = dataSource.getLocation(currentPoint.getSettingId(), currentPoint.getLocationId());
+                    currentSetting = dataSource.getSetting(currentPoint);
+                    currentLocation = dataSource.getLocation(currentPoint);
                     currentRoom = dataSource.getRoom(currentPoint);
-                    currentEvents = dataSource.getEvents(currentPoint.getSettingId(), null); //TODO
+                    currentEvents = dataSource.getEvents(currentPoint, null); //TODO
                     currentDoors = dataSource.getDoors(currentPoint);
                     if (currentDoors.size() == 0) {
-                        currentTeleport = dataSource.getTeleport(currentPoint.getSettingId());
+                        currentTeleport = dataSource.getTeleport(currentPoint);
                     } else {
                         currentTeleport = null;
                     }

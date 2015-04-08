@@ -8,17 +8,17 @@ import java.util.List;
 
 public interface DataSource {
 
-    Setting getSetting(String settingId);
+    Setting getSetting(Point point);
 
-    Location getLocation(String settingId, String locationId);
+    Location getLocation(Point point);
 
     Room getRoom(Point point);
 
     List<Door> getDoors(Point sourcePoint);
 
-    List<Event> getEvents(String settingId, String eventId);
+    List<Event> getEvents(Point point, String eventId);
 
-    Teleport getTeleport(String settingId);
+    Teleport getTeleport(Point point);
 
     List<Command.Alias> getSuitableCommands(String s);
 

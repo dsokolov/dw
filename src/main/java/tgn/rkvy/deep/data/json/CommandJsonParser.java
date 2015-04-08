@@ -77,8 +77,11 @@ class CommandJsonParser {
         @Override
         public Command create(String id, String[] aliases, Action defaultAction, JSONObject commandJsonObject) {
             String failText = commandJsonObject.optString("fail");
+            String lookAround = commandJsonObject.optString("lookAround");
+            String lookAroundNoDatails = commandJsonObject.optString("lookAroundNoDetails");
             String lookAtItemText = commandJsonObject.optString("lookAtItem");
-            return new LookCommand(id, aliases, defaultAction, lookAtItemText, failText);
+            String lookAtItemNoDetails = commandJsonObject.optString("lookAtItemNoDetails");
+            return new LookCommand(id, aliases, defaultAction, lookAround, lookAroundNoDatails, lookAtItemText, lookAtItemNoDetails, failText);
         }
     }
 

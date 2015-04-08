@@ -86,8 +86,9 @@ public class JsonDataSource implements DataSource {
                 "commands.json",
                 "actions.json",
                 "setting_default.json",
-                "setting_0.json",
-                "setting_F.json"
+/*                "setting_0.json",
+                "setting_F.json",*/
+                "setting_sandbox.json"
         };
         for (String fileName : fileNames) {
             try (

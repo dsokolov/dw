@@ -13,11 +13,11 @@ public class Teleport extends CommandableEntity implements Sceneable {
 
     @Override
     public void processScene(Scene scene) {
-        scene.addTeleport(getShortText());
+        scene.addTeleport(getTitle());
     }
 
     public Teleport copy() {
-        return new Teleport(point, getAliases(), getShortText(), getLongText(), getCommandPatterns());
+        return new Teleport(point, getAliases(), getTitle(), getDetails(), getCommandPatterns());
     }
 
     public Point getPoint() {

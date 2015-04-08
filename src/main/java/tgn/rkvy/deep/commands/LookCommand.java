@@ -8,24 +8,35 @@ import java.util.List;
 
 public class LookCommand extends Command {
 
+    private final String lookAround;
+    private final String lookAroundNoDetails;
     private final String lookAtItem;
+    private final String lookAtItemNoDetails;
     private final String failText;
 
-    public LookCommand(String id, String[] aliases, Action defaultAction, String lookAtItem, String failtText) {
+    public LookCommand(String id, String[] aliases, Action defaultAction, String lookAround, String lookAroundNoDetails, String lookAtItem, String lookAtItemNoDetails, String failtText) {
         super(id, aliases, defaultAction);
+        this.lookAround = lookAround;
+        this.lookAroundNoDetails = lookAroundNoDetails;
         this.lookAtItem = lookAtItem;
+        this.lookAtItemNoDetails = lookAtItemNoDetails;
         this.failText = failtText;
     }
 
     @Override
     protected void onExecute(Controller controller) {
-        controller.renderCurrentScene();
+        controller.getIO().outln(lookAround);
+        controller.renderCurrentSceneLong(lookAroundNoDetails);
     }
 
     @Override
     protected void onExecute(Controller controller, Entity.Alias param) {
         controller.getIO().outln(String.format(lookAtItem, param.getAliasText()));
-        controller.getIO().outln(param.getEntity().getLongText());
+        String text = param.getEntity().getDetails();
+        if (text == null || text.isEmpty()) {
+            text = lookAtItemNoDetails;
+        }
+        controller.getIO().outln(text);
     }
 
     @Override

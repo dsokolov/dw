@@ -11,7 +11,7 @@ public class Scene {
     private String settingTitle;
     private String locationTitle;
     private String roomTitle;
-    private String description;
+    private String roomDetails;
     private List<String> doors = new ArrayList<>();
     private List<String> events = new ArrayList<>();
     private String teleport = "";
@@ -20,19 +20,22 @@ public class Scene {
         this.ioController = ioController;
     }
 
-    public void render() {
-        ioController.ln();
-        String header = String.format("%s (%s, %s)", roomTitle, locationTitle, settingTitle);
-        ioController.outln(header);
-        ioController.outln(description);
-        if (events.size() > 0) {
-            ioController.outln(events);
+    public void renderTitle() {
+        String title = String.format("*** %s (%s, %s) ***", roomTitle, settingTitle, locationTitle);
+        ioController.outln(title);
+    }
+
+    public void renderDetails(String elseText) {
+        if (roomDetails == null || roomDetails.isEmpty()) {
+            ioController.outln(elseText);
+        } else {
+            ioController.outln(roomDetails);
         }
+    }
+
+    public void renderDoors() {
         if (doors.size() > 0) {
-            ioController.outln(doors);
-        }
-        if (!teleport.isEmpty()) {
-            ioController.outln(teleport);
+            ioController.outln(doors, "[", "] [", "]");
         }
     }
 
@@ -48,8 +51,8 @@ public class Scene {
         roomTitle = s;
     }
 
-    public void setDescription(String s) {
-        description = s;
+    public void setRoomDetails(String s) {
+        roomDetails = s;
     }
 
     public void addDoor(String description) {

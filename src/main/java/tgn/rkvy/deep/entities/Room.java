@@ -3,16 +3,19 @@ package tgn.rkvy.deep.entities;
 public class Room implements Sceneable {
 
     private final Point point;
-    private final String shortText;
+    private final String title;
+    private final String details;
 
-    public Room(Point point, String shortText) {
+    public Room(Point point, String title, String details) {
         this.point = point;
-        this.shortText = shortText;
+        this.title = title;
+        this.details = details;
     }
 
     @Override
     public void processScene(Scene scene) {
-        scene.setRoomTitle(shortText);
+        scene.setRoomTitle(title);
+        scene.setRoomDetails(details);
     }
 
     public Point getPoint() {

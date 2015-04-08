@@ -22,7 +22,7 @@ class SettingJsonParser {
                 JSONObject settingJsonObject = settingsJsonArray.optJSONObject(settingIndex);
                 final Setting setting = parseSetting(settingJsonObject);
                 onParsedListener.onSetting(setting);
-                parseLocations(settingJsonObject, setting);
+                parseLocations(settingJsonObject, setting.getPoint());
                 parseEvents(settingJsonObject, setting);
                 parseTeleport(settingJsonObject, setting);
             }
@@ -49,24 +49,24 @@ class SettingJsonParser {
         }
     }
 
-    private void parseLocations(JSONObject settingJsonObject, Setting setting) {
+    private void parseLocations(JSONObject settingJsonObject, Point settingPoint) {
         JSONArray locationsJsonArray = settingJsonObject.optJSONArray("locations");
         if (locationsJsonArray != null) {
             for (int locationIndex = 0; locationIndex < locationsJsonArray.length(); locationIndex++) {
                 JSONObject locationJsonObject = locationsJsonArray.optJSONObject(locationIndex);
-                final Location location = parseLocation(setting, locationJsonObject);
+                final Location location = parseLocation(settingPoint, locationJsonObject);
                 onParsedListener.onLocation(location);
                 JSONArray roomsJsonArray = locationJsonObject.optJSONArray("rooms");
-                parseRooms(roomsJsonArray, setting, location);
+                parseRooms(roomsJsonArray, location.getPoint());
             }
         }
     }
 
-    private void parseRooms(JSONArray roomsJsonArray, Setting setting, Location location) {
+    private void parseRooms(JSONArray roomsJsonArray, Point locationPoint) {
         if (roomsJsonArray != null) {
             for (int i = 0; i < roomsJsonArray.length(); i++) {
                 JSONObject roomJsonObject = roomsJsonArray.optJSONObject(i);
-                Room room = parseRoom(roomJsonObject, setting, location);
+                Room room = parseRoom(roomJsonObject, locationPoint);
                 onParsedListener.onRoom(room);
                 JSONArray doorsJsonArray = roomJsonObject.optJSONArray("doors");
                 if (doorsJsonArray != null) {
@@ -80,11 +80,12 @@ class SettingJsonParser {
         }
     }
 
-    private Room parseRoom(JSONObject roomJsonObject, Setting setting, Location location) {
-        String roomId = roomJsonObject.optString("room_id");
-        String shortText = roomJsonObject.optString("short");
-        Point p = location.getPoint().copyRoom(roomId);
-        Room room = new Room(p, shortText);
+    private Room parseRoom(JSONObject roomJsonObject, Point locationPoint) {
+        String roomId = roomJsonObject.optString("id");
+        String title = roomJsonObject.optString("title");
+        String details = roomJsonObject.optString("details");
+        Point point = locationPoint.copyRoom(roomId);
+        Room room = new Room(point, title, details);
         return room;
     }
 
@@ -100,23 +101,24 @@ class SettingJsonParser {
         }
     }
 
-    private Location parseLocation(Setting setting, JSONObject jsonObject) {
+    private Location parseLocation(Point settingPoint, JSONObject jsonObject) {
         String locationId = jsonObject.optString("id");
-        Point point = setting.getPoint().copyLocation(locationId);
+        Point point = settingPoint.copyLocation(locationId);
         String locationTitle = jsonObject.optString("title");
-        String locationDescription = jsonObject.optString("description");
-        return new Location(point, locationTitle, locationDescription);
+        return new Location(point, locationTitle);
     }
 
     private List<CommandableEntity.CommandPattern> parseCommandPattenrs(JSONObject jsonObject) {
         List<CommandableEntity.CommandPattern> result = new ArrayList<>();
         JSONArray commandsJsonArray = jsonObject.optJSONArray("commands");
-        for (int i = 0; i < commandsJsonArray.length(); i++) {
-            JSONObject commandJsonObject = commandsJsonArray.optJSONObject(i);
-            String id = commandJsonObject.optString("id");
-            String action = commandJsonObject.optString("action");
-            CommandableEntity.CommandPattern commandPattern = new CommandableEntity.CommandPattern(id, action);
-            result.add(commandPattern);
+        if (commandsJsonArray != null) {
+            for (int i = 0; i < commandsJsonArray.length(); i++) {
+                JSONObject commandJsonObject = commandsJsonArray.optJSONObject(i);
+                String id = commandJsonObject.optString("id");
+                String action = commandJsonObject.optString("action");
+                CommandableEntity.CommandPattern commandPattern = new CommandableEntity.CommandPattern(id, action);
+                result.add(commandPattern);
+            }
         }
         return result;
     }
@@ -125,17 +127,15 @@ class SettingJsonParser {
         String destinationSettingId = jsonObject.optString("setting_id");
         String destinationLocationId = jsonObject.optString("location_id");
         String destinationRoomId = jsonObject.optString("room_id");
-        Point destinationPoint = sourcePoint.copy(destinationSettingId, destinationLocationId, destinationLocationId);
+        Point destinationPoint = sourcePoint.copy(destinationSettingId, destinationLocationId, destinationRoomId);
 
-        String doorShortText = jsonObject.optString("short");
-        String doorLongText = jsonObject.optString("long");
-        JSONArray commandIdsJsonArray = jsonObject.optJSONArray("commands");
-        String[] commandIds = Utils.jsonArrayToStringArray(commandIdsJsonArray);
+        String doorTitle = jsonObject.optString("title");
+        String doorDetails = jsonObject.optString("details");
         JSONArray aliasesJsonArray = jsonObject.optJSONArray("aliases");
         String[] aliases = Utils.jsonArrayToStringArray(aliasesJsonArray);
         List<CommandableEntity.CommandPattern> commandPatterns = parseCommandPattenrs(jsonObject);
 
-        return new Door(aliases, sourcePoint, destinationPoint, doorShortText, commandIds, commandPatterns);
+        return new Door(aliases, sourcePoint, destinationPoint, doorTitle, doorDetails, commandPatterns);
     }
 
 

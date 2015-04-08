@@ -7,16 +7,12 @@ public class Door extends CommandableEntity implements Sceneable {
 
     private final Point sourcePoint;
     private final Point destinationPoint;
-    private final String description;
-    private final String[] commandIds;
     private String tag;
 
-    public Door(String[] aliases, Point sourcePoint, Point destinationPoint, String description, String[] commandIds, List<CommandPattern> commandPatterns) {
-        super(aliases, description, commandPatterns);
+    public Door(String[] aliases, Point sourcePoint, Point destinationPoint, String title, String details, List<CommandPattern> commandPatterns) {
+        super(aliases, title, details, commandPatterns);
         this.sourcePoint = sourcePoint;
         this.destinationPoint = destinationPoint;
-        this.description = description;
-        this.commandIds = commandIds;
     }
 
     public Point getSourcePoint() {
@@ -29,7 +25,7 @@ public class Door extends CommandableEntity implements Sceneable {
 
     @Override
     public void processScene(Scene scene) {
-        scene.addDoor(description);
+        scene.addDoor(getTitle());
     }
 
     public String getTag() {
@@ -37,7 +33,7 @@ public class Door extends CommandableEntity implements Sceneable {
     }
 
     public Door copyWithTag(String tag) {
-        Door door = new Door(getAliases(), sourcePoint, destinationPoint, description, commandIds, getCommandPatterns());
+        Door door = new Door(getAliases(), sourcePoint, destinationPoint, getTitle(), getDetails(), getCommandPatterns());
         door.tag = tag;
         return door;
     }

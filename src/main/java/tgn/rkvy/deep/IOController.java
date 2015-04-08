@@ -19,11 +19,12 @@ public class IOController {
         }
     }
 
-    public void outln(List<String> list) {
+    public void outln(List<String> list, String start, String separator, String end) {
         boolean lastIsEmpty = true;
+        System.out.print(start);
         for (String s : list) {
             if (!lastIsEmpty) {
-                System.out.print(" ");
+                System.out.print(separator);
             }
             if (s != null && !s.isEmpty()) {
                 System.out.print(s);
@@ -32,6 +33,7 @@ public class IOController {
                 lastIsEmpty = true;
             }
         }
+        System.out.print(end);
         System.out.println();
     }
 

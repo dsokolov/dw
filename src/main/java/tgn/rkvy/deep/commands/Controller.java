@@ -33,6 +33,7 @@ public class Controller {
     private List<Event> currentEvents;
     private List<Door> currentDoors;
     private Teleport currentTeleport;
+    private Scene currentScene;
     //
     private CommandProcessor commandProcessor = new CommandProcessor(new CommandProcessor.Source() {
         @Override
@@ -63,7 +64,8 @@ public class Controller {
 
     public Controller() {
         //setCurrentTag(seedSource.getStartTag());
-        setIds(new Point("F", "1", "0"));
+        //setIds(new Point("F", "1", "0"));
+        setIds(new Point("sandbox", "A", "1"));
     }
 
     public boolean isWorking() {
@@ -105,15 +107,17 @@ public class Controller {
                     }
                     break;
             }
-            renderCurrentScene();
+            fillCurrentScene();
+            renderCurrentSceneShort();
             shouldReloadScene = false;
         }
     }
 
-    public void renderCurrentScene() {
+    private void fillCurrentScene() {
         List<Sceneable> sceneableList = new ArrayList<>();
         sceneableList.add(currentSetting);
         sceneableList.add(currentLocation);
+        sceneableList.add(currentRoom);
         if (currentEvents.size() > 0) {
             sceneableList.addAll(currentEvents);
         }
@@ -124,11 +128,19 @@ public class Controller {
             sceneableList.add(currentTeleport);
         }
 
-        Scene scene = new Scene(this.ioController);
+        currentScene = new Scene(this.ioController);
         for (Sceneable sceneable : sceneableList) {
-            sceneable.processScene(scene);
+            sceneable.processScene(currentScene);
         }
-        scene.render();
+    }
+
+    public void renderCurrentSceneShort() {
+        currentScene.renderTitle();
+        currentScene.renderDoors();
+    }
+
+    public void renderCurrentSceneLong(String elseText) {
+        currentScene.renderDetails(elseText);
     }
 
     public void processCommand() {

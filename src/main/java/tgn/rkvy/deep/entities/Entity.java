@@ -3,25 +3,25 @@ package tgn.rkvy.deep.entities;
 public abstract class Entity {
 
     private final String[] aliases;
-    private final String shortText;
-    private final String longText;
+    private final String title;
+    private final String details;
 
     public Entity(String[] aliases) {
         this.aliases = aliases;
-        this.shortText = null;
-        this.longText = null;
+        this.title = null;
+        this.details = null;
     }
 
-    public Entity(String[] aliases, String shortText) {
+    public Entity(String[] aliases, String title) {
         this.aliases = aliases;
-        this.shortText = shortText;
-        this.longText = null;
+        this.title = title;
+        this.details = null;
     }
 
-    public Entity(String[] aliases, String shortText, String longText) {
+    public Entity(String[] aliases, String title, String details) {
         this.aliases = aliases;
-        this.shortText = shortText;
-        this.longText = longText;
+        this.title = title;
+        this.details = details;
     }
 
     public Alias getSuitableAlias(String alias) {
@@ -39,19 +39,18 @@ public abstract class Entity {
         return aliases;
     }
 
-    public String getShortText() {
-        return shortText;
+    public String getTitle() {
+        return title;
     }
 
-    public String getLongText() {
-        return longText;
+    public String getDetails() {
+        return details;
     }
 
     public static class Alias {
 
         private final String alias;
         private final Entity entity;
-        private String description;
 
         public Alias(String alias, Entity entity) {
             this.alias = alias;

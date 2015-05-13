@@ -1,0 +1,27 @@
+{
+  "rooms": [
+    {
+      "coords": [
+        0,
+        0,
+        0
+      ],
+      "title": "Центральная комната",
+      "description": "Центральная комната песочницы",
+      "doors": [
+        {
+          "direction":"n"
+        },
+        {
+          "direction":"e"
+        },
+        {
+          "direction":"s"
+        },
+        {
+          "direction":"w"
+        }
+      ]
+    }
+  ]
+}

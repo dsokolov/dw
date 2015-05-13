@@ -56,6 +56,7 @@ public class App {
                 System.out.println("Вы не можете идти в эиом направлении.");
             } else {
                 App.this.coord.add(door.getCoord());
+                roomDescriptionVisible = true;
             }
         }
 
@@ -72,11 +73,11 @@ public class App {
         commands.add(new DefaultMoveCommand());
         commands.add(new LookCommand());
 
-        rooms.add(new Room(Coord.xy(0, 0), "Начальная комната", "Начальная комната", new Door[]{Door.north(), Door.east(), Door.south(), Door.west()}));
-        rooms.add(new Room(Coord.xy(1, 0), "Восточная комната", "Восточная комната", new Door[]{Door.west()}));
-        rooms.add(new Room(Coord.xy(-1, 0), "Западная комната", "Западная комната", new Door[]{Door.east()}));
-        rooms.add(new Room(Coord.xy(0, 1), "Северная комната", "Северная комната", new Door[]{Door.south()}));
-        rooms.add(new Room(Coord.xy(0, -1), "Южная комната", "Южная комната", new Door[]{Door.north()}));
+        rooms.add(new Room(Coord.xy(0, 0), "Начальная комната", "Начальная комната", new Door[]{Door.north(), Door.east(), Door.south(), Door.west()}, new Item[]{new Item("мяч", "Небольшой резиновый мяч.")}));
+        rooms.add(new Room(Coord.xy(1, 0), "Восточная комната", "Восточная комната", new Door[]{Door.west()}, new Item[]{}));
+        rooms.add(new Room(Coord.xy(-1, 0), "Западная комната", "Западная комната", new Door[]{Door.east()}, new Item[]{}));
+        rooms.add(new Room(Coord.xy(0, 1), "Северная комната", "Северная комната", new Door[]{Door.south()}, new Item[]{}));
+        rooms.add(new Room(Coord.xy(0, -1), "Южная комната", "Южная комната", new Door[]{Door.north()}, new Item[]{}));
     }
 
     public void run() {
@@ -85,19 +86,10 @@ public class App {
             currentRoom = rooms.stream().filter(room -> room.getCoord().equals(coord)).findFirst().get();
             if (roomDescriptionVisible) {
                 System.out.println(currentRoom.getTitle());
-                Door[] roomDoors = currentRoom.getDoors();
-                StringBuilder doorsStringBuilder = new StringBuilder();
-                boolean first = true;
-                for (Door roomDoor : roomDoors) {
-                    if (first) {
-                        first = false;
-                    } else {
-                        doorsStringBuilder.append(" ");
-                    }
-                    String s = String.format("[%s]", roomDoor.getDirectionTitle());
-                    doorsStringBuilder.append(s);
-                }
-                System.out.println(doorsStringBuilder.toString());
+
+                displayDoors();
+                displayItems();
+
                 roomDescriptionVisible = false;
             }
             final String input = readConsole().toLowerCase().trim();
@@ -108,12 +100,49 @@ public class App {
                     System.out.println("неправильный ввод");
                     break;
                 case 1:
-                    actions.get(0).getOnExecute().onExecute(controller);
+                    actions.get(0).execute(controller);
                     break;
                 default:
                     System.out.println("неопределённый ввод");
             }
         }
+    }
+
+    private void displayItems() {
+        Item[] roomItems = currentRoom.getItems();
+        StringBuilder itemsStringBuilder = new StringBuilder();
+        if (roomItems.length > 0) {
+            itemsStringBuilder.append("Предметы: ");
+            boolean first = true;
+            for (Item roomItem : roomItems) {
+                if (first) {
+                    first = false;
+                } else {
+                    itemsStringBuilder.append(", ");
+                }
+                itemsStringBuilder.append(roomItem.getTitle());
+            }
+            itemsStringBuilder.append(".");
+            System.out.println(itemsStringBuilder.toString());
+        }
+    }
+
+    private void displayDoors() {
+        Door[] roomDoors = currentRoom.getDoors();
+        StringBuilder doorsStringBuilder = new StringBuilder();
+        if (roomDoors.length > 0) {
+            doorsStringBuilder.append("Выходы: ");
+            boolean first = true;
+            for (Door roomDoor : roomDoors) {
+                if (first) {
+                    first = false;
+                } else {
+                    doorsStringBuilder.append(" ");
+                }
+                doorsStringBuilder.append(roomDoor.getDirectionTitle());
+            }
+        }
+        System.out.println(doorsStringBuilder.toString());
     }
 
 }

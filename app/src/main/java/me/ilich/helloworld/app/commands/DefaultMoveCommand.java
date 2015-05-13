@@ -8,33 +8,33 @@ import java.util.List;
 public class DefaultMoveCommand extends Command {
 
     @Override
-    protected void onPreparePatterns(List<Action> patterns) {
+    protected void onPreparePatterns(List<Case> cases) {
         ExecuteMoveAction north = new ExecuteMoveAction(Coord.north());
         ExecuteMoveAction northEast = new ExecuteMoveAction(Coord.xy(1, 1));
-        ExecuteMoveAction east = new ExecuteMoveAction(Coord.xy(1, 0));
+        ExecuteMoveAction east = new ExecuteMoveAction(Coord.east());
         ExecuteMoveAction southEast = new ExecuteMoveAction(Coord.xy(1, -1));
-        ExecuteMoveAction south = new ExecuteMoveAction(Coord.xy(0, -1));
+        ExecuteMoveAction south = new ExecuteMoveAction(Coord.south());
         ExecuteMoveAction southWest = new ExecuteMoveAction(Coord.xy(-1, -1));
-        ExecuteMoveAction west = new ExecuteMoveAction(Coord.xy(-1, 0));
+        ExecuteMoveAction west = new ExecuteMoveAction(Coord.west());
         ExecuteMoveAction northWest = new ExecuteMoveAction(Coord.xy(-1, 1));
 
-        patterns.add(new Action("с", north));
-        patterns.add(new Action("св", northEast));
-        patterns.add(new Action("в", east));
-        patterns.add(new Action("юв", southEast));
-        patterns.add(new Action("ю", south));
-        patterns.add(new Action("юз", southWest));
-        patterns.add(new Action("з", west));
-        patterns.add(new Action("сз", northWest));
+        cases.add(new Case("n", north));
+        cases.add(new Case("ne", northEast));
+        cases.add(new Case("e", east));
+        cases.add(new Case("se", southEast));
+        cases.add(new Case("s", south));
+        cases.add(new Case("sw", southWest));
+        cases.add(new Case("w", west));
+        cases.add(new Case("nw", northWest));
 
-        patterns.add(new Action("n", north));
-        patterns.add(new Action("ne", northEast));
-        patterns.add(new Action("e", east));
-        patterns.add(new Action("se", southEast));
-        patterns.add(new Action("s", south));
-        patterns.add(new Action("sw", southWest));
-        patterns.add(new Action("w", west));
-        patterns.add(new Action("nw", northWest));
+        cases.add(new Case("с", north));
+        cases.add(new Case("св", northEast));
+        cases.add(new Case("в", east));
+        cases.add(new Case("юв", southEast));
+        cases.add(new Case("ю", south));
+        cases.add(new Case("юз", southWest));
+        cases.add(new Case("з", west));
+        cases.add(new Case("сз", northWest));
     }
 
     private class ExecuteMoveAction implements Action.OnExecute {
@@ -46,7 +46,7 @@ public class DefaultMoveCommand extends Command {
         }
 
         @Override
-        public void onExecute(Controller controller) {
+        public void onExecute(Controller controller, String[] params) {
             controller.tryMoveBy(coord);
         }
 

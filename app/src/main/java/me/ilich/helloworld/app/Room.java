@@ -6,12 +6,14 @@ public class Room {
     private final String title;
     private final String description;
     private final Door[] doors;
+    private final Item[] items;
 
-    public Room(Coord coord, String title, String description, Door[] doors) {
+    public Room(Coord coord, String title, String description, Door[] doors, Item[] items) {
         this.coord = coord;
         this.title = title;
         this.description = description;
         this.doors = doors;
+        this.items = items;
     }
 
 
@@ -34,5 +36,9 @@ public class Room {
 
     public String getTitle() {
         return title;
+    }
+
+    public Item[] getItems() {
+        return items;
     }
 }

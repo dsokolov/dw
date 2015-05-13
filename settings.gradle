@@ -1,2 +1,3 @@
 rootProject.name = 'dw'
+include ':app', ':old'
 

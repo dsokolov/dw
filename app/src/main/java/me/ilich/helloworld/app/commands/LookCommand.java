@@ -5,12 +5,12 @@ import java.util.List;
 public class LookCommand extends Command {
 
     @Override
-    protected void onPreparePatterns(List<Action> patterns) {
-        Action.OnExecute lookOnExecute = controller -> {
+    protected void onPreparePatterns(List<Case> cases) {
+        Action.OnExecute lookOnExecute = (controller, params) -> {
             controller.showRoomDescription();
         };
-        patterns.add(new Action("look", lookOnExecute));
-        patterns.add(new Action("look ([\\w\\s]*)", lookOnExecute));
+        cases.add(new Case("look", lookOnExecute));
+        cases.add(new Case("look ([\\w\\s]*)", lookOnExecute));
     }
 
 }

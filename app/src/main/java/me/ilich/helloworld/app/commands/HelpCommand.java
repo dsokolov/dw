@@ -5,11 +5,13 @@ import java.util.List;
 public class HelpCommand extends Command {
 
     @Override
-    protected void onPreparePatterns(List<Action> patterns) {
-        Action.OnExecute action = controller -> System.out.println("здесь справка");
-        patterns.add(new Action("помощь", action));
-        patterns.add(new Action("help", action));
-        patterns.add(new Action("\\?", action));
+    protected void onPreparePatterns(List<Case> cases) {
+        Action.OnExecute action = (controller, params) -> {
+            System.out.println("здесь справка");
+        };
+        cases.add(new Case("help", action));
+        cases.add(new Case("\\?", action));
+        cases.add(new Case("помощь", action));
     }
 
 }

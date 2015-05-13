@@ -5,9 +5,10 @@ import java.util.List;
 public class ExitCommand extends Command {
 
     @Override
-    protected void onPreparePatterns(List<Action> patterns) {
-        Action.OnExecute onExecute = controller -> controller.stop();
-        patterns.add(new Action("выход", onExecute));
-        patterns.add(new Action("exit", onExecute));
+    protected void onPreparePatterns(List<Case> cases) {
+        Action.OnExecute onExecute = (controller, params) -> controller.stop();
+        cases.add(new Case("exit", onExecute));
+        cases.add(new Case("выход", onExecute));
     }
+
 }

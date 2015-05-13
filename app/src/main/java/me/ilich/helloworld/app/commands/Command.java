@@ -37,7 +37,7 @@ public abstract class Command {
         private final Action.OnExecute onExecute;
 
         public Case(String pattern, Action.OnExecute onExecute) {
-            this.pattern = Pattern.compile(pattern);
+            this.pattern = Pattern.compile(pattern, Pattern.UNICODE_CHARACTER_CLASS);
             this.onExecute = onExecute;
         }
 
@@ -48,6 +48,7 @@ public abstract class Command {
         public Action createAction(String[] params) {
             return new Action(params, onExecute);
         }
+
     }
 
 }

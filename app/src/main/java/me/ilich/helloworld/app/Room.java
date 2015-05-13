@@ -1,19 +1,23 @@
 package me.ilich.helloworld.app;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class Room {
 
     private final Coord coord;
     private final String title;
     private final String description;
-    private final Door[] doors;
-    private final Item[] items;
+    private final List<Door> doors = new ArrayList<>();
+    private final List<Item> items = new ArrayList<>();
 
     public Room(Coord coord, String title, String description, Door[] doors, Item[] items) {
         this.coord = coord;
         this.title = title;
         this.description = description;
-        this.doors = doors;
-        this.items = items;
+        this.doors.addAll(Arrays.asList(doors));
+        this.items.addAll(Arrays.asList(items));
     }
 
 
@@ -30,7 +34,7 @@ public class Room {
         return coord + " " + description;
     }
 
-    public Door[] getDoors() {
+    public List<Door> getDoors() {
         return doors;
     }
 
@@ -38,7 +42,8 @@ public class Room {
         return title;
     }
 
-    public Item[] getItems() {
+    public List<Item> getItems() {
         return items;
     }
+
 }

@@ -1,7 +1,7 @@
 package me.ilich.helloworld.app.commands;
 
-import me.ilich.helloworld.app.Item;
-import me.ilich.helloworld.app.Room;
+import me.ilich.helloworld.app.entities.Item;
+import me.ilich.helloworld.app.entities.Room;
 
 import java.util.List;
 
@@ -15,13 +15,13 @@ public class DropCommand extends Command {
             if (aItem == null) {
                 System.out.println(String.format("У вас нет %s.", params[0]));
             } else {
+                aItem.onMove(controller.getInventory(), room.getItems());
                 System.out.println(String.format("Вы выбросили %s.", aItem.getTitle()));
-                controller.getInventory().remove(aItem);
-                room.getItems().add(aItem);
             }
         };
 
         cases.add(new Case("drop ([\\w\\s]*)", oneParam));
+        cases.add(new Case("бр ([\\w\\s]*)", oneParam));
     }
 
 }

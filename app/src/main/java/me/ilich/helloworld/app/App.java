@@ -1,6 +1,12 @@
 package me.ilich.helloworld.app;
 
 import me.ilich.helloworld.app.commands.*;
+import me.ilich.helloworld.app.datasource.DataSource;
+import me.ilich.helloworld.app.datasource.HardcodeDataSource;
+import me.ilich.helloworld.app.entities.Coord;
+import me.ilich.helloworld.app.entities.Door;
+import me.ilich.helloworld.app.entities.Item;
+import me.ilich.helloworld.app.entities.Room;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -11,7 +17,6 @@ import java.util.List;
 public class App {
 
     private static List<Command> commands = new ArrayList<>();
-    private static List<Room> rooms = new ArrayList<>();
 
     static {
         commands.add(new ExitCommand());
@@ -21,14 +26,7 @@ public class App {
         commands.add(new DestroyCommand());
         commands.add(new PickUpCommand());
         commands.add(new DropCommand());
-    }
-
-    static {
-        rooms.add(new Room(Coord.xy(0, 0), "Начальная комната", "Начальная комната", new Door[]{Door.north(), Door.east(), Door.south(), Door.west()}, new Item[]{new Item("мяч", "Небольшой резиновый мяч.")}));
-        rooms.add(new Room(Coord.xy(1, 0), "Восточная комната", "Восточная комната", new Door[]{Door.west()}, new Item[]{}));
-        rooms.add(new Room(Coord.xy(-1, 0), "Западная комната", "Западная комната", new Door[]{Door.east()}, new Item[]{}));
-        rooms.add(new Room(Coord.xy(0, 1), "Северная комната", "Северная комната", new Door[]{Door.south()}, new Item[]{}));
-        rooms.add(new Room(Coord.xy(0, -1), "Южная комната", "Южная комната", new Door[]{Door.north()}, new Item[]{}));
+        commands.add(new InventoryCommand());
     }
 
     public static void main(String... args) {
@@ -48,6 +46,8 @@ public class App {
         }
         return result;
     }
+
+    private DataSource dataSource = new HardcodeDataSource();
 
     private final List<Item> inventory = new ArrayList<>();
 
@@ -73,7 +73,7 @@ public class App {
                 }
             }
             if (door == null) {
-                System.out.println("Вы не можете идти в эиом направлении.");
+                System.out.println("Вы не можете идти в этом направлении.");
             } else {
                 App.this.coord.add(door.getCoord());
                 roomDescriptionVisible = true;
@@ -97,20 +97,13 @@ public class App {
 
     };
 
-    public App() {
-
-    }
-
     public void run() {
-
         while (working) {
-            currentRoom = rooms.stream().filter(room -> room.getCoord().equals(coord)).findFirst().get();
+            currentRoom = dataSource.getRooms().stream().filter(room -> room.getCoord().equals(coord)).findFirst().get();
             if (roomDescriptionVisible) {
-                System.out.println(currentRoom.getTitle());
-
-                displayDoors();
+                displayRoom();
                 displayItems();
-
+                displayDoors();
                 roomDescriptionVisible = false;
             }
             final String input = readConsole().toLowerCase().trim();
@@ -127,6 +120,10 @@ public class App {
                     System.out.println("неопределённый ввод");
             }
         }
+    }
+
+    private void displayRoom() {
+        System.out.println(currentRoom.getTitle());
     }
 
     private void displayItems() {

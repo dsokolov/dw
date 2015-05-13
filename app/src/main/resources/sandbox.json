@@ -1,25 +1,57 @@
 {
-  "rooms": [
+  "settings": [
     {
-      "coords": [
-        0,
-        0,
-        0
-      ],
-      "title": "Центральная комната",
-      "description": "Центральная комната песочницы",
-      "doors": [
+      "rooms": [
         {
-          "direction":"n"
+          "coords": [
+            0,
+            0,
+            0
+          ],
+          "title": "Центральная комната",
+          "description": "Центральная комната песочницы",
+          "doors": [
+            {
+              "direction": "n"
+            },
+            {
+              "direction": "e"
+            },
+            {
+              "direction": "s"
+            },
+            {
+              "direction": "w"
+            }
+          ]
         },
         {
-          "direction":"e"
+          "coords": [
+            0,
+            1,
+            0
+          ],
+          "title": "Северная комната",
+          "description": "Здесь прохладно.",
+          "doors": [
+            {
+              "direction": "s"
+            }
+          ]
         },
         {
-          "direction":"s"
-        },
-        {
-          "direction":"w"
+          "coords": [
+            1,
+            0,
+            0
+          ],
+          "title": "Восточная комната",
+          "description": "Лучи восходящего солнца проникают в комнату через окно.",
+          "doors": [
+            {
+              "direction": "w"
+            }
+          ]
         }
       ]
     }

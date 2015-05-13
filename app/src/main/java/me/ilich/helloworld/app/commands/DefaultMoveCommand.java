@@ -1,7 +1,7 @@
 package me.ilich.helloworld.app.commands;
 
 import me.ilich.helloworld.app.Controller;
-import me.ilich.helloworld.app.Coord;
+import me.ilich.helloworld.app.entities.Coord;
 
 import java.util.List;
 

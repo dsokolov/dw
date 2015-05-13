@@ -1,4 +1,4 @@
-package me.ilich.helloworld.app;
+package me.ilich.helloworld.app.entities;
 
 public class Door {
 

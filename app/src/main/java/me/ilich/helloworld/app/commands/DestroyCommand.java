@@ -1,7 +1,7 @@
 package me.ilich.helloworld.app.commands;
 
-import me.ilich.helloworld.app.Item;
-import me.ilich.helloworld.app.Room;
+import me.ilich.helloworld.app.entities.Item;
+import me.ilich.helloworld.app.entities.Room;
 
 import java.util.List;
 

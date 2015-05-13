@@ -1,4 +1,4 @@
-package me.ilich.helloworld.app;
+package me.ilich.helloworld.app.entities;
 
 /**
  * Created by disokolov on 12.05.15.

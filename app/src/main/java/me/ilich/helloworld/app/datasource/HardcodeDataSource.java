@@ -14,8 +14,9 @@ public class HardcodeDataSource implements DataSource {
 
     static {
 
-        Item ball = new Item("мяч", "Небольшой резиновый мяч.");
-        Item box = new Item("ящик", "Вместительный деревянный ящик");
+        Item ball = new Item.Builder().title("мяч").description("Небольшой резиновый мяч.").pickable(true).containable(false).build();
+        Item note = new Item.Builder().title("записка").description("На клочке бумаги что-то написано.").pickable(true).containable(false).build();
+        Item box = new Item.Builder().title("ящик").description("Вместительный деревянный ящик").pickable(false).containable(true).item(note).build();
 
         rooms.add(new Room.Builder()
                 .coord(Coord.xy(0, 0))

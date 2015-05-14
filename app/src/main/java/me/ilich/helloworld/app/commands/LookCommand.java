@@ -9,8 +9,8 @@ public class LookCommand extends Command {
 
     @Override
     protected void onPreparePatterns(List<Case> cases) {
-        Action.OnExecute noParams =  (controller, params) -> controller.showRoomDescription();
-        Action.OnExecute oneParam =  (controller, params) -> {
+        Action.OnExecute noParams = (controller, params) -> controller.showRoomDescription();
+        Action.OnExecute oneParam = (controller, params) -> {
             Room room = controller.getCurrentRoom();
             Item aItem = room.getItems().stream().filter(item -> item.getTitle().equalsIgnoreCase(params[0])).findFirst().orElse(null);
             if (aItem == null) {
@@ -18,6 +18,17 @@ public class LookCommand extends Command {
             } else {
                 System.out.println("Вы осматриваете " + params[0] + ".");
                 System.out.println(aItem.getDescription());
+                if (aItem.isPickable()) {
+                    System.out.println(String.format("%s можно взять с собой.", aItem.getTitle()));
+                }
+                if (aItem.isContainable()) {
+                    if (aItem.getItems().size() == 0) {
+                        System.out.println(String.format("Внтури %s пусто.", aItem.getTitle()));
+                    } else {
+                        System.out.println(String.format("Внтури %s %s предметов:", aItem.getTitle(), aItem.getItems().size()));
+                        aItem.getItems().forEach(item -> System.out.println(item.getTitle()));
+                    }
+                }
             }
         };
 

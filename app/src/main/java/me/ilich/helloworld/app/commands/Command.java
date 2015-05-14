@@ -26,6 +26,7 @@ public abstract class Command {
                 }
                 Action action = aCase.createAction(params);
                 result.add(action);
+                break;
             }
         }
         return result;

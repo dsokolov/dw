@@ -25,6 +25,7 @@ public class App {
         commands.add(new LookCommand());
         commands.add(new DestroyCommand());
         commands.add(new PickUpCommand());
+        commands.add(new PutCommand());
         commands.add(new DropCommand());
         commands.add(new InventoryCommand());
     }

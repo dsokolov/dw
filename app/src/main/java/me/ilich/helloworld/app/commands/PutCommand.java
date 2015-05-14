@@ -7,6 +7,10 @@ import java.util.List;
 
 public class PutCommand extends Command {
 
+    public PutCommand() {
+        super("положить");
+    }
+
     @Override
     protected void onPreparePatterns(List<Case> cases) {
         Action.OnExecute oneParam = (controller, params) -> {

@@ -7,6 +7,10 @@ import java.util.List;
 
 public class PickUpCommand extends Command {
 
+    public PickUpCommand() {
+        super("взять");
+    }
+
     @Override
     protected void onPreparePatterns(List<Case> cases) {
         Action.OnExecute oneParam = (controller, params) -> {

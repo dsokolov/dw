@@ -7,6 +7,10 @@ import java.util.List;
 
 public class DestroyCommand extends Command {
 
+    public DestroyCommand() {
+        super("УНИЧТОЖИТЬ");
+    }
+
     @Override
     protected void onPreparePatterns(List<Case> cases) {
         Action.OnExecute oneParam = (controller, params) -> {

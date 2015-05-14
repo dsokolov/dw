@@ -7,6 +7,10 @@ import java.util.List;
 
 public class DropCommand extends Command {
 
+    public DropCommand() {
+        super("выбросить");
+    }
+
     @Override
     protected void onPreparePatterns(List<Case> cases) {
         Action.OnExecute oneParam = (controller, params) -> {
@@ -21,7 +25,7 @@ public class DropCommand extends Command {
         };
 
         cases.add(new Case("drop ([\\w\\s]*)", oneParam));
-        cases.add(new Case("бр ([\\w\\s]*)", oneParam));
+        cases.add(new Case("вбр ([\\w\\s]*)", oneParam));
     }
 
 }

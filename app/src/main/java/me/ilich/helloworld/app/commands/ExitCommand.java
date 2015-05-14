@@ -4,6 +4,10 @@ import java.util.List;
 
 public class ExitCommand extends Command {
 
+    public ExitCommand() {
+        super("выход");
+    }
+
     @Override
     protected void onPreparePatterns(List<Case> cases) {
         Action.OnExecute onExecute = (controller, params) -> controller.stop();

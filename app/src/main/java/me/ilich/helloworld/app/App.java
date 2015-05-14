@@ -96,6 +96,11 @@ public class App {
             return inventory;
         }
 
+        @Override
+        public List<Command> getCommands() {
+            return commands;
+        }
+
     };
 
     public void run() {

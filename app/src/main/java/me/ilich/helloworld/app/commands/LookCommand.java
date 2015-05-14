@@ -7,6 +7,10 @@ import java.util.List;
 
 public class LookCommand extends Command {
 
+    public LookCommand() {
+        super("смотреть");
+    }
+
     @Override
     protected void onPreparePatterns(List<Case> cases) {
         Action.OnExecute noParams = (controller, params) -> controller.showRoomDescription();

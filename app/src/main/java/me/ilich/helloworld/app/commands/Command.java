@@ -8,8 +8,16 @@ import java.util.regex.Pattern;
 public abstract class Command {
 
     private List<Case> cases = new ArrayList<>();
+    private final String title;
+    private final boolean hidden;
 
-    public Command() {
+    public Command(String title) {
+        this(title, false);
+    }
+
+    public Command(String title, boolean hidden) {
+        this.title = title;
+        this.hidden = hidden;
         onPreparePatterns(cases);
     }
 
@@ -30,6 +38,14 @@ public abstract class Command {
             }
         }
         return result;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public boolean isHidden() {
+        return hidden;
     }
 
     public class Case {

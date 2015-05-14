@@ -7,6 +7,10 @@ import java.util.List;
 
 public class DefaultMoveCommand extends Command {
 
+    public DefaultMoveCommand() {
+        super("ИДТИ", true);
+    }
+
     @Override
     protected void onPreparePatterns(List<Case> cases) {
         ExecuteMoveAction north = new ExecuteMoveAction(Coord.north());

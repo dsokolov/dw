@@ -4,6 +4,10 @@ import java.util.List;
 
 public class InventoryCommand extends Command {
 
+    public InventoryCommand() {
+        super("ИНВЕНТАРЬ");
+    }
+
     @Override
     protected void onPreparePatterns(List<Case> cases) {
         Action.OnExecute onExecute = (controller, params) -> {

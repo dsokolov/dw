@@ -2,39 +2,76 @@ package me.ilich.helloworld.app.entities;
 
 public class Door {
 
-    public static Door north() {
-        Door door = new Door(Coord.north(), "С");
-        return door;
+    public enum State {
+        OPEN,
+        CLOSE,
+        LOCKED
     }
 
-    public static Door west() {
-        Door door = new Door(Coord.west(), "З");
-        return door;
+    public enum Way {
+        AB,
+        BA,
+        BOTH
     }
 
-    public static Door south() {
-        Door door = new Door(Coord.south(), "Ю");
-        return door;
+    private Coord coordA;
+    private Coord coordB;
+    private String directionTitle;
+    private State state = State.OPEN;
+    private Way direction = Way.BOTH;
+
+    private Door() {
+
     }
 
-    public static Door east() {
-        Door door = new Door(Coord.east(), "В");
-        return door;
-    }
-
-    private final Coord coord;
-    private final String directionTitle;
-
-    private Door(Coord coord, String directionTitle) {
-        this.coord = coord;
-        this.directionTitle = directionTitle;
-    }
-
-    public Object getDirectionTitle() {
+    public String getDirectionTitle() {
         return directionTitle;
     }
 
-    public Coord getCoord() {
-        return coord;
+    public Coord getCoordA() {
+        return coordA;
     }
+
+    public Coord getCoordB() {
+        return coordB;
+    }
+
+    public State getState() {
+        return state;
+    }
+
+    public Way getDirection() {
+        return direction;
+    }
+
+    public static class Builder {
+
+        private Door door = new Door();
+
+        public Builder coordA(Coord c) {
+            door.coordA = c;
+            return this;
+        }
+
+        public Builder coordB(Coord c) {
+            door.coordB = c;
+            return this;
+        }
+
+        public Builder directionTitle(String s) {
+            door.directionTitle = s;
+            return this;
+        }
+
+        public Builder state(State state) {
+            door.state = state;
+            return this;
+        }
+
+        public Door create() {
+            return door;
+        }
+
+    }
+
 }

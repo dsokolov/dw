@@ -9,16 +9,7 @@ public class Room {
     private Coord coord;
     private String title;
     private String description;
-    private final List<Door> doors = new ArrayList<>();
     private final List<Item> items = new ArrayList<>();
-
-    public Room(Coord coord, String title, String description, Door[] doors, Item[] items) {
-        this.coord = coord;
-        this.title = title;
-        this.description = description;
-        this.doors.addAll(Arrays.asList(doors));
-        this.items.addAll(Arrays.asList(items));
-    }
 
     private Room() {
 
@@ -36,10 +27,6 @@ public class Room {
     @Override
     public String toString() {
         return coord + " " + description;
-    }
-
-    public List<Door> getDoors() {
-        return doors;
     }
 
     public String getTitle() {
@@ -66,11 +53,6 @@ public class Room {
 
         public Builder description(String s) {
             room.description = s;
-            return this;
-        }
-
-        public Builder door(Door door) {
-            room.doors.add(door);
             return this;
         }
 

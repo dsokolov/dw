@@ -11,7 +11,7 @@ public interface Controller {
 
     void stop();
 
-    void tryMoveBy(Coord coord);
+    void tryMoveTo(Coord coord);
 
     void showRoomDescription();
 
@@ -21,4 +21,5 @@ public interface Controller {
 
     List<Command> getCommands();
 
+    void tryMoveBy(Coord coord);
 }

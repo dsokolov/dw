@@ -1,6 +1,7 @@
 package me.ilich.helloworld.app;
 
 import me.ilich.helloworld.app.commands.*;
+import me.ilich.helloworld.app.data.AbsDirection;
 import me.ilich.helloworld.app.datasource.DataSource;
 import me.ilich.helloworld.app.datasource.HardcodeDataSource;
 import me.ilich.helloworld.app.entities.Coord;
@@ -52,7 +53,7 @@ public class App {
 
     private final List<Item> inventory = new ArrayList<>();
 
-    private Coord coord = Coord.zero();
+    private Coord currentCoord = Coord.zero();
     private boolean working = true;
     private boolean roomDescriptionVisible = true;
     private Room currentRoom = null;
@@ -65,19 +66,26 @@ public class App {
         }
 
         @Override
-        public void tryMoveBy(Coord coord) {
-            Door door = null;
-            for (Door currentDoor : currentRoom.getDoors()) {
-                if (currentDoor.getCoord().equals(coord)) {
-                    door = currentDoor;
-                    break;
-                }
-            }
+        public void tryMoveTo(Coord toCoord) {
+            Door door = dataSource.getDoor(currentCoord, toCoord);
             if (door == null) {
                 System.out.println("Вы не можете идти в этом направлении.");
             } else {
-                App.this.coord.add(door.getCoord());
-                roomDescriptionVisible = true;
+                switch (door.getState()) {
+                    case OPEN:
+                        if (currentCoord.equals(door.getCoordA())) {
+                            App.this.currentCoord.set(door.getCoordB());
+                        } else {
+                            App.this.currentCoord.set(door.getCoordA());
+                        }
+                        roomDescriptionVisible = true;
+                        break;
+                    case CLOSE:
+                        System.out.println("Дверь закрыта");
+                        break;
+                    case LOCKED:
+                        break;
+                }
             }
         }
 
@@ -101,11 +109,18 @@ public class App {
             return commands;
         }
 
+        @Override
+        public void tryMoveBy(Coord coord) {
+            Coord newCoord = Coord.coord(currentCoord);
+            newCoord.add(coord);
+            tryMoveTo(newCoord);
+        }
+
     };
 
     public void run() {
         while (working) {
-            currentRoom = dataSource.getRooms().stream().filter(room -> room.getCoord().equals(coord)).findFirst().get();
+            currentRoom = dataSource.getRoom(currentCoord);
             if (roomDescriptionVisible) {
                 displayRoom();
                 displayItems();
@@ -151,17 +166,43 @@ public class App {
     }
 
     private void displayDoors() {
+        List<Door> doors = dataSource.getDoorsFrom(currentCoord);
         StringBuilder doorsStringBuilder = new StringBuilder();
-        if (currentRoom.getDoors().size() > 0) {
+        if (doors.size() > 0) {
+            List<AbsDirection> directions = new ArrayList<>();
+            doors.forEach(item -> {
+                Coord coord = currentCoord.equals(item.getCoordA()) ? item.getCoordB() : item.getCoordA();
+                AbsDirection direction = currentCoord.getAngel(coord);
+                directions.add(direction);
+            });
+            directions.sort((o1, o2) -> o1.compareTo(o2));
             doorsStringBuilder.append("Выходы: ");
             final boolean[] first = {true};
-            currentRoom.getDoors().forEach(item -> {
+            directions.forEach(item -> {
                 if (first[0]) {
                     first[0] = false;
                 } else {
                     doorsStringBuilder.append(" ");
                 }
-                doorsStringBuilder.append(item.getDirectionTitle());
+
+                final String t;
+                switch (item) {
+                    case N:
+                        t = "С";
+                        break;
+                    case E:
+                        t = "В";
+                        break;
+                    case S:
+                        t = "Ю";
+                        break;
+                    case W:
+                        t = "З";
+                        break;
+                    default:
+                        t = "";
+                }
+                doorsStringBuilder.append(t);
             });
             System.out.println(doorsStringBuilder.toString());
         }

@@ -1,5 +1,7 @@
 package me.ilich.helloworld.app.entities;
 
+import me.ilich.helloworld.app.data.AbsDirection;
+
 /**
  * Created by disokolov on 12.05.15.
  */
@@ -33,6 +35,10 @@ public class Coord {
         return new Coord(x, y, z);
     }
 
+    public static Coord coord(Coord coord) {
+        return new Coord(coord.x, coord.y, coord.z);
+    }
+
     private int x = 0;
     private int y = 0;
     private int z = 0;
@@ -59,6 +65,43 @@ public class Coord {
         x += coord.x;
         y += coord.y;
         z += coord.z;
+    }
+
+    public void set(Coord coord) {
+        x = coord.x;
+        y = coord.y;
+        z = coord.z;
+    }
+
+
+    public AbsDirection getAngel(Coord coord) {
+        AbsDirection d;
+        if (x > coord.x) {
+            if (y > coord.y) {
+                d = AbsDirection.OTHER;
+            } else if (y < coord.y) {
+                d = AbsDirection.OTHER;
+            } else {
+                d = AbsDirection.W;
+            }
+        } else if (x < coord.x) {
+            if (y > coord.y) {
+                d = AbsDirection.OTHER;
+            } else if (y < coord.y) {
+                d = AbsDirection.OTHER;
+            } else {
+                d = AbsDirection.E;
+            }
+        } else {
+            if (y > coord.y) {
+                d = AbsDirection.S;
+            } else if (y < coord.y) {
+                d = AbsDirection.N;
+            } else {
+                d = AbsDirection.OTHER;
+            }
+        }
+        return d;
     }
 
     @Override

@@ -7,6 +7,12 @@ import me.ilich.helloworld.app.data.AbsDirection;
  */
 public class Coord {
 
+    public static Coord sum(Coord coordA, Coord coordB) {
+        Coord coord = Coord.coord(coordA);
+        coord.add(coordB);
+        return coord;
+    }
+
     public static Coord zero() {
         return new Coord(0, 0, 0);
     }

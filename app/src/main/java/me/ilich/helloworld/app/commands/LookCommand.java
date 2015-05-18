@@ -18,19 +18,19 @@ public class LookCommand extends Command {
             Room room = controller.getCurrentRoom();
             Item aItem = room.getItems().stream().filter(item -> item.getTitle().equalsIgnoreCase(params[0])).findFirst().orElse(null);
             if (aItem == null) {
-                System.out.println("Вы оглядываетесь вокруг в поисках " + params[0] + ".");
+                controller.println("Вы оглядываетесь вокруг в поисках " + params[0] + ".");
             } else {
-                System.out.println("Вы осматриваете " + params[0] + ".");
-                System.out.println(aItem.getDescription());
+                controller.println("Вы осматриваете " + params[0] + ".");
+                controller.println(aItem.getDescription());
                 if (aItem.isPickable()) {
-                    System.out.println(String.format("%s можно взять с собой.", aItem.getTitle()));
+                    controller.println(String.format("%s можно взять с собой.", aItem.getTitle()));
                 }
                 if (aItem.isContainable()) {
                     if (aItem.getItems().size() == 0) {
-                        System.out.println(String.format("Внтури %s пусто.", aItem.getTitle()));
+                        controller.println(String.format("Внтури %s пусто.", aItem.getTitle()));
                     } else {
-                        System.out.println(String.format("Внтури %s %s предметов:", aItem.getTitle(), aItem.getItems().size()));
-                        aItem.getItems().forEach(item -> System.out.println(item.getTitle()));
+                        controller.println(String.format("Внтури %s %s предметов:", aItem.getTitle(), aItem.getItems().size()));
+                        aItem.getItems().forEach(item -> controller.println(item.getTitle()));
                     }
                 }
             }

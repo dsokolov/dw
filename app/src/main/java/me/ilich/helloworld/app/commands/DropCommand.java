@@ -17,10 +17,10 @@ public class DropCommand extends Command {
             Room room = controller.getCurrentRoom();
             Item aItem = controller.getInventory().stream().filter(item -> item.getTitle().equalsIgnoreCase(params[0])).findFirst().orElse(null);
             if (aItem == null) {
-                System.out.println(String.format("У вас нет %s.", params[0]));
+                controller.println(String.format("У вас нет %s.", params[0]));
             } else {
                 aItem.onMove(controller.getInventory(), room.getItems());
-                System.out.println(String.format("Вы выбросили %s.", aItem.getTitle()));
+                controller.println(String.format("Вы выбросили %s.", aItem.getTitle()));
             }
         };
 

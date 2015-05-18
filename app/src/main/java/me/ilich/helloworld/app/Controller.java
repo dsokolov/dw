@@ -2,6 +2,7 @@ package me.ilich.helloworld.app;
 
 import me.ilich.helloworld.app.commands.Command;
 import me.ilich.helloworld.app.entities.Coord;
+import me.ilich.helloworld.app.entities.Door;
 import me.ilich.helloworld.app.entities.Item;
 import me.ilich.helloworld.app.entities.Room;
 
@@ -22,4 +23,10 @@ public interface Controller {
     List<Command> getCommands();
 
     void tryMoveBy(Coord coord);
+
+    void println(String s);
+
+    Coord getCurrentCoord();
+
+    Door getDoor(Coord coordFrom, Coord coordTo);
 }

@@ -17,9 +17,9 @@ public class DestroyCommand extends Command {
             Room room = controller.getCurrentRoom();
             Item aItem = room.getItems().stream().filter(item -> item.getTitle().equalsIgnoreCase(params[0])).findFirst().orElse(null);
             if (aItem == null) {
-                System.out.println("Не так легко уничтожить то, чего нет.");
+                controller.println("Не так легко уничтожить то, чего нет.");
             } else {
-                System.out.println("Не скрывая своего удовольствия, вы уничтожаете " + aItem.getTitle() + ".");
+                controller.println("Не скрывая своего удовольствия, вы уничтожаете " + aItem.getTitle() + ".");
                 room.getItems().remove(aItem);
             }
         };

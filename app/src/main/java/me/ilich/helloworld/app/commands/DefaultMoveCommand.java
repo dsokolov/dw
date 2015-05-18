@@ -15,6 +15,16 @@ public class DefaultMoveCommand extends Command {
         return actions.get(s);
     }
 
+    @Nullable
+    public static Coord getDirection(String s) {
+        Coord c = null;
+        ExecuteMoveAction a = actions.get(s);
+        if (a != null) {
+            c = a.coord;
+        }
+        return c;
+    }
+
     private static final String[] NORTH = {
             "север",
             "с",
@@ -52,7 +62,7 @@ public class DefaultMoveCommand extends Command {
     public static final ExecuteMoveAction MOVE_WEST = new ExecuteMoveAction(Coord.west());
     private static final ExecuteMoveAction northWest = new ExecuteMoveAction(Coord.xy(-1, 1));
 
-    private static Map<String, Action.OnExecute> actions = new HashMap<>();
+    private static Map<String, ExecuteMoveAction> actions = new HashMap<>();
 
     static {
         for (String s : NORTH) {

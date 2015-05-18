@@ -41,11 +41,11 @@ public class HardcodeDataSource implements DataSource {
         rooms.add(southRoom);
         rooms.add(warehous);
 
-        doors.add(new Door.Builder().coordA(centerRoom.getCoord()).coordB(eastRoom.getCoord()).directionTitle("1").create());
-        doors.add(new Door.Builder().coordA(centerRoom.getCoord()).coordB(westRoom.getCoord()).directionTitle("2").create());
-        doors.add(new Door.Builder().coordA(centerRoom.getCoord()).coordB(northRoom.getCoord()).directionTitle("3").create());
-        doors.add(new Door.Builder().coordA(centerRoom.getCoord()).coordB(southRoom.getCoord()).directionTitle("4").create());
-        doors.add(new Door.Builder().coordA(southRoom.getCoord()).coordB(warehous.getCoord()).directionTitle("5").create());
+        doors.add(new Door.Builder().coordA(centerRoom.getCoord()).coordB(eastRoom.getCoord()).create());
+        doors.add(new Door.Builder().coordA(centerRoom.getCoord()).coordB(westRoom.getCoord()).create());
+        doors.add(new Door.Builder().coordA(centerRoom.getCoord()).coordB(northRoom.getCoord()).state(Door.State.CLOSE).create());
+        doors.add(new Door.Builder().coordA(centerRoom.getCoord()).coordB(southRoom.getCoord()).create());
+        doors.add(new Door.Builder().coordA(southRoom.getCoord()).coordB(warehous.getCoord()).state(Door.State.CLOSE).create());
 
     }
 

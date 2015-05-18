@@ -1,5 +1,7 @@
 package me.ilich.helloworld.app.commands;
 
+import me.ilich.helloworld.app.Controller;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -50,11 +52,11 @@ public abstract class Command {
         return hidden;
     }
 
-    public void showHelp() {
-        System.out.println(String.format("*** %s ***", title));
-        System.out.println(help);
-        System.out.println("Формат:");
-        System.out.println("TODO");
+    public void showHelp(Controller controller) {
+        controller.println(String.format("*** %s ***", title));
+        controller.println(help);
+        controller.println("Формат:");
+        controller.println("TODO");
     }
 
     public class Case {

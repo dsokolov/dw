@@ -11,13 +11,13 @@ public class WalkCommand extends Command {
     @Override
     protected void onPreparePatterns(List<Case> cases) {
         Action.OnExecute noParams = (controller, params) -> {
-            System.out.println("Идти куда?");
+            controller.println("Идти куда?");
         };
         Action.OnExecute oneParam = (controller, params) -> {
             String param = params[0];
             Action.OnExecute onExecute = DefaultMoveCommand.getOnExecute(param);
             if (onExecute == null) {
-                System.out.println(String.format("Что такое %s?", param));
+                controller.println(String.format("Что такое %s?", param));
             } else {
                 onExecute.onExecute(controller, params);
             }

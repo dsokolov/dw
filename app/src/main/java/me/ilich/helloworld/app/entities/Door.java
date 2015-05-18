@@ -16,16 +16,11 @@ public class Door {
 
     private Coord coordA;
     private Coord coordB;
-    private String directionTitle;
     private State state = State.OPEN;
     private Way direction = Way.BOTH;
 
     private Door() {
 
-    }
-
-    public String getDirectionTitle() {
-        return directionTitle;
     }
 
     public Coord getCoordA() {
@@ -38,6 +33,10 @@ public class Door {
 
     public State getState() {
         return state;
+    }
+
+    public void setState(State state) {
+        this.state = state;
     }
 
     public Way getDirection() {
@@ -55,11 +54,6 @@ public class Door {
 
         public Builder coordB(Coord c) {
             door.coordB = c;
-            return this;
-        }
-
-        public Builder directionTitle(String s) {
-            door.directionTitle = s;
             return this;
         }
 

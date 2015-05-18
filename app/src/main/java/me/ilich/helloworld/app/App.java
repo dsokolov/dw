@@ -22,14 +22,20 @@ public class App {
     static {
         commands.add(new ExitCommand());
         commands.add(new HelpCommand());
+
         commands.add(new DefaultMoveCommand());
         commands.add(new WalkCommand());
+
+        commands.add(new OpenCommand());
+
         commands.add(new LookCommand());
+
+        commands.add(new InventoryCommand());
         commands.add(new DestroyCommand());
         commands.add(new PickUpCommand());
         commands.add(new PutCommand());
         commands.add(new DropCommand());
-        commands.add(new InventoryCommand());
+
     }
 
     public static void main(String... args) {
@@ -70,7 +76,7 @@ public class App {
         public void tryMoveTo(Coord toCoord) {
             Door door = dataSource.getDoor(currentCoord, toCoord);
             if (door == null) {
-                System.out.println("Вы не можете идти в этом направлении.");
+                controller.println("Вы не можете идти в этом направлении.");
             } else {
                 switch (door.getState()) {
                     case OPEN:
@@ -82,7 +88,7 @@ public class App {
                         roomDescriptionVisible = true;
                         break;
                     case CLOSE:
-                        System.out.println("Дверь закрыта");
+                        controller.println("Дверь закрыта");
                         break;
                     case LOCKED:
                         break;
@@ -117,6 +123,21 @@ public class App {
             tryMoveTo(newCoord);
         }
 
+        @Override
+        public void println(String s) {
+            System.out.println(s);
+        }
+
+        @Override
+        public Coord getCurrentCoord() {
+            return currentCoord;
+        }
+
+        @Override
+        public Door getDoor(Coord coordFrom, Coord coordTo) {
+            return dataSource.getDoor(coordFrom, coordTo);
+        }
+
     };
 
     public void run() {
@@ -133,19 +154,19 @@ public class App {
             commands.stream().forEach(command -> actions.addAll(command.suitableActions(input)));
             switch (actions.size()) {
                 case 0:
-                    System.out.println("неправильный ввод");
+                    controller.println("неправильный ввод");
                     break;
                 case 1:
                     actions.get(0).execute(controller);
                     break;
                 default:
-                    System.out.println("неопределённый ввод");
+                    controller.println("неопределённый ввод");
             }
         }
     }
 
     private void displayRoom() {
-        System.out.println(currentRoom.getTitle());
+        controller.println(currentRoom.getTitle());
     }
 
     private void displayItems() {
@@ -162,7 +183,7 @@ public class App {
                 itemsStringBuilder.append(item.getTitle());
             });
             itemsStringBuilder.append(".");
-            System.out.println(itemsStringBuilder.toString());
+            controller.println(itemsStringBuilder.toString());
         }
     }
 
@@ -205,7 +226,7 @@ public class App {
                 }
                 doorsStringBuilder.append(t);
             });
-            System.out.println(doorsStringBuilder.toString());
+            controller.println(doorsStringBuilder.toString());
         }
     }
 

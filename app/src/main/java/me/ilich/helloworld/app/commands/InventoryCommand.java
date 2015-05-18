@@ -5,7 +5,7 @@ import java.util.List;
 public class InventoryCommand extends Command {
 
     public InventoryCommand() {
-        super("ИНВЕНТАРЬ");
+        super("ИНВЕНТАРЬ", "Отображает содержимое инвентаря.");
     }
 
     @Override

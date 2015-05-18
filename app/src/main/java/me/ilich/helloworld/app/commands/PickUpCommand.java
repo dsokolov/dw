@@ -8,7 +8,7 @@ import java.util.List;
 public class PickUpCommand extends Command {
 
     public PickUpCommand() {
-        super("взять");
+        super("взять", "Премещает предмет в инвентарь, если это возможно.");
     }
 
     @Override

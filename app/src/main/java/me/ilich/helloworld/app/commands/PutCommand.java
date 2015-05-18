@@ -8,7 +8,7 @@ import java.util.List;
 public class PutCommand extends Command {
 
     public PutCommand() {
-        super("положить");
+        super("положить", "Перемещает предмет из инвентаря.");
     }
 
     @Override

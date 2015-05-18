@@ -8,7 +8,7 @@ import java.util.List;
 public class DestroyCommand extends Command {
 
     public DestroyCommand() {
-        super("УНИЧТОЖИТЬ");
+        super("УНИЧТОЖИТЬ", "Уничтожить предмет, если это возможно.");
     }
 
     @Override

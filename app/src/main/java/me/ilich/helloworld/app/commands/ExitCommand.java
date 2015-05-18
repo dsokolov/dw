@@ -5,7 +5,7 @@ import java.util.List;
 public class ExitCommand extends Command {
 
     public ExitCommand() {
-        super("выход");
+        super("выход", "Выход из игры.");
     }
 
     @Override

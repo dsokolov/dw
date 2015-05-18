@@ -8,7 +8,7 @@ import java.util.List;
 public class LookCommand extends Command {
 
     public LookCommand() {
-        super("смотреть");
+        super("смотреть", "Осмотреть предмет");
     }
 
     @Override

@@ -23,6 +23,7 @@ public class App {
         commands.add(new ExitCommand());
         commands.add(new HelpCommand());
         commands.add(new DefaultMoveCommand());
+        commands.add(new WalkCommand());
         commands.add(new LookCommand());
         commands.add(new DestroyCommand());
         commands.add(new PickUpCommand());
@@ -175,7 +176,7 @@ public class App {
                 AbsDirection direction = currentCoord.getAngel(coord);
                 directions.add(direction);
             });
-            directions.sort((o1, o2) -> o1.compareTo(o2));
+            directions.sort(Enum::compareTo);
             doorsStringBuilder.append("Выходы: ");
             final boolean[] first = {true};
             directions.forEach(item -> {

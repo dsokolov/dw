@@ -9,14 +9,16 @@ public abstract class Command {
 
     private List<Case> cases = new ArrayList<>();
     private final String title;
+    private final String help;
     private final boolean hidden;
 
-    public Command(String title) {
-        this(title, false);
+    public Command(String title, String help) {
+        this(title, help, false);
     }
 
-    public Command(String title, boolean hidden) {
+    public Command(String title, String help, boolean hidden) {
         this.title = title;
+        this.help = help;
         this.hidden = hidden;
         onPreparePatterns(cases);
     }
@@ -46,6 +48,13 @@ public abstract class Command {
 
     public boolean isHidden() {
         return hidden;
+    }
+
+    public void showHelp() {
+        System.out.println(String.format("*** %s ***", title));
+        System.out.println(help);
+        System.out.println("Формат:");
+        System.out.println("TODO");
     }
 
     public class Case {

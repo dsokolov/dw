@@ -8,7 +8,7 @@ import java.util.List;
 public class DropCommand extends Command {
 
     public DropCommand() {
-        super("выбросить");
+        super("выбросить", "Выбросить предмет себе под ноги.");
     }
 
     @Override

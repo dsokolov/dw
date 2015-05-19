@@ -1,11 +1,12 @@
 package me.ilich.helloworld.app.entities;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 public class Room {
 
+    private UUID id = UUID.randomUUID();
     private Coord coord;
     private String title;
     private String description;
@@ -15,6 +16,9 @@ public class Room {
 
     }
 
+    public UUID getId() {
+        return id;
+    }
 
     public Coord getCoord() {
         return coord;

@@ -4,10 +4,8 @@ import me.ilich.helloworld.app.commands.*;
 import me.ilich.helloworld.app.data.AbsDirection;
 import me.ilich.helloworld.app.datasource.DataSource;
 import me.ilich.helloworld.app.datasource.HardcodeDataSource;
-import me.ilich.helloworld.app.entities.Coord;
-import me.ilich.helloworld.app.entities.Door;
-import me.ilich.helloworld.app.entities.Item;
-import me.ilich.helloworld.app.entities.Room;
+import me.ilich.helloworld.app.entities.*;
+import me.ilich.helloworld.app.entities.primitives.Entity;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -139,6 +137,11 @@ public class App {
             return dataSource.getDoor(coordFrom, coordTo);
         }
 
+        @Override
+        public List<Entity> getCurrentRoomEntities() {
+            return dataSource.getChildEntities(currentRoom.getId());
+        }
+
     };
 
     public void run() {
@@ -168,6 +171,7 @@ public class App {
 
     private void displayRoom() {
         controller.println(currentRoom.getTitle());
+
     }
 
     private void displayItems() {

@@ -1,18 +1,19 @@
 package me.ilich.helloworld.app.datasource;
 
-import me.ilich.helloworld.app.entities.Coord;
-import me.ilich.helloworld.app.entities.Door;
-import me.ilich.helloworld.app.entities.Item;
-import me.ilich.helloworld.app.entities.Room;
+import me.ilich.helloworld.app.entities.*;
+import me.ilich.helloworld.app.entities.primitives.Entity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class HardcodeDataSource implements DataSource {
 
     private static final List<Room> rooms = new ArrayList<>();
     private static final List<Door> doors = new ArrayList<>();
+    private static final List<Entity> entities = new ArrayList<>();
 
     static {
 
@@ -46,6 +47,8 @@ public class HardcodeDataSource implements DataSource {
         doors.add(new Door.Builder().coordA(centerRoom.getCoord()).coordB(northRoom.getCoord()).state(Door.State.CLOSE).create());
         doors.add(new Door.Builder().coordA(centerRoom.getCoord()).coordB(southRoom.getCoord()).create());
         doors.add(new Door.Builder().coordA(southRoom.getCoord()).coordB(warehous.getCoord()).state(Door.State.CLOSE).create());
+
+        entities.add(new Decoration(UUID.randomUUID(), westRoom.getId(), "кнопка", "Описание кнопки", "На стене находится кнопка."));
 
     }
 
@@ -89,6 +92,11 @@ public class HardcodeDataSource implements DataSource {
             }
             return result;
         }).collect(Collectors.toCollection(ArrayList::new));
+    }
+
+    @Override
+    public List<Entity> getChildEntities(UUID parentId) {
+        return entities.stream().filter(entity -> Objects.equals(parentId, entity.getParentId())).collect(Collectors.toCollection(ArrayList::new));
     }
 
 }

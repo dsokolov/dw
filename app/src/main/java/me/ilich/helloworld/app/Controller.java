@@ -1,10 +1,8 @@
 package me.ilich.helloworld.app;
 
 import me.ilich.helloworld.app.commands.Command;
-import me.ilich.helloworld.app.entities.Coord;
-import me.ilich.helloworld.app.entities.Door;
-import me.ilich.helloworld.app.entities.Item;
-import me.ilich.helloworld.app.entities.Room;
+import me.ilich.helloworld.app.entities.*;
+import me.ilich.helloworld.app.entities.primitives.Entity;
 
 import java.util.List;
 
@@ -29,4 +27,6 @@ public interface Controller {
     Coord getCurrentCoord();
 
     Door getDoor(Coord coordFrom, Coord coordTo);
+
+    List<Entity> getCurrentRoomEntities();
 }

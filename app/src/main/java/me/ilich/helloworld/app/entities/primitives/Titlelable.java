@@ -1,6 +1,9 @@
 package me.ilich.helloworld.app.entities.primitives;
 
-public interface Titlelable {
+import org.json.JSONException;
+import org.json.JSONObject;
+
+public interface Titlelable extends Primitive {
 
     String getTitle();
 
@@ -17,6 +20,10 @@ public interface Titlelable {
             return title;
         }
 
+        @Override
+        public JSONObject toJson(JSONObject jsonObject) throws JSONException {
+            return null;
+        }
     }
 
 }

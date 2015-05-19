@@ -42,7 +42,7 @@ public class LookCommand extends Command {
                 }
             } else {
                 controller.println("Вы осматриваете " + param + ".");
-                controller.println(aItem.getDescription());
+                //controller.println(aItem.getDescription()); //TODO looable
                 if (aItem.isPickable()) {
                     controller.println(String.format("%s можно взять с собой.", aItem.getTitle()));
                 }

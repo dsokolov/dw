@@ -1,31 +1,24 @@
 package me.ilich.helloworld.app.entities;
 
+import me.ilich.helloworld.app.Controller;
+import me.ilich.helloworld.app.entities.primitives.Entity;
+import me.ilich.helloworld.app.entities.primitives.Scenable;
+import me.ilich.helloworld.app.entities.primitives.Titlelable;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
-public class Item {
+public class Item extends Entity implements Titlelable, Scenable {
 
-    private String title;
-    private String description;
+    private Titlelable titlelable;
+    private Scenable scenable;
     private boolean pickable = true;
     private boolean containable = false;
     private List<Item> items = new ArrayList<>();
 
-    private Item() {
-
-    }
-
-    public Item(String title, String description) {
-        this.title = title;
-        this.description = description;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public String getDescription() {
-        return description;
+    private Item(UUID id, UUID parentId) {
+        super(id, parentId);
     }
 
     public boolean isPickable() {
@@ -45,17 +38,31 @@ public class Item {
         return items;
     }
 
+    @Override
+    public String getTitle() {
+        return titlelable.getTitle();
+    }
+
+    @Override
+    public void onScene(Controller controller) {
+        scenable.onScene(controller);
+    }
+
     public static class Builder {
 
-        private Item item = new Item();
+        private final Item item;
+
+        public Builder(UUID id, UUID parentId) {
+            item = new Item(id, parentId);
+        }
 
         public Builder title(String s) {
-            item.title = s;
+            item.titlelable = new Titlelable.Impl(s);
             return this;
         }
 
-        public Builder description(String s) {
-            item.description = s;
+        public Builder scene(String s) {
+            item.scenable = new Scenable.Impl(s);
             return this;
         }
 
@@ -75,6 +82,12 @@ public class Item {
         }
 
         public Item build() {
+            if (item.titlelable == null) {
+                item.titlelable = new Titlelable.Impl("");
+            }
+            if (item.scenable == null) {
+                item.scenable = new Scenable.Impl("");
+            }
             return item;
         }
 

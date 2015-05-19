@@ -4,8 +4,12 @@ import me.ilich.helloworld.app.commands.*;
 import me.ilich.helloworld.app.data.AbsDirection;
 import me.ilich.helloworld.app.datasource.DataSource;
 import me.ilich.helloworld.app.datasource.HardcodeDataSource;
-import me.ilich.helloworld.app.entities.*;
+import me.ilich.helloworld.app.entities.Coord;
+import me.ilich.helloworld.app.entities.Door;
+import me.ilich.helloworld.app.entities.Item;
+import me.ilich.helloworld.app.entities.Room;
 import me.ilich.helloworld.app.entities.primitives.Entity;
+import me.ilich.helloworld.app.entities.primitives.Scenable;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -149,7 +153,6 @@ public class App {
             currentRoom = dataSource.getRoom(currentCoord);
             if (roomDescriptionVisible) {
                 displayRoom();
-                displayItems();
                 displayDoors();
                 roomDescriptionVisible = false;
             }
@@ -170,26 +173,15 @@ public class App {
     }
 
     private void displayRoom() {
-        controller.println(currentRoom.getTitle());
-
-    }
-
-    private void displayItems() {
-        StringBuilder itemsStringBuilder = new StringBuilder();
-        if (currentRoom.getItems().size() > 0) {
-            itemsStringBuilder.append("Предметы: ");
-            final boolean[] first = {true};
-            currentRoom.getItems().forEach(item -> {
-                if (first[0]) {
-                    first[0] = false;
-                } else {
-                    itemsStringBuilder.append(", ");
-                }
-                itemsStringBuilder.append(item.getTitle());
-            });
-            itemsStringBuilder.append(".");
-            controller.println(itemsStringBuilder.toString());
-        }
+        controller.println(String.format("*** %s ***", currentRoom.getTitle()));
+        List<Entity> roomEntities = new ArrayList<>();
+        roomEntities.addAll(dataSource.getEntities(currentRoom.getId()));
+        roomEntities.addAll(dataSource.getChildEntities(currentRoom.getId()));
+        roomEntities.forEach(entity -> {
+            if (entity instanceof Scenable) {
+                ((Scenable) entity).onScene(controller);
+            }
+        });
     }
 
     private void displayDoors() {

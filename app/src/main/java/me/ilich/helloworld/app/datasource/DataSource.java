@@ -16,6 +16,8 @@ public interface DataSource {
 
     List<Door> getDoorsFrom(Coord coord);
 
+    List<Entity> getEntities(UUID id);
+
     List<Entity> getChildEntities(UUID parentId);
 
 }

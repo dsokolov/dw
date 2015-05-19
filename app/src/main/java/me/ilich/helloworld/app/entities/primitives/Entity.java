@@ -5,7 +5,7 @@ import org.json.JSONObject;
 
 import java.util.UUID;
 
-public class Entity {
+public class Entity implements Primitive {
 
     private static final String ID = "id";
     private static final String PARENT_ID = "parent_id";
@@ -18,7 +18,7 @@ public class Entity {
     }*/
 
     private final UUID id;
-    private final UUID parentId;
+    private UUID parentId;
 
     public Entity(UUID id, UUID parentId) {
         this.id = id;
@@ -33,6 +33,11 @@ public class Entity {
         return parentId;
     }
 
+    public void setParentId(UUID parentId) {
+        this.parentId = parentId;
+    }
+
+    @Override
     public JSONObject toJson(JSONObject jsonObject) throws JSONException {
         if (jsonObject == null) {
             jsonObject = new JSONObject();

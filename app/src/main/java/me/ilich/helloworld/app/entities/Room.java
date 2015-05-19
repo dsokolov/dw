@@ -1,36 +1,31 @@
 package me.ilich.helloworld.app.entities;
 
+import me.ilich.helloworld.app.Controller;
+import me.ilich.helloworld.app.entities.primitives.Entity;
+import me.ilich.helloworld.app.entities.primitives.Scenable;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class Room {
+public class Room extends Entity implements Scenable {
 
-    private UUID id = UUID.randomUUID();
+    private Scenable scenable;
     private Coord coord;
     private String title;
-    private String description;
     private final List<Item> items = new ArrayList<>();
 
-    private Room() {
-
-    }
-
-    public UUID getId() {
-        return id;
+    private Room(UUID id, UUID parentId) {
+        super(id, parentId);
     }
 
     public Coord getCoord() {
         return coord;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
     @Override
     public String toString() {
-        return coord + " " + description;
+        return coord + " " + scenable.toString();
     }
 
     public String getTitle() {
@@ -41,9 +36,18 @@ public class Room {
         return items;
     }
 
+    @Override
+    public void onScene(Controller controller) {
+        scenable.onScene(controller);
+    }
+
     public static class Builder {
 
-        private Room room = new Room();
+        private final Room room;
+
+        public Builder(UUID roomId, UUID locationId) {
+            this.room = new Room(roomId, locationId);
+        }
 
         public Builder coord(Coord coord) {
             room.coord = coord;
@@ -56,7 +60,7 @@ public class Room {
         }
 
         public Builder description(String s) {
-            room.description = s;
+            room.scenable = new Scenable.Impl(s);
             return this;
         }
 
@@ -66,6 +70,9 @@ public class Room {
         }
 
         public Room build() {
+            if (room.scenable == null) {
+                room.scenable = new Scenable.Impl("");
+            }
             return room;
         }
 

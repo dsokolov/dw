@@ -5,16 +5,16 @@ import me.ilich.helloworld.app.entities.Door;
 
 import java.util.List;
 
-public class OpenCommand extends Command {
+public class CloseCommand extends Command {
 
-    public OpenCommand() {
-        super("ОТКРЫТЬ", "Открыть дверь");
+    public CloseCommand() {
+        super("ЗАКРЫТЬ", "Закрыть дверь");
     }
 
     @Override
     protected void onPreparePatterns(List<Case> cases) {
         Action.OnExecute noParams = (controller, params) -> {
-            controller.println("Открыть что?");
+            controller.println("Закрыть что?");
         };
         Action.OnExecute oneParam = (controller, params) -> {
             String param = params[0];
@@ -26,27 +26,27 @@ public class OpenCommand extends Command {
                 Coord doorCoord = Coord.sum(coord, currentCoord);
                 Door door = controller.getDoor(currentCoord, doorCoord);
                 if (door == null) {
-                    controller.println("В этом направлении нечего открывать.");
+                    controller.println("В этом направлении нечего закрыть.");
                 } else {
                     switch (door.getState()){
-                        case CLOSE:
-                            controller.println("Вы открыли дверь.");
-                            door.setState(Door.State.OPEN);
-                            break;
                         case OPEN:
-                            controller.println("Уже открыто.");
+                            controller.println("Вы закрыли дверь.");
+                            door.setState(Door.State.CLOSE);
+                            break;
+                        case CLOSE:
+                            controller.println("Уже закрыто.");
                             break;
                         case LOCKED:
                             controller.println("Заперто.");
                             break;
                         default:
-                            controller.println("Невозможно открыть.");
+                            controller.println("Невозможно закрыть.");
                     }
                 }
             }
         };
-        cases.add(new Case("открыть ([\\w\\s]*)", oneParam));
-        cases.add(new Case("открыть", noParams));
+        cases.add(new Case("закрыть ([\\w\\s]*)", oneParam));
+        cases.add(new Case("закрыть", noParams));
 
     }
 

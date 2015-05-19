@@ -27,6 +27,7 @@ public class App {
         commands.add(new WalkCommand());
 
         commands.add(new OpenCommand());
+        commands.add(new CloseCommand());
 
         commands.add(new LookCommand());
 

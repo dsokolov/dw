@@ -9,6 +9,7 @@ import me.ilich.helloworld.app.entities.Door;
 import me.ilich.helloworld.app.entities.Item;
 import me.ilich.helloworld.app.entities.Room;
 import me.ilich.helloworld.app.entities.primitives.Entity;
+import me.ilich.helloworld.app.entities.primitives.Primitive;
 import me.ilich.helloworld.app.entities.primitives.Scenable;
 
 import java.io.BufferedReader;
@@ -143,7 +144,17 @@ public class App {
 
         @Override
         public List<Entity> getCurrentRoomEntities() {
-            return dataSource.getChildEntities(currentRoom.getId());
+            return dataSource.getChildEntities(currentRoom.getId(), new Class[]{});
+        }
+
+        @Override
+        public List<Entity> getCurrentRoomEntities(Class<? extends Primitive>[] primitives) {
+            return dataSource.getChildEntities(currentRoom.getId(), primitives);
+        }
+
+        @Override
+        public DataSource getDataSource() {
+            return dataSource;
         }
 
     };
@@ -176,7 +187,7 @@ public class App {
         controller.println(String.format("*** %s ***", currentRoom.getTitle()));
         List<Entity> roomEntities = new ArrayList<>();
         roomEntities.addAll(dataSource.getEntities(currentRoom.getId()));
-        roomEntities.addAll(dataSource.getChildEntities(currentRoom.getId()));
+        roomEntities.addAll(dataSource.getChildEntities(currentRoom.getId(), new Class[]{}));
         roomEntities.forEach(entity -> {
             if (entity instanceof Scenable) {
                 ((Scenable) entity).onScene(controller);

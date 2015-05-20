@@ -21,7 +21,7 @@ public class PutCommand extends Command {
                 controller.println(String.format("У вас нет %s.", itemName));
             } else {
                 if (aItem.isPickable()) {
-                    aItem.onMove(controller.getInventory(), room.getItems());
+                    //aItem.onMove(controller.getInventory(), room.getItems());
                     controller.println(String.format("Вы положили %s.", aItem.getTitle()));
                 } else {
                     controller.println(String.format("Вам не удаётся положить %s.", aItem.getTitle()));
@@ -35,7 +35,8 @@ public class PutCommand extends Command {
             if (aItem == null) {
                 controller.println(String.format("У вас нет %s.", itemName));
             } else {
-                Item containerItem = controller.getCurrentRoom().getItems().stream().filter(item -> item.getTitle().equalsIgnoreCase(containerName)).findFirst().orElse(null);
+                //Item containerItem = controller.getCurrentRoom().getItems().stream().filter(item -> item.getTitle().equalsIgnoreCase(containerName)).findFirst().orElse(null);
+                Item containerItem = null;
                 if (containerItem == null) {
                     controller.println(String.format("Здесь нет %s.", containerName));
                 } else {

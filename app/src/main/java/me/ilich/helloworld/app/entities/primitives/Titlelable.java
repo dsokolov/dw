@@ -7,7 +7,7 @@ public interface Titlelable extends Primitive {
 
     String getTitle();
 
-    class Impl implements Titlelable {
+    class Impl extends Primitive.Impl implements Titlelable {
 
         private final String title;
 
@@ -22,7 +22,10 @@ public interface Titlelable extends Primitive {
 
         @Override
         public JSONObject toJson(JSONObject jsonObject) throws JSONException {
-            return null;
+            JSONObject j = new JSONObject();
+            j.put("text", title);
+            jsonObject.put("title", j);
+            return jsonObject;
         }
     }
 

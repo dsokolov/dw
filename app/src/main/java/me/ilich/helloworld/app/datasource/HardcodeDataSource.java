@@ -2,6 +2,7 @@ package me.ilich.helloworld.app.datasource;
 
 import me.ilich.helloworld.app.entities.*;
 import me.ilich.helloworld.app.entities.primitives.Entity;
+import me.ilich.helloworld.app.entities.primitives.Primitive;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,9 +17,13 @@ public class HardcodeDataSource implements DataSource {
 
     static {
 
+        Player player = new Player(UUID.randomUUID());
+
+        entities.add(player);
+
         UUID centerRoomId = UUID.randomUUID();
 
-        Item ball = new Item.Builder(UUID.randomUUID(), centerRoomId).title("мяч").scene("Здесь лежит мяч.").pickable(true).containable(false).build();
+        Item ball = new Item.Builder(UUID.randomUUID(), centerRoomId).title("мяч").scene("Здесь лежит мяч.").look("Красно-синий резиновый мяч.").pickable(true).containable(false).build();
         Item note = new Item.Builder(UUID.randomUUID(), centerRoomId).title("записка").scene("Кто-то оставил здесь записку.").pickable(true).containable(false).build();
         Item box = new Item.Builder(UUID.randomUUID(), centerRoomId).title("ящик").scene("В деревянный ящик можно что-нибудь положить.").pickable(false).containable(true).item(note).build();
 
@@ -29,8 +34,6 @@ public class HardcodeDataSource implements DataSource {
                 .coord(Coord.xy(0, 0))
                 .title("Начальная комната")
                 .description("Начальная комната.")
-                .item(ball)
-                .item(box)
                 .build();
 
         Room eastRoom = new Room.Builder(UUID.randomUUID(), null).coord(Coord.xy(1, 0)).title("Восточная комната").description("Восточная комната").build();
@@ -113,8 +116,20 @@ public class HardcodeDataSource implements DataSource {
     }
 
     @Override
-    public List<Entity> getChildEntities(UUID parentId) {
-        return entities.stream().filter(entity -> Objects.equals(parentId, entity.getParentId())).collect(Collectors.toCollection(ArrayList::new));
+    public List<Entity> getChildEntities(UUID parentId, Class<Primitive>[] primitives) {
+        return entities.stream().filter(entity -> {
+            boolean b = true;
+            for (Class<Primitive> primitive : primitives) {
+                if (!primitive.isInstance(entity)) {
+                    b = false;
+                    break;
+                }
+            }
+            if (b) {
+                b = Objects.equals(parentId, entity.getParentId());
+            }
+            return b;
+        }).collect(Collectors.toCollection(ArrayList::new));
     }
 
 }

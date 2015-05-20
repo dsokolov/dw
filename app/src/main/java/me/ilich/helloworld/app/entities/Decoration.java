@@ -5,6 +5,8 @@ import me.ilich.helloworld.app.entities.primitives.Entity;
 import me.ilich.helloworld.app.entities.primitives.Lookable;
 import me.ilich.helloworld.app.entities.primitives.Scenable;
 import me.ilich.helloworld.app.entities.primitives.Titlelable;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.UUID;
 
@@ -40,4 +42,11 @@ public class Decoration extends Entity implements Titlelable, Scenable, Lookable
         scenable.onScene(controller);
     }
 
+    @Override
+    public JSONObject toJson(JSONObject jsonObject) throws JSONException {
+        jsonObject = super.toJson(jsonObject);
+        jsonObject = titlelable.toJson(jsonObject);
+        jsonObject = lookable.toJson(jsonObject);
+        return jsonObject;
+    }
 }

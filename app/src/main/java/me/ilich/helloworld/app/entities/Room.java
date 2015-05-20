@@ -13,7 +13,6 @@ public class Room extends Entity implements Scenable {
     private Scenable scenable;
     private Coord coord;
     private String title;
-    private final List<Item> items = new ArrayList<>();
 
     private Room(UUID id, UUID parentId) {
         super(id, parentId);
@@ -30,10 +29,6 @@ public class Room extends Entity implements Scenable {
 
     public String getTitle() {
         return title;
-    }
-
-    public List<Item> getItems() {
-        return items;
     }
 
     @Override
@@ -61,11 +56,6 @@ public class Room extends Entity implements Scenable {
 
         public Builder description(String s) {
             room.scenable = new Scenable.Impl(s);
-            return this;
-        }
-
-        public Builder item(Item item) {
-            room.items.add(item);
             return this;
         }
 

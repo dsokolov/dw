@@ -4,6 +4,7 @@ import me.ilich.helloworld.app.entities.Item;
 import me.ilich.helloworld.app.entities.Room;
 import me.ilich.helloworld.app.entities.primitives.Entity;
 import me.ilich.helloworld.app.entities.primitives.Lookable;
+import me.ilich.helloworld.app.entities.primitives.Primitive;
 import me.ilich.helloworld.app.entities.primitives.Titlelable;
 
 import java.util.ArrayList;
@@ -23,26 +24,23 @@ public class LookCommand extends Command {
         Action.OnExecute oneParam = (controller, params) -> {
             String param = params[0];
             Room room = controller.getCurrentRoom();
-            Item aItem = room.getItems().stream().filter(item -> item.getTitle().equalsIgnoreCase(param)).findFirst().orElse(null);
+            //Item aItem = room.getItems().stream().filter(item -> item.getTitle().equalsIgnoreCase(param)).findFirst().orElse(null);
+            Item aItem = null;
             if (aItem == null) {
-                List<Entity> roomEntities = controller.getCurrentRoomEntities();
-                List<Entity> lookables = roomEntities.stream().filter(entity -> {
-                    boolean l = entity instanceof Lookable;
-                    boolean t = entity instanceof Titlelable;
-                    boolean tt = t && Objects.equals(((Titlelable) entity).getTitle(), param);
-                    return l && t && tt;
-                }).collect(Collectors.toCollection(ArrayList::new));
+                List<Entity> roomEntities = controller.getCurrentRoomEntities(new Class[]{Lookable.class, Titlelable.class});
+                List<Entity> lookables = roomEntities.stream().filter(entity -> Objects.equals(((Titlelable) entity).getTitle(), param)).collect(Collectors.toCollection(ArrayList::new));
                 if (lookables.size() == 0) {
                     controller.println("Вы оглядываетесь вокруг в поисках " + param + ".");
                 } else if (lookables.size() == 1) {
-                    Lookable lookable = (Lookable) lookables.get(0);
-                    lookable.onLook(controller);
+                    Entity entity = lookables.get(0);
+                    controller.println(String.format("Вы смотрите на %s", ((Titlelable) entity).getTitle()));
+                    ((Lookable) entity).onLook(controller);
                 } else {
                     controller.println("много такого");
                 }
             } else {
                 controller.println("Вы осматриваете " + param + ".");
-                //controller.println(aItem.getDescription()); //TODO looable
+                //controller.println(aItem.getDescription()); //TODO lookable
                 if (aItem.isPickable()) {
                     controller.println(String.format("%s можно взять с собой.", aItem.getTitle()));
                 }

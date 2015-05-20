@@ -2,8 +2,9 @@ package me.ilich.helloworld.app.datasource;
 
 import me.ilich.helloworld.app.entities.Coord;
 import me.ilich.helloworld.app.entities.Door;
-import me.ilich.helloworld.app.entities.primitives.Entity;
 import me.ilich.helloworld.app.entities.Room;
+import me.ilich.helloworld.app.entities.primitives.Entity;
+import me.ilich.helloworld.app.entities.primitives.Primitive;
 
 import java.util.List;
 import java.util.UUID;
@@ -18,6 +19,6 @@ public interface DataSource {
 
     List<Entity> getEntities(UUID id);
 
-    List<Entity> getChildEntities(UUID parentId);
+    List<Entity> getChildEntities(UUID parentId, Class<? extends Primitive>[] primitives);
 
 }

@@ -15,12 +15,13 @@ public class PickUpCommand extends Command {
     protected void onPreparePatterns(List<Case> cases) {
         Action.OnExecute oneParam = (controller, params) -> {
             Room room = controller.getCurrentRoom();
-            Item aItem = room.getItems().stream().filter(item -> item.getTitle().equalsIgnoreCase(params[0])).findFirst().orElse(null);
+            //Item aItem = room.getItems().stream().filter(item -> item.getTitle().equalsIgnoreCase(params[0])).findFirst().orElse(null);
+            Item aItem = null;
             if (aItem == null) {
                 controller.println(String.format("Здесь нет %s.", params[0]));
             } else {
                 if (aItem.isPickable()) {
-                    aItem.onMove(room.getItems(), controller.getInventory());
+                    //aItem.onMove(room.getItems(), controller.getInventory());
                     controller.println(String.format("Вы взяли %s.", aItem.getTitle()));
                 } else {
                     controller.println(String.format("Вам не удаётся взять %s с собой.", aItem.getTitle()));
@@ -31,7 +32,8 @@ public class PickUpCommand extends Command {
             String fromItemName = params[1];
             String itemName = params[0];
             Room room = controller.getCurrentRoom();
-            Item containerItem = room.getItems().stream().filter(item -> item.getTitle().equalsIgnoreCase(fromItemName)).findFirst().orElse(null);
+            //Item containerItem = room.getItems().stream().filter(item -> item.getTitle().equalsIgnoreCase(fromItemName)).findFirst().orElse(null);
+            Item containerItem = null;
             if (containerItem == null) {
                 controller.println(String.format("Здесь нет %s.", fromItemName));
             } else {

@@ -19,7 +19,7 @@ public class DropCommand extends Command {
             if (aItem == null) {
                 controller.println(String.format("У вас нет %s.", params[0]));
             } else {
-                aItem.onMove(controller.getInventory(), room.getItems());
+                //aItem.onMove(controller.getInventory(), room.getItems());
                 controller.println(String.format("Вы выбросили %s.", aItem.getTitle()));
             }
         };

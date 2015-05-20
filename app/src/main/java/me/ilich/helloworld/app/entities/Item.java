@@ -2,6 +2,7 @@ package me.ilich.helloworld.app.entities;
 
 import me.ilich.helloworld.app.Controller;
 import me.ilich.helloworld.app.entities.primitives.Entity;
+import me.ilich.helloworld.app.entities.primitives.Lookable;
 import me.ilich.helloworld.app.entities.primitives.Scenable;
 import me.ilich.helloworld.app.entities.primitives.Titlelable;
 
@@ -9,10 +10,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class Item extends Entity implements Titlelable, Scenable {
+public class Item extends Entity implements Titlelable, Scenable, Lookable {
 
     private Titlelable titlelable;
     private Scenable scenable;
+    private Lookable lookable;
     private boolean pickable = true;
     private boolean containable = false;
     private List<Item> items = new ArrayList<>();
@@ -48,6 +50,11 @@ public class Item extends Entity implements Titlelable, Scenable {
         scenable.onScene(controller);
     }
 
+    @Override
+    public void onLook(Controller controller) {
+        lookable.onLook(controller);
+    }
+
     public static class Builder {
 
         private final Item item;
@@ -63,6 +70,11 @@ public class Item extends Entity implements Titlelable, Scenable {
 
         public Builder scene(String s) {
             item.scenable = new Scenable.Impl(s);
+            return this;
+        }
+
+        public Builder look(String s) {
+            item.lookable = new Lookable.Impl(s);
             return this;
         }
 
@@ -87,6 +99,9 @@ public class Item extends Entity implements Titlelable, Scenable {
             }
             if (item.scenable == null) {
                 item.scenable = new Scenable.Impl("");
+            }
+            if (item.lookable == null) {
+                item.lookable = new Lookable.Impl("");
             }
             return item;
         }

@@ -1,9 +1,12 @@
 package me.ilich.helloworld.app;
 
 import me.ilich.helloworld.app.commands.Command;
+import me.ilich.helloworld.app.datasource.DataSource;
 import me.ilich.helloworld.app.entities.*;
 import me.ilich.helloworld.app.entities.primitives.Entity;
+import me.ilich.helloworld.app.entities.primitives.Primitive;
 
+import javax.xml.crypto.Data;
 import java.util.List;
 
 public interface Controller {
@@ -29,4 +32,9 @@ public interface Controller {
     Door getDoor(Coord coordFrom, Coord coordTo);
 
     List<Entity> getCurrentRoomEntities();
+
+    List<Entity> getCurrentRoomEntities(Class<? extends Primitive>[] primitives);
+
+    DataSource getDataSource();
+
 }

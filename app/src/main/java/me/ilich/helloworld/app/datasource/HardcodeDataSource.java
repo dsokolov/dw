@@ -1,7 +1,7 @@
 package me.ilich.helloworld.app.datasource;
 
 import me.ilich.helloworld.app.entities.*;
-import me.ilich.helloworld.app.entities.primitives.Entity;
+import me.ilich.helloworld.app.entities.Entity;
 import me.ilich.helloworld.app.entities.primitives.Primitive;
 
 import java.util.ArrayList;
@@ -23,12 +23,15 @@ public class HardcodeDataSource implements DataSource {
 
         UUID centerRoomId = UUID.randomUUID();
 
-        Item ball = new Item.Builder(UUID.randomUUID(), centerRoomId).title("мяч").scene("Здесь лежит мяч.").look("Красно-синий резиновый мяч.").pickable(true).containable(false).build();
-        Item note = new Item.Builder(UUID.randomUUID(), centerRoomId).title("записка").scene("Кто-то оставил здесь записку.").pickable(true).containable(false).build();
-        Item box = new Item.Builder(UUID.randomUUID(), centerRoomId).title("ящик").scene("В деревянный ящик можно что-нибудь положить.").pickable(false).containable(true).item(note).build();
+        PickableItem ball = new PickableItem.Builder(UUID.randomUUID(), centerRoomId).title("мяч").scene("Здесь лежит мяч.").look("Красно-синий резиновый мяч.").build();
+        ContainerItem box = new ContainerItem.Builder(UUID.randomUUID(), centerRoomId).title("ящик").scene("В деревянный ящик можно что-нибудь положить.").build();
+        PickableItem note = new PickableItem.Builder(UUID.randomUUID(), centerRoomId).title("записка").scene("Кто-то оставил здесь записку.").build();
+        PickableItem trash = new PickableItem.Builder(UUID.randomUUID(), box.getId()).title("мусор").scene("Аккуратной горкой лежит какой-то мусор.").look("Какие-то пыльные тряпки, обломки пластмассы и осколки стекла. Ничего полезного.").build();
 
         entities.add(ball);
+        entities.add(note);
         entities.add(box);
+        entities.add(trash);
 
         Room centerRoom = new Room.Builder(centerRoomId, null)
                 .coord(Coord.xy(0, 0))
@@ -116,10 +119,24 @@ public class HardcodeDataSource implements DataSource {
     }
 
     @Override
-    public List<Entity> getChildEntities(UUID parentId, Class<Primitive>[] primitives) {
+    public List<Entity> getEntities(Class<? extends Primitive>[] primitives) {
+        return entities.stream().filter(entity -> {
+            boolean result = true;
+            for (Class<? extends Primitive> primitive : primitives) {
+                if (!primitive.isInstance(entity)) {
+                    result = false;
+                    break;
+                }
+            }
+            return result;
+        }).collect(Collectors.toCollection(ArrayList::new));
+    }
+
+    @Override
+    public List<Entity> getChildEntities(UUID parentId, Class<? extends Primitive>[] primitives) {
         return entities.stream().filter(entity -> {
             boolean b = true;
-            for (Class<Primitive> primitive : primitives) {
+            for (Class<? extends Primitive> primitive : primitives) {
                 if (!primitive.isInstance(entity)) {
                     b = false;
                     break;

@@ -1,43 +1,20 @@
 package me.ilich.helloworld.app.entities;
 
 import me.ilich.helloworld.app.Controller;
-import me.ilich.helloworld.app.entities.primitives.Entity;
-import me.ilich.helloworld.app.entities.primitives.Lookable;
-import me.ilich.helloworld.app.entities.primitives.Scenable;
-import me.ilich.helloworld.app.entities.primitives.Titlelable;
+import me.ilich.helloworld.app.entities.primitives.*;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
-public class Item extends Entity implements Titlelable, Scenable, Lookable {
+public class PickableItem extends Entity implements Titlelable, Scenable, Lookable, Pickable {
 
     private Titlelable titlelable;
     private Scenable scenable;
     private Lookable lookable;
-    private boolean pickable = true;
-    private boolean containable = false;
-    private List<Item> items = new ArrayList<>();
+    private Pickable pickable;
 
-    private Item(UUID id, UUID parentId) {
+    private PickableItem(UUID id, UUID parentId) {
         super(id, parentId);
-    }
-
-    public boolean isPickable() {
-        return pickable;
-    }
-
-    public boolean isContainable() {
-        return containable;
-    }
-
-    public void onMove(List<Item> fromItems, List<Item> toItems) {
-        fromItems.remove(this);
-        toItems.add(this);
-    }
-
-    public List<Item> getItems() {
-        return items;
+        pickable = new Pickable.Impl();
     }
 
     @Override
@@ -55,12 +32,17 @@ public class Item extends Entity implements Titlelable, Scenable, Lookable {
         lookable.onLook(controller);
     }
 
+    @Override
+    public void onPickup(Controller controller, Entity entity, Player player) {
+        pickable.onPickup(controller, entity, player);
+    }
+
     public static class Builder {
 
-        private final Item item;
+        private final PickableItem item;
 
         public Builder(UUID id, UUID parentId) {
-            item = new Item(id, parentId);
+            item = new PickableItem(id, parentId);
         }
 
         public Builder title(String s) {
@@ -78,22 +60,7 @@ public class Item extends Entity implements Titlelable, Scenable, Lookable {
             return this;
         }
 
-        public Builder pickable(boolean b) {
-            item.pickable = b;
-            return this;
-        }
-
-        public Builder containable(boolean b) {
-            item.containable = b;
-            return this;
-        }
-
-        public Builder item(Item subItem) {
-            item.items.add(subItem);
-            return this;
-        }
-
-        public Item build() {
+        public PickableItem build() {
             if (item.titlelable == null) {
                 item.titlelable = new Titlelable.Impl("");
             }

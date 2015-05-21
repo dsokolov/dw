@@ -1,5 +1,8 @@
 package me.ilich.helloworld.app.commands;
 
+import me.ilich.helloworld.app.entities.Entity;
+import me.ilich.helloworld.app.entities.primitives.Titlelable;
+
 import java.util.List;
 
 public class InventoryCommand extends Command {
@@ -11,12 +14,15 @@ public class InventoryCommand extends Command {
     @Override
     protected void onPreparePatterns(List<Case> cases) {
         Action.OnExecute onExecute = (controller, params) -> {
-            int count = controller.getInventory().size();
-            if (count == 0) {
-                controller.println("У вас ничего нет.");
-            } else {
-                controller.println(String.format("У вас %s предметов:", count));
-                controller.getInventory().forEach(item -> controller.println(item.getTitle()));
+            List<Entity> entities = controller.
+                    getInventoryEntities(Titlelable.class);
+            switch (entities.size()) {
+                case 0:
+                    controller.println("У вас ничего нет.");
+                    break;
+                default:
+                    controller.println("Вы несёте с собой:");
+                    entities.forEach(item -> controller.println(((Titlelable) item).getTitle()));
             }
         };
         cases.add(new Case("inventory", onExecute));
@@ -24,4 +30,5 @@ public class InventoryCommand extends Command {
         cases.add(new Case("инвентарь", onExecute));
         cases.add(new Case("и", onExecute));
     }
+
 }

@@ -1,7 +1,7 @@
 package me.ilich.helloworld.app.commands;
 
 import me.ilich.helloworld.app.entities.Room;
-import me.ilich.helloworld.app.entities.primitives.Entity;
+import me.ilich.helloworld.app.entities.Entity;
 import me.ilich.helloworld.app.entities.primitives.Titlelable;
 
 import java.util.List;

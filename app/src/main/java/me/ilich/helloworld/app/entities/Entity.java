@@ -1,5 +1,6 @@
-package me.ilich.helloworld.app.entities.primitives;
+package me.ilich.helloworld.app.entities;
 
+import me.ilich.helloworld.app.entities.primitives.Primitive;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -35,7 +36,6 @@ public class Entity implements Primitive {
         this.parentId = parentId;
     }
 
-    @Override
     public JSONObject toJson(JSONObject jsonObject) throws JSONException {
         if (jsonObject == null) {
             jsonObject = new JSONObject();

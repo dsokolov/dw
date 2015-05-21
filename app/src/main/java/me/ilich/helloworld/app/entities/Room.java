@@ -1,11 +1,8 @@
 package me.ilich.helloworld.app.entities;
 
 import me.ilich.helloworld.app.Controller;
-import me.ilich.helloworld.app.entities.primitives.Entity;
 import me.ilich.helloworld.app.entities.primitives.Scenable;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 public class Room extends Entity implements Scenable {

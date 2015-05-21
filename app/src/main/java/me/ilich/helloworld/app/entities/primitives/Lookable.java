@@ -23,7 +23,7 @@ public interface Lookable extends Primitive {
         @Override
         public void onLook(Controller controller) {
             if (lookText == null || lookText.isEmpty()) {
-                controller.println("Ничего особенного");
+                controller.println("Вы не видете ничего особенного.");
             } else {
                 controller.println(lookText);
             }

@@ -1,7 +1,6 @@
 package me.ilich.helloworld.app.entities;
 
 import me.ilich.helloworld.app.Controller;
-import me.ilich.helloworld.app.entities.primitives.Entity;
 import me.ilich.helloworld.app.entities.primitives.Lookable;
 import me.ilich.helloworld.app.entities.primitives.Scenable;
 import me.ilich.helloworld.app.entities.primitives.Titlelable;

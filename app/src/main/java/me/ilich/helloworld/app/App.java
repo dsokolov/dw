@@ -6,9 +6,9 @@ import me.ilich.helloworld.app.datasource.DataSource;
 import me.ilich.helloworld.app.datasource.HardcodeDataSource;
 import me.ilich.helloworld.app.entities.Coord;
 import me.ilich.helloworld.app.entities.Door;
-import me.ilich.helloworld.app.entities.Item;
+import me.ilich.helloworld.app.entities.Player;
 import me.ilich.helloworld.app.entities.Room;
-import me.ilich.helloworld.app.entities.primitives.Entity;
+import me.ilich.helloworld.app.entities.Entity;
 import me.ilich.helloworld.app.entities.primitives.Primitive;
 import me.ilich.helloworld.app.entities.primitives.Scenable;
 
@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class App {
 
@@ -62,12 +63,13 @@ public class App {
 
     private DataSource dataSource = new HardcodeDataSource();
 
-    private final List<Item> inventory = new ArrayList<>();
+    /*private final List<Item> inventory = new ArrayList<>();*/
 
     private Coord currentCoord = Coord.zero();
     private boolean working = true;
     private boolean roomDescriptionVisible = true;
     private Room currentRoom = null;
+    private Player player = null;
 
     private Controller controller = new Controller() {
 
@@ -110,10 +112,10 @@ public class App {
             return currentRoom;
         }
 
-        @Override
+/*        @Override
         public List<Item> getInventory() {
             return inventory;
-        }
+        }*/
 
         @Override
         public List<Command> getCommands() {
@@ -125,6 +127,11 @@ public class App {
             Coord newCoord = Coord.coord(currentCoord);
             newCoord.add(coord);
             tryMoveTo(newCoord);
+        }
+
+        @Override
+        public void print(String s) {
+            System.out.print(s);
         }
 
         @Override
@@ -143,12 +150,12 @@ public class App {
         }
 
         @Override
-        public List<Entity> getCurrentRoomEntities() {
-            return dataSource.getChildEntities(currentRoom.getId(), new Class[]{});
+        public List<Entity> getInventoryEntities(Class<? extends Primitive>... primitives) {
+            return dataSource.getChildEntities(player.getId(), primitives);
         }
 
         @Override
-        public List<Entity> getCurrentRoomEntities(Class<? extends Primitive>[] primitives) {
+        public List<Entity> getCurrentRoomEntities(Class<? extends Primitive>... primitives) {
             return dataSource.getChildEntities(currentRoom.getId(), primitives);
         }
 
@@ -157,9 +164,20 @@ public class App {
             return dataSource;
         }
 
+        @Override
+        public Player getPlayer() {
+            return player;
+        }
+
+        @Override
+        public List<Entity> getChildEntities(UUID parentId, Class<? extends Primitive>... primitives) {
+            return dataSource.getChildEntities(parentId, primitives);
+        }
+
     };
 
     public void run() {
+        player = (Player) dataSource.getEntities(Player.class).stream().findFirst().orElse(null);
         while (working) {
             currentRoom = dataSource.getRoom(currentCoord);
             if (roomDescriptionVisible) {

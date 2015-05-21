@@ -11,10 +11,6 @@ import java.util.UUID;
 
 public class Decoration extends Entity implements Titlelable, Scenable, Lookable {
 
-/*    public static Decoration fromJson(JSONObject jsonObject) {
-
-    }*/
-
     private final Titlelable titlelable;
     private final Scenable scenable;
     private final Lookable lookable;
@@ -32,11 +28,6 @@ public class Decoration extends Entity implements Titlelable, Scenable, Lookable
     }
 
     @Override
-    public String getTitle() {
-        return titlelable.getTitle();
-    }
-
-    @Override
     public void onScene(Controller controller) {
         scenable.onScene(controller);
     }
@@ -48,4 +39,15 @@ public class Decoration extends Entity implements Titlelable, Scenable, Lookable
         jsonObject = lookable.toJson(jsonObject);
         return jsonObject;
     }
+
+    @Override
+    public String getTitle(int index) {
+        return titlelable.getTitle(index);
+    }
+
+    @Override
+    public boolean isTitleSuitable(String s) {
+        return titlelable.isTitleSuitable(s);
+    }
+
 }

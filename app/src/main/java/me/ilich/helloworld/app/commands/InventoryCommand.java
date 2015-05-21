@@ -22,7 +22,7 @@ public class InventoryCommand extends Command {
                     break;
                 default:
                     controller.println("Вы несёте с собой:");
-                    entities.forEach(item -> controller.println(((Titlelable) item).getTitle()));
+                    entities.forEach(item -> controller.println(String.format("\t%s", Titlelable.i(item))));
             }
         };
         cases.add(new Case("inventory", onExecute));

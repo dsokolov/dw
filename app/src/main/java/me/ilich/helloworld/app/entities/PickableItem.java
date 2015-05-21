@@ -1,7 +1,10 @@
 package me.ilich.helloworld.app.entities;
 
 import me.ilich.helloworld.app.Controller;
-import me.ilich.helloworld.app.entities.primitives.*;
+import me.ilich.helloworld.app.entities.primitives.Lookable;
+import me.ilich.helloworld.app.entities.primitives.Pickable;
+import me.ilich.helloworld.app.entities.primitives.Scenable;
+import me.ilich.helloworld.app.entities.primitives.Titlelable;
 
 import java.util.UUID;
 
@@ -18,11 +21,6 @@ public class PickableItem extends Entity implements Titlelable, Scenable, Lookab
     }
 
     @Override
-    public String getTitle() {
-        return titlelable.getTitle();
-    }
-
-    @Override
     public void onScene(Controller controller) {
         scenable.onScene(controller);
     }
@@ -35,6 +33,16 @@ public class PickableItem extends Entity implements Titlelable, Scenable, Lookab
     @Override
     public void onPickup(Controller controller, Entity entity, Player player) {
         pickable.onPickup(controller, entity, player);
+    }
+
+    @Override
+    public String getTitle(int index) {
+        return titlelable.getTitle(index);
+    }
+
+    @Override
+    public boolean isTitleSuitable(String s) {
+        return titlelable.isTitleSuitable(s);
     }
 
     public static class Builder {

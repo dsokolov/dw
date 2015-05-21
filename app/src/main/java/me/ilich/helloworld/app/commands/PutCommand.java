@@ -1,7 +1,7 @@
 package me.ilich.helloworld.app.commands;
 
-import me.ilich.helloworld.app.entities.Room;
 import me.ilich.helloworld.app.entities.Entity;
+import me.ilich.helloworld.app.entities.Room;
 import me.ilich.helloworld.app.entities.primitives.Pickable;
 import me.ilich.helloworld.app.entities.primitives.Titlelable;
 
@@ -22,7 +22,7 @@ public class PutCommand extends Command {
             List<Entity> entities = controller.
                     getInventoryEntities(Pickable.class, Titlelable.class).
                     stream().
-                    filter(entity -> ((Titlelable) entity).getTitle().equalsIgnoreCase(param)).
+                    filter(entity -> Titlelable.isSuitable(entity, param)).
                     collect(Collectors.toCollection(ArrayList::new));
             switch (entities.size()) {
                 case 0:
@@ -32,7 +32,7 @@ public class PutCommand extends Command {
                     Entity entity = entities.get(0);
                     Room room = controller.getCurrentRoom();
                     entity.setParentId(room.getId());
-                    controller.println(String.format("Вы положили %s.", ((Titlelable) entity).getTitle()));
+                    controller.println(String.format("Вы положили %s.", Titlelable.r(entity)));
                     break;
                 default:
                     controller.println(String.format("Что такое '%s'?", param));

@@ -21,11 +21,6 @@ public class ContainerItem extends Entity implements Titlelable, Scenable, Looka
     }
 
     @Override
-    public String getTitle() {
-        return titlelable.getTitle();
-    }
-
-    @Override
     public void onScene(Controller controller) {
         scenable.onScene(controller);
     }
@@ -38,6 +33,16 @@ public class ContainerItem extends Entity implements Titlelable, Scenable, Looka
     @Override
     public void onPutInContainer(Controller controller, Entity container, Entity item) {
         containable.onPutInContainer(controller, container, item);
+    }
+
+    @Override
+    public String getTitle(int index) {
+        return titlelable.getTitle(index);
+    }
+
+    @Override
+    public boolean isTitleSuitable(String s) {
+        return titlelable.isTitleSuitable(s);
     }
 
     public static class Builder {

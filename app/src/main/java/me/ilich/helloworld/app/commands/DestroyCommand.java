@@ -1,7 +1,7 @@
 package me.ilich.helloworld.app.commands;
 
-import me.ilich.helloworld.app.entities.Room;
 import me.ilich.helloworld.app.entities.Entity;
+import me.ilich.helloworld.app.entities.Room;
 import me.ilich.helloworld.app.entities.primitives.Titlelable;
 
 import java.util.List;
@@ -21,7 +21,7 @@ public class DestroyCommand extends Command {
             Entity aItem = entities.stream().filter(item -> {
                 final boolean b;
                 if (item instanceof Titlelable) {
-                    b = ((Titlelable) item).getTitle().equalsIgnoreCase(param);
+                    b = Titlelable.isSuitable(item, param);
                 } else {
                     b = false;
                 }
@@ -30,7 +30,7 @@ public class DestroyCommand extends Command {
             if (aItem == null) {
                 controller.println("Не так легко уничтожить то, чего нет.");
             } else {
-                controller.println("Не скрывая своего удовольствия, вы уничтожаете " + ((Titlelable) aItem).getTitle() + ".");
+                controller.println(String.format("Не скрывая своего удовольствия, вы уничтожаете %s.", Titlelable.d(aItem)));
                 aItem.setParentId(null);
             }
         };

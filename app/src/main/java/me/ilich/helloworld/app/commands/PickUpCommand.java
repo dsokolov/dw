@@ -1,7 +1,7 @@
 package me.ilich.helloworld.app.commands;
 
-import me.ilich.helloworld.app.entities.primitives.Containable;
 import me.ilich.helloworld.app.entities.Entity;
+import me.ilich.helloworld.app.entities.primitives.Containable;
 import me.ilich.helloworld.app.entities.primitives.Pickable;
 import me.ilich.helloworld.app.entities.primitives.Titlelable;
 
@@ -25,20 +25,23 @@ public class PickUpCommand extends Command {
             List<Entity> entities = controller.
                     getCurrentRoomEntities(Titlelable.class).
                     stream().
-                    filter(entity -> ((Titlelable) entity).getTitle().equalsIgnoreCase(param)).
+                    filter(entity -> Titlelable.isSuitable(entity, param)).
                     collect(Collectors.toCollection(ArrayList::new));
             switch (entities.size()) {
                 case 0:
-                    controller.println(String.format("Здесь нет %s.", param));
+                    controller.println(String.format("Здесь нет предмета '%s'.", param));
                     break;
                 case 1:
                     Entity entity = entities.get(0);
                     if (entity instanceof Pickable) {
                         ((Pickable) entity).onPickup(controller, entity, controller.getPlayer());
-                        controller.println(String.format("Вы взяли %s.", ((Titlelable) entity).getTitle()));
+                        controller.println(String.format("Вы взяли %s.", Titlelable.v(entity)));
                     } else {
-                        controller.println(String.format("Невозможно взять %s.", ((Titlelable) entity).getTitle()));
+                        controller.println(String.format("Невозможно взять %s.", Titlelable.v(entity)));
                     }
+                    break;
+                case 2:
+                    controller.println(String.format("Возможно, вы имели ввиду '%s' или '%s'.", Titlelable.i(entities.get(0)), Titlelable.i(entities.get(1))));
                     break;
                 default:
                     controller.println(String.format("Что такое %s?", param));
@@ -50,7 +53,7 @@ public class PickUpCommand extends Command {
             List<Entity> containerItems = controller.
                     getCurrentRoomEntities(Titlelable.class).
                     stream().
-                    filter(entity -> ((Titlelable) entity).getTitle().equalsIgnoreCase(containerItemName)).
+                    filter(entity -> Titlelable.isSuitable(entity, containerItemName)).
                     collect(Collectors.toCollection(ArrayList::new));
             switch (containerItems.size()) {
                 case 0:
@@ -62,26 +65,26 @@ public class PickUpCommand extends Command {
                         List<Entity> items = controller.
                                 getChildEntities(conteinerItem.getId(), Titlelable.class).
                                 stream().
-                                filter(entity -> ((Titlelable) entity).getTitle().equalsIgnoreCase(itemName)).
+                                filter(entity -> Titlelable.isSuitable(entity, itemName)).
                                 collect(Collectors.toCollection(ArrayList::new));
                         switch (items.size()) {
                             case 0:
-                                controller.println(String.format("В %s нет '%s'.", ((Titlelable) conteinerItem).getTitle(), itemName));
+                                controller.println(String.format("В %s нет '%s'.", Titlelable.r(conteinerItem), itemName));
                                 break;
                             case 1:
                                 Entity item = items.get(0);
                                 if (item instanceof Pickable) {
                                     ((Pickable) item).onPickup(controller, item, controller.getPlayer());
-                                    controller.println(String.format("Вы взяли %s из %s.", ((Titlelable) item).getTitle(), ((Titlelable) conteinerItem).getTitle()));
+                                    controller.println(String.format("Вы взяли %s из %s.", Titlelable.v(item), Titlelable.r(conteinerItem)));
                                 } else {
-                                    controller.println(String.format("Невозможно взять %s из %s.", ((Titlelable) item).getTitle(), ((Titlelable) conteinerItem).getTitle()));
+                                    controller.println(String.format("Невозможно взять %s из %s.", Titlelable.v(item), Titlelable.r(conteinerItem)));
                                 }
                                 break;
                             default:
-                                controller.println(String.format("В %s несколько '%s'.", ((Titlelable) conteinerItem).getTitle(), itemName));
+                                controller.println(String.format("В %s есть несколько предметов с именем '%s'.", Titlelable.r(conteinerItem), itemName));
                         }
                     } else {
-                        controller.println(String.format("В %s нельзя класть что-либо.", ((Titlelable) conteinerItem).getTitle()));
+                        controller.println(String.format("В %s нельзя класть что-либо.", Titlelable.r(conteinerItem)));
                     }
                     break;
                 default:

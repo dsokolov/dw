@@ -1,11 +1,13 @@
 package me.ilich.helloworld.app.commands;
 
 import me.ilich.helloworld.app.entities.Entity;
-import me.ilich.helloworld.app.entities.primitives.*;
+import me.ilich.helloworld.app.entities.primitives.Containable;
+import me.ilich.helloworld.app.entities.primitives.Lookable;
+import me.ilich.helloworld.app.entities.primitives.Pickable;
+import me.ilich.helloworld.app.entities.primitives.Titlelable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class LookCommand extends Command {
@@ -20,30 +22,33 @@ public class LookCommand extends Command {
         Action.OnExecute oneParam = (controller, params) -> {
             String param = params[0];
             List<Entity> roomEntities = controller.getCurrentRoomEntities(Lookable.class, Titlelable.class);
-            List<Entity> lookables = roomEntities.stream().filter(entity -> Objects.equals(((Titlelable) entity).getTitle(), param)).collect(Collectors.toCollection(ArrayList::new));
-            if (lookables.size() == 0) {
-                controller.println(String.format("Вы оглядываетесь вокруг в поисках предмета '%s'.", param));
-            } else if (lookables.size() == 1) {
-                Entity entity = lookables.get(0);
-                controller.println(String.format("Вы смотрите на %s.", ((Titlelable) entity).getTitle()));
-                ((Lookable) entity).onLook(controller);
-                if (entity instanceof Pickable) {
-                    controller.println(String.format("%s можно взять с собой.", ((Titlelable) entity).getTitle()));
-                }
-                if (entity instanceof Containable) {
-                    controller.println(String.format("В %s можно что-нибудь положить.", ((Titlelable) entity).getTitle()));
-                    List<Entity> containItems = controller.getChildEntities(entity.getId(), Titlelable.class);
-                    switch (containItems.size()) {
-                        case 0:
-                            controller.println(String.format("Сейчас внутри %s пусто.", ((Titlelable) entity).getTitle()));
-                            break;
-                        default:
-                            controller.println(String.format("Сейчас %s содержит в себе:", ((Titlelable) entity).getTitle()));
-                            containItems.forEach(entity1 -> controller.println(String.format("\t%s", ((Titlelable) entity1).getTitle())));
+            List<Entity> lookables = roomEntities.stream().filter(entity -> Titlelable.isSuitable(entity, param)).collect(Collectors.toCollection(ArrayList::new));
+            switch (lookables.size()) {
+                case 0:
+                    controller.println(String.format("Вы оглядываетесь вокруг в поисках предмета '%s'.", param));
+                    break;
+                case 1:
+                    Entity entity = lookables.get(0);
+                    controller.println(String.format("Вы смотрите на %s.", Titlelable.v(entity)));
+                    ((Lookable) entity).onLook(controller);
+                    if (entity instanceof Pickable) {
+                        controller.println(String.format("%s можно взять с собой.", Titlelable.V(entity)));
                     }
-                }
-            } else {
-                controller.println("много такого");
+                    if (entity instanceof Containable) {
+                        controller.println(String.format("В %s можно что-нибудь положить.", Titlelable.v(entity)));
+                        List<Entity> containItems = controller.getChildEntities(entity.getId(), Titlelable.class);
+                        switch (containItems.size()) {
+                            case 0:
+                                controller.println(String.format("Сейчас внутри %s пусто.", Titlelable.r(entity)));
+                                break;
+                            default:
+                                controller.println(String.format("Сейчас %s содержит в себе:", Titlelable.i(entity)));
+                                containItems.forEach(entity1 -> controller.println(String.format("\t%s", Titlelable.v(entity1))));
+                        }
+                    }
+                    break;
+                default:
+                    controller.println(String.format("Название '%s' допускает много трактований.", param));
             }
         };
 

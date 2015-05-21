@@ -23,10 +23,10 @@ public class HardcodeDataSource implements DataSource {
 
         UUID centerRoomId = UUID.randomUUID();
 
-        PickableItem ball = new PickableItem.Builder(UUID.randomUUID(), centerRoomId).title("мяч").scene("Здесь лежит мяч.").look("Красно-синий резиновый мяч.").build();
-        ContainerItem box = new ContainerItem.Builder(UUID.randomUUID(), centerRoomId).title("ящик").scene("В деревянный ящик можно что-нибудь положить.").build();
-        PickableItem note = new PickableItem.Builder(UUID.randomUUID(), centerRoomId).title("записка").scene("Кто-то оставил здесь записку.").build();
-        PickableItem trash = new PickableItem.Builder(UUID.randomUUID(), box.getId()).title("мусор").scene("Аккуратной горкой лежит какой-то мусор.").look("Какие-то пыльные тряпки, обломки пластмассы и осколки стекла. Ничего полезного.").build();
+        PickableItem ball = new PickableItem.Builder(UUID.randomUUID(), centerRoomId).title("мяч|мяч|мячу|мяч|мячом|мяче").scene("Здесь лежит мяч.").look("Красно-синий резиновый мяч.").build();
+        ContainerItem box = new ContainerItem.Builder(UUID.randomUUID(), centerRoomId).title("ящик|ящика|ящику|ящик|ящиком|ящике").scene("В деревянный ящик можно что-нибудь положить.").build();
+        PickableItem note = new PickableItem.Builder(UUID.randomUUID(), centerRoomId).title("записка|записки|записке|записку|запиской|записке").scene("Кто-то оставил здесь записку.").build();
+        PickableItem trash = new PickableItem.Builder(UUID.randomUUID(), box.getId()).title("мусор|мусора|мусору|мусор|мусором|мусоре").scene("Аккуратной горкой лежит какой-то мусор.").look("Какие-то пыльные тряпки, обломки пластмассы и осколки стекла. Ничего полезного.").build();
 
         entities.add(ball);
         entities.add(note);

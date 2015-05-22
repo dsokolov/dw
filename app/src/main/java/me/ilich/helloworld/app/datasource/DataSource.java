@@ -11,10 +11,13 @@ import java.util.UUID;
 
 public interface DataSource {
 
+    @Deprecated
     Room getRoom(Coord coord);
 
+    @Deprecated
     Door getDoor(Coord fromCoord, Coord toCoord);
 
+    @Deprecated
     List<Door> getDoorsFrom(Coord coord);
 
     List<Entity> getEntities(UUID id);

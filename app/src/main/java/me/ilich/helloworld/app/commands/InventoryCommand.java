@@ -2,6 +2,7 @@ package me.ilich.helloworld.app.commands;
 
 import me.ilich.helloworld.app.entities.Entity;
 import me.ilich.helloworld.app.entities.primitives.Titlelable;
+import me.ilich.helloworld.app.utils.TitleUtils;
 
 import java.util.List;
 
@@ -22,7 +23,7 @@ public class InventoryCommand extends Command {
                     break;
                 default:
                     controller.println("Вы несёте с собой:");
-                    entities.forEach(item -> controller.println(String.format("\t%s", Titlelable.i(item))));
+                    entities.forEach(item -> controller.println(String.format("\t%s", TitleUtils.v(item))));
             }
         };
         cases.add(new Case("inventory", onExecute));

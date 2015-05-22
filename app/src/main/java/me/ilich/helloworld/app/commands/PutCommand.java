@@ -1,9 +1,12 @@
 package me.ilich.helloworld.app.commands;
 
+import me.ilich.helloworld.app.Controller;
 import me.ilich.helloworld.app.entities.Entity;
 import me.ilich.helloworld.app.entities.Room;
 import me.ilich.helloworld.app.entities.primitives.Pickable;
 import me.ilich.helloworld.app.entities.primitives.Titlelable;
+import me.ilich.helloworld.app.utils.MultiEntitiesUtils;
+import me.ilich.helloworld.app.utils.TitleUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,28 +20,9 @@ public class PutCommand extends Command {
 
     @Override
     protected void onPreparePatterns(List<Case> cases) {
-        Action.OnExecute oneParam = (controller, params) -> {
-            String param = params[0];
-            List<Entity> entities = controller.
-                    getInventoryEntities(Pickable.class, Titlelable.class).
-                    stream().
-                    filter(entity -> Titlelable.isSuitable(entity, param)).
-                    collect(Collectors.toCollection(ArrayList::new));
-            switch (entities.size()) {
-                case 0:
-                    controller.println(String.format("У вас нет предмета '%s'.", param));
-                    break;
-                case 1:
-                    Entity entity = entities.get(0);
-                    Room room = controller.getCurrentRoom();
-                    entity.setParentId(room.getId());
-                    controller.println(String.format("Вы положили %s.", Titlelable.r(entity)));
-                    break;
-                default:
-                    controller.println(String.format("Что такое '%s'?", param));
-            }
-        };
+
         Action.OnExecute twoParam = (controller, params) -> {
+            //TODO
             String containerName = params[1];
             String itemName = params[0];
             /*Item aItem = controller.getInventory().stream().filter(item -> item.getTitle().equalsIgnoreCase(itemName)).findFirst().orElse(null);
@@ -63,8 +47,28 @@ public class PutCommand extends Command {
         cases.add(new Case("положить ([\\w\\s]*) в ([\\w\\s]*)", twoParam));
         cases.add(new Case("пл ([\\w\\s]*) в ([\\w\\s]*)", twoParam));
 
+        Action.OnExecute oneParam = (controller, params) -> {
+            String param = params[0];
+            List<Entity> entities = controller.
+                    getInventoryEntities(Pickable.class, Titlelable.class).
+                    stream().
+                    filter(entity -> TitleUtils.isSuitable(entity, param)).
+                    collect(Collectors.toCollection(ArrayList::new));
+            MultiEntitiesUtils.process(controller, param, entities, new MultiEntitiesUtils.InventoryProcessor() {
+                @Override
+                public void onOne(Controller controller, String userInput, Entity entity) {
+                    Room room = controller.getCurrentRoom();
+                    entity.setParentId(room.getId());
+                    controller.println(String.format("Вы положили %s.", TitleUtils.r(entity)));
+                }
+            });
+        };
         cases.add(new Case("положить ([\\w\\s]*)", oneParam));
         cases.add(new Case("пл ([\\w\\s]*)", oneParam));
+
+        Action.OnExecute noParam = (controller, params) -> controller.println("Положить что?");
+        cases.add(new Case("положить", noParam));
+        cases.add(new Case("пл", noParam));
 
     }
 

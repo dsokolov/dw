@@ -1,9 +1,12 @@
 package me.ilich.helloworld.app.commands;
 
+import me.ilich.helloworld.app.Controller;
 import me.ilich.helloworld.app.entities.Entity;
 import me.ilich.helloworld.app.entities.primitives.Containable;
 import me.ilich.helloworld.app.entities.primitives.Pickable;
 import me.ilich.helloworld.app.entities.primitives.Titlelable;
+import me.ilich.helloworld.app.utils.MultiEntitiesUtils;
+import me.ilich.helloworld.app.utils.TitleUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,27 +28,19 @@ public class PickUpCommand extends Command {
             List<Entity> entities = controller.
                     getCurrentRoomEntities(Titlelable.class).
                     stream().
-                    filter(entity -> Titlelable.isSuitable(entity, param)).
+                    filter(entity -> TitleUtils.isSuitable(entity, param)).
                     collect(Collectors.toCollection(ArrayList::new));
-            switch (entities.size()) {
-                case 0:
-                    controller.println(String.format("Здесь нет предмета '%s'.", param));
-                    break;
-                case 1:
-                    Entity entity = entities.get(0);
+            MultiEntitiesUtils.process(controller, param, entities, new MultiEntitiesUtils.GroundProcessor() {
+                @Override
+                public void onOne(Controller controller, String userInput, Entity entity) {
                     if (entity instanceof Pickable) {
                         ((Pickable) entity).onPickup(controller, entity, controller.getPlayer());
-                        controller.println(String.format("Вы взяли %s.", Titlelable.v(entity)));
+                        controller.println(String.format("Вы взяли %s.", TitleUtils.v(entity)));
                     } else {
-                        controller.println(String.format("Невозможно взять %s.", Titlelable.v(entity)));
+                        controller.println(String.format("Невозможно взять %s.", TitleUtils.v(entity)));
                     }
-                    break;
-                case 2:
-                    controller.println(String.format("Возможно, вы имели ввиду '%s' или '%s'.", Titlelable.i(entities.get(0)), Titlelable.i(entities.get(1))));
-                    break;
-                default:
-                    controller.println(String.format("Что такое %s?", param));
-            }
+                }
+            });
         };
         Action.OnExecute twoParam = (controller, params) -> {
             String containerItemName = params[1];
@@ -53,65 +48,39 @@ public class PickUpCommand extends Command {
             List<Entity> containerItems = controller.
                     getCurrentRoomEntities(Titlelable.class).
                     stream().
-                    filter(entity -> Titlelable.isSuitable(entity, containerItemName)).
+                    filter(entity -> TitleUtils.isSuitable(entity, containerItemName)).
                     collect(Collectors.toCollection(ArrayList::new));
-            switch (containerItems.size()) {
-                case 0:
-                    controller.println(String.format("Здесь нет предмета '%s'.", containerItemName));
-                    break;
-                case 1:
-                    Entity conteinerItem = containerItems.get(0);
+            MultiEntitiesUtils.process(controller, containerItemName, containerItems, new MultiEntitiesUtils.GroundProcessor() {
+                @Override
+                public void onOne(Controller controller, String userInput, Entity conteinerItem) {
                     if (conteinerItem instanceof Containable) {
                         List<Entity> items = controller.
                                 getChildEntities(conteinerItem.getId(), Titlelable.class).
                                 stream().
-                                filter(entity -> Titlelable.isSuitable(entity, itemName)).
+                                filter(entity -> TitleUtils.isSuitable(entity, itemName)).
                                 collect(Collectors.toCollection(ArrayList::new));
+                        //TODO MultiEntitiesUtils
                         switch (items.size()) {
                             case 0:
-                                controller.println(String.format("В %s нет '%s'.", Titlelable.r(conteinerItem), itemName));
+                                controller.println(String.format("В %s нет '%s'.", TitleUtils.r(conteinerItem), itemName));
                                 break;
                             case 1:
                                 Entity item = items.get(0);
                                 if (item instanceof Pickable) {
                                     ((Pickable) item).onPickup(controller, item, controller.getPlayer());
-                                    controller.println(String.format("Вы взяли %s из %s.", Titlelable.v(item), Titlelable.r(conteinerItem)));
+                                    controller.println(String.format("Вы взяли %s из %s.", TitleUtils.v(item), TitleUtils.r(conteinerItem)));
                                 } else {
-                                    controller.println(String.format("Невозможно взять %s из %s.", Titlelable.v(item), Titlelable.r(conteinerItem)));
+                                    controller.println(String.format("Невозможно взять %s из %s.", TitleUtils.v(item), TitleUtils.r(conteinerItem)));
                                 }
                                 break;
                             default:
-                                controller.println(String.format("В %s есть несколько предметов с именем '%s'.", Titlelable.r(conteinerItem), itemName));
+                                controller.println(String.format("В %s есть несколько предметов с именем '%s'.", TitleUtils.r(conteinerItem), itemName));
                         }
                     } else {
-                        controller.println(String.format("В %s нельзя класть что-либо.", Titlelable.r(conteinerItem)));
+                        controller.println(String.format("Из %s нельзя ничего достать.", TitleUtils.r(conteinerItem)));
                     }
-                    break;
-                default:
-                    controller.println(String.format("Здесь несколько '%s'.", containerItemName));
-            }
-            /*Item containerItem = null;
-
-
-            } else {
-                if (containerItem.isContainable()) {
-                    Item aItem = containerItem.getItems().stream().filter(item -> item.getTitle().equalsIgnoreCase(itemName)).findFirst().orElse(null);
-                    if (aItem == null) {
-                        controller.println(String.format("В %s нет ничего похожего на %s.", containerItem.getTitle(), itemName));
-                    } else {
-                        if (aItem.isPickable()) {
-                            aItem.onMove(containerItem.getItems(), controller.getInventory());
-                            controller.println(String.format("Вы взяли %s из %s.", aItem.getTitle(), containerItem.getTitle()));
-                        } else {
-                            controller.println(String.format("Вам не удаётся взять %s из %s.", aItem.getTitle(), containerItem.getTitle()));
-                        }
-                    }
-                    //aItem.onMove(room.getItems(), controller.getInventory());
-                    //controller.println(String.format("Вы взяли %s.", aItem.getTitle()));
-                } else {
-                    controller.println(String.format("Из %s невозможно что-либо достать.", containerItem.getTitle()));
                 }
-            }*/
+            });
         };
 
         cases.add(new Case("взять ([\\w\\s]*) из ([\\w\\s]*)", twoParam));

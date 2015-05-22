@@ -12,28 +12,16 @@ import java.util.stream.Collectors;
 
 public class HardcodeDataSource implements DataSource {
 
-    private static final List<Door> doors = new ArrayList<>();
+    @Deprecated
+    private static final List<FreeWayDoor> doors = new ArrayList<>();
     private static final List<Entity> entities = new ArrayList<>();
 
     static {
-
         Player player = new Player(UUID.randomUUID());
 
         entities.add(player);
 
-        UUID centerRoomId = UUID.randomUUID();
-
-        PickableItem ball = new PickableItem.Builder(UUID.randomUUID(), centerRoomId).title("мяч|мяч|мячу|мяч|мячом|мяче").scene("Здесь лежит мяч.").look("Красно-синий резиновый мяч.").build();
-        ContainerItem box = new ContainerItem.Builder(UUID.randomUUID(), centerRoomId).title("ящик|ящика|ящику|ящик|ящиком|ящике").scene("В деревянный ящик можно что-нибудь положить.").build();
-        PickableItem note = new PickableItem.Builder(UUID.randomUUID(), centerRoomId).title("записка|записки|записке|записку|запиской|записке").scene("Кто-то оставил здесь записку.").build();
-        PickableItem trash = new PickableItem.Builder(UUID.randomUUID(), box.getId()).title("мусор|мусора|мусору|мусор|мусором|мусоре").scene("Аккуратной горкой лежит какой-то мусор.").look("Какие-то пыльные тряпки, обломки пластмассы и осколки стекла. Ничего полезного.").build();
-
-        entities.add(ball);
-        entities.add(note);
-        entities.add(box);
-        entities.add(trash);
-
-        Room centerRoom = new Room.Builder(centerRoomId, null)
+        Room centerRoom = new Room.Builder(UUID.randomUUID(), null)
                 .coord(Coord.xy(0, 0))
                 .title("Начальная комната")
                 .description("Начальная комната.")
@@ -45,6 +33,15 @@ public class HardcodeDataSource implements DataSource {
         Room southRoom = new Room.Builder(UUID.randomUUID(), null).coord(Coord.xy(0, -1)).title("Южная комната").description("Южная комната").build();
         Room warehous = new Room.Builder(UUID.randomUUID(), null).coord(Coord.xy(1, -1)).title("Кладовка").description("Душное и пыльное помещение").build();
 
+        PickableItem ball = new PickableItem.Builder(UUID.randomUUID(), centerRoom.getId()).title("мяч|мяч|мячу|мяч|мячом|мяче").scene("Здесь лежит мяч.").look("Красно-синий резиновый мяч.").build();
+        ContainerItem box = new ContainerItem.Builder(UUID.randomUUID(), centerRoom.getId()).title("ящик|ящика|ящику|ящик|ящиком|ящике").scene("В деревянный ящик можно что-нибудь положить.").build();
+        PickableItem note = new PickableItem.Builder(UUID.randomUUID(), centerRoom.getId()).title("записка|записки|записке|записку|запиской|записке").scene("Кто-то оставил здесь записку.").build();
+        PickableItem trash = new PickableItem.Builder(UUID.randomUUID(), box.getId()).title("мусор|мусора|мусору|мусор|мусором|мусоре").scene("Аккуратной горкой лежит какой-то мусор.").look("Какие-то пыльные тряпки, обломки пластмассы и осколки стекла. Ничего полезного.").build();
+        entities.add(ball);
+        entities.add(note);
+        entities.add(box);
+        entities.add(trash);
+
         entities.add(centerRoom);
         entities.add(eastRoom);
         entities.add(westRoom);
@@ -52,11 +49,11 @@ public class HardcodeDataSource implements DataSource {
         entities.add(southRoom);
         entities.add(warehous);
 
-        doors.add(new Door.Builder().coordA(centerRoom.getCoord()).coordB(eastRoom.getCoord()).create());
-        doors.add(new Door.Builder().coordA(centerRoom.getCoord()).coordB(westRoom.getCoord()).create());
-        doors.add(new Door.Builder().coordA(centerRoom.getCoord()).coordB(northRoom.getCoord()).state(Door.State.CLOSE).create());
-        doors.add(new Door.Builder().coordA(centerRoom.getCoord()).coordB(southRoom.getCoord()).create());
-        doors.add(new Door.Builder().coordA(southRoom.getCoord()).coordB(warehous.getCoord()).state(Door.State.CLOSE).create());
+        doors.add(new FreeWayDoor.Builder(UUID.randomUUID(), null).coordA(centerRoom.getCoord()).coordB(eastRoom.getCoord()).create());
+        doors.add(new FreeWayDoor.Builder(UUID.randomUUID(), null).coordA(centerRoom.getCoord()).coordB(westRoom.getCoord()).create());
+        doors.add(new FreeWayDoor.Builder(UUID.randomUUID(), null).coordA(centerRoom.getCoord()).coordB(northRoom.getCoord()).state(FreeWayDoor.State.CLOSE).create());
+        doors.add(new FreeWayDoor.Builder(UUID.randomUUID(), null).coordA(centerRoom.getCoord()).coordB(southRoom.getCoord()).create());
+        doors.add(new FreeWayDoor.Builder(UUID.randomUUID(), null).coordA(southRoom.getCoord()).coordB(warehous.getCoord()).state(FreeWayDoor.State.CLOSE).create());
 
         entities.add(new Decoration(UUID.randomUUID(), westRoom.getId(), "кнопка", "Описание кнопки", "На стене находится кнопка."));
 
@@ -77,8 +74,8 @@ public class HardcodeDataSource implements DataSource {
     }
 
     @Override
-    public Door getDoor(Coord fromCoord, Coord toCoord) {
-        Door d = doors.stream().filter(door -> {
+    public FreeWayDoor getDoor(Coord fromCoord, Coord toCoord) {
+        FreeWayDoor d = doors.stream().filter(door -> {
             final boolean result;
             switch (door.getDirection()) {
                 case AB:
@@ -96,7 +93,7 @@ public class HardcodeDataSource implements DataSource {
     }
 
     @Override
-    public List<Door> getDoorsFrom(Coord coord) {
+    public List<FreeWayDoor> getDoorsFrom(Coord coord) {
         return doors.stream().filter(door -> {
             final boolean result;
             switch (door.getDirection()) {

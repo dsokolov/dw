@@ -29,7 +29,7 @@ public interface Controller {
 
     Coord getCurrentCoord();
 
-    Door getDoor(Coord coordFrom, Coord coordTo);
+    FreeWayDoor getDoor(Coord coordFrom, Coord coordTo);
 
     List<Entity> getInventoryEntities(Class<? extends Primitive>... primitives);
 

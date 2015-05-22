@@ -1,7 +1,7 @@
 package me.ilich.helloworld.app.commands;
 
 import me.ilich.helloworld.app.entities.Coord;
-import me.ilich.helloworld.app.entities.Door;
+import me.ilich.helloworld.app.entities.FreeWayDoor;
 
 import java.util.List;
 
@@ -24,14 +24,14 @@ public class CloseCommand extends Command {
             } else {
                 Coord currentCoord = controller.getCurrentCoord();
                 Coord doorCoord = Coord.sum(coord, currentCoord);
-                Door door = controller.getDoor(currentCoord, doorCoord);
+                FreeWayDoor door = controller.getDoor(currentCoord, doorCoord);
                 if (door == null) {
                     controller.println("В этом направлении нечего закрыть.");
                 } else {
                     switch (door.getState()){
                         case OPEN:
                             controller.println("Вы закрыли дверь.");
-                            door.setState(Door.State.CLOSE);
+                            door.setState(FreeWayDoor.State.CLOSE);
                             break;
                         case CLOSE:
                             controller.println("Уже закрыто.");

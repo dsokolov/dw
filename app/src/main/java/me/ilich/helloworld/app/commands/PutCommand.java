@@ -3,6 +3,7 @@ package me.ilich.helloworld.app.commands;
 import me.ilich.helloworld.app.Controller;
 import me.ilich.helloworld.app.entities.Entity;
 import me.ilich.helloworld.app.entities.Room;
+import me.ilich.helloworld.app.entities.primitives.Containable;
 import me.ilich.helloworld.app.entities.primitives.Pickable;
 import me.ilich.helloworld.app.entities.primitives.Titlelable;
 import me.ilich.helloworld.app.utils.MultiEntitiesUtils;
@@ -22,26 +23,36 @@ public class PutCommand extends Command {
     protected void onPreparePatterns(List<Case> cases) {
 
         Action.OnExecute twoParam = (controller, params) -> {
-            //TODO
             String containerName = params[1];
             String itemName = params[0];
-            /*Item aItem = controller.getInventory().stream().filter(item -> item.getTitle().equalsIgnoreCase(itemName)).findFirst().orElse(null);
-            if (aItem == null) {
-                controller.println(String.format("У вас нет %s.", itemName));
-            } else {
-                //Item containerItem = controller.getCurrentRoom().getItems().stream().filter(item -> item.getTitle().equalsIgnoreCase(containerName)).findFirst().orElse(null);
-                Item containerItem = null;
-                if (containerItem == null) {
-                    controller.println(String.format("Здесь нет %s.", containerName));
-                } else {
-                    if (aItem.isPickable() && containerItem.isContainable()) {
-                        aItem.onMove(controller.getInventory(), containerItem.getItems());
-                        controller.println(String.format("Вы положили %s в %s.", aItem.getTitle(), containerItem.getTitle()));
-                    } else {
-                        controller.println(String.format("Вам не удаётся положить %s в %s.", aItem.getTitle(), containerItem.getTitle()));
-                    }
+            List<Entity> entities = controller.
+                    getInventoryEntities(Titlelable.class).
+                    stream().
+                    filter(item -> TitleUtils.isSuitable(item, itemName)).
+                    collect(Collectors.toCollection(ArrayList::new));
+            MultiEntitiesUtils.process(controller, itemName, entities, new MultiEntitiesUtils.InventoryProcessor() {
+
+                @Override
+                public void onOne(Controller controller, String userInput, Entity itemEntity) {
+                    List<Entity> containerEntities = controller.
+                            getCurrentRoomEntities(Titlelable.class).
+                            stream().
+                            filter(item -> TitleUtils.isSuitable(item, containerName)).
+                            collect(Collectors.toCollection(ArrayList::new));
+                    MultiEntitiesUtils.process(controller, containerName, containerEntities, new MultiEntitiesUtils.GroundProcessor() {
+                                @Override
+                                public void onOne(Controller controller, String userInput, Entity containerEntity) {
+                                    if (containerEntity instanceof Containable) {
+                                        itemEntity.setParentId(containerEntity.getId());
+                                        controller.println(String.format("Вы положили %s в %s.", TitleUtils.v(itemEntity), TitleUtils.v(containerEntity)));
+                                    } else {
+                                        controller.println(String.format("В %s нельзя ничего класть.", TitleUtils.v(containerEntity)));
+                                    }
+                                }
+                            }
+                    );
                 }
-            }*/
+            });
         };
 
         cases.add(new Case("положить ([\\w\\s]*) в ([\\w\\s]*)", twoParam));
@@ -59,7 +70,7 @@ public class PutCommand extends Command {
                 public void onOne(Controller controller, String userInput, Entity entity) {
                     Room room = controller.getCurrentRoom();
                     entity.setParentId(room.getId());
-                    controller.println(String.format("Вы положили %s.", TitleUtils.r(entity)));
+                    controller.println(String.format("Вы положили %s.", TitleUtils.v(entity)));
                 }
             });
         };
@@ -69,7 +80,6 @@ public class PutCommand extends Command {
         Action.OnExecute noParam = (controller, params) -> controller.println("Положить что?");
         cases.add(new Case("положить", noParam));
         cases.add(new Case("пл", noParam));
-
     }
 
 }

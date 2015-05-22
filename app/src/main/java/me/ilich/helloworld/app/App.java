@@ -4,13 +4,10 @@ import me.ilich.helloworld.app.commands.*;
 import me.ilich.helloworld.app.data.AbsDirection;
 import me.ilich.helloworld.app.datasource.DataSource;
 import me.ilich.helloworld.app.datasource.HardcodeDataSource;
-import me.ilich.helloworld.app.entities.Coord;
-import me.ilich.helloworld.app.entities.Door;
-import me.ilich.helloworld.app.entities.Player;
-import me.ilich.helloworld.app.entities.Room;
-import me.ilich.helloworld.app.entities.Entity;
+import me.ilich.helloworld.app.entities.*;
 import me.ilich.helloworld.app.entities.primitives.Primitive;
 import me.ilich.helloworld.app.entities.primitives.Scenable;
+import me.ilich.helloworld.app.utils.TitleUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -80,7 +77,7 @@ public class App {
 
         @Override
         public void tryMoveTo(Coord toCoord) {
-            Door door = dataSource.getDoor(currentCoord, toCoord);
+            FreeWayDoor door = dataSource.getDoor(currentCoord, toCoord);
             if (door == null) {
                 controller.println("Вы не можете идти в этом направлении.");
             } else {
@@ -145,7 +142,7 @@ public class App {
         }
 
         @Override
-        public Door getDoor(Coord coordFrom, Coord coordTo) {
+        public FreeWayDoor getDoor(Coord coordFrom, Coord coordTo) {
             return dataSource.getDoor(coordFrom, coordTo);
         }
 
@@ -202,7 +199,7 @@ public class App {
     }
 
     private void displayRoom() {
-        controller.println(String.format("*** %s ***", currentRoom.getTitle()));
+        controller.println(String.format("*** %s ***", TitleUtils.i(currentRoom)));
         List<Entity> roomEntities = new ArrayList<>();
         roomEntities.addAll(dataSource.getEntities(currentRoom.getId()));
         roomEntities.addAll(dataSource.getChildEntities(currentRoom.getId(), new Class[]{}));
@@ -214,7 +211,7 @@ public class App {
     }
 
     private void displayDoors() {
-        List<Door> doors = dataSource.getDoorsFrom(currentCoord);
+        List<FreeWayDoor> doors = dataSource.getDoorsFrom(currentCoord);
         StringBuilder doorsStringBuilder = new StringBuilder();
         if (doors.size() > 0) {
             List<AbsDirection> directions = new ArrayList<>();

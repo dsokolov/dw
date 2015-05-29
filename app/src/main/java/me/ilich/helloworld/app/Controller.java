@@ -13,8 +13,6 @@ public interface Controller {
 
     void stop();
 
-    void tryMoveTo(Coord coord);
-
     void showRoomDescription();
 
     Room getCurrentRoom();
@@ -27,15 +25,9 @@ public interface Controller {
 
     void println(String s);
 
-    Coord getCurrentCoord();
-
-    FreeWayDoor getDoor(Coord coordFrom, Coord coordTo);
-
     List<Entity> getInventoryEntities(Class<? extends Primitive>... primitives);
 
     List<Entity> getCurrentRoomEntities(Class<? extends Primitive>... primitives);
-
-    DataSource getDataSource();
 
     Player getPlayer();
 

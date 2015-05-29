@@ -5,6 +5,8 @@ import me.ilich.helloworld.app.data.AbsDirection;
 import me.ilich.helloworld.app.datasource.DataSource;
 import me.ilich.helloworld.app.datasource.HardcodeDataSource;
 import me.ilich.helloworld.app.entities.*;
+import me.ilich.helloworld.app.entities.primitives.Coordinable;
+import me.ilich.helloworld.app.entities.primitives.Enterable;
 import me.ilich.helloworld.app.entities.primitives.Primitive;
 import me.ilich.helloworld.app.entities.primitives.Scenable;
 import me.ilich.helloworld.app.utils.TitleUtils;
@@ -15,6 +17,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class App {
 
@@ -76,30 +79,6 @@ public class App {
         }
 
         @Override
-        public void tryMoveTo(Coord toCoord) {
-            FreeWayDoor door = dataSource.getDoor(currentCoord, toCoord);
-            if (door == null) {
-                controller.println("Вы не можете идти в этом направлении.");
-            } else {
-                switch (door.getState()) {
-                    case OPEN:
-                        if (currentCoord.equals(door.getCoordA())) {
-                            App.this.currentCoord.set(door.getCoordB());
-                        } else {
-                            App.this.currentCoord.set(door.getCoordA());
-                        }
-                        roomDescriptionVisible = true;
-                        break;
-                    case CLOSE:
-                        controller.println("Дверь закрыта");
-                        break;
-                    case LOCKED:
-                        break;
-                }
-            }
-        }
-
-        @Override
         public void showRoomDescription() {
             roomDescriptionVisible = true;
         }
@@ -109,11 +88,6 @@ public class App {
             return currentRoom;
         }
 
-/*        @Override
-        public List<Item> getInventory() {
-            return inventory;
-        }*/
-
         @Override
         public List<Command> getCommands() {
             return commands;
@@ -121,9 +95,17 @@ public class App {
 
         @Override
         public void tryMoveBy(Coord coord) {
-            Coord newCoord = Coord.coord(currentCoord);
-            newCoord.add(coord);
-            tryMoveTo(newCoord);
+            List<Entity> entities = dataSource.
+                    getChildEntities(currentRoom.getId(), Enterable.class, Coordinable.class).
+                    stream().
+                    filter(entity -> ((Coordinable) entity).getCoord().equals(coord)).
+                    collect(Collectors.toCollection(ArrayList::new));
+            if (entities.size() == 1) {
+                App.this.currentCoord.add(coord);
+                roomDescriptionVisible = true;
+            } else {
+                controller.println("Вы не можете идти в этом направлении.");
+            }
         }
 
         @Override
@@ -137,16 +119,6 @@ public class App {
         }
 
         @Override
-        public Coord getCurrentCoord() {
-            return currentCoord;
-        }
-
-        @Override
-        public FreeWayDoor getDoor(Coord coordFrom, Coord coordTo) {
-            return dataSource.getDoor(coordFrom, coordTo);
-        }
-
-        @Override
         public List<Entity> getInventoryEntities(Class<? extends Primitive>... primitives) {
             return dataSource.getChildEntities(player.getId(), primitives);
         }
@@ -154,11 +126,6 @@ public class App {
         @Override
         public List<Entity> getCurrentRoomEntities(Class<? extends Primitive>... primitives) {
             return dataSource.getChildEntities(currentRoom.getId(), primitives);
-        }
-
-        @Override
-        public DataSource getDataSource() {
-            return dataSource;
         }
 
         @Override
@@ -187,13 +154,16 @@ public class App {
             commands.stream().forEach(command -> actions.addAll(command.suitableActions(input)));
             switch (actions.size()) {
                 case 0:
-                    controller.println("неправильный ввод");
+                    controller.println(String.format("Что значит '%s'?", input));
                     break;
                 case 1:
                     actions.get(0).execute(controller);
                     break;
+                case 2:
+                    controller.println(String.format("Возможно, вы имели ввиду '%s' или '%s'.", actions.get(0).getTitle(), actions.get(1).getTitle()));
+                    break;
                 default:
-                    controller.println("неопределённый ввод");
+                    controller.println(String.format("Ввод '%s' допускает множество трактований.", input));
             }
         }
     }
@@ -202,7 +172,7 @@ public class App {
         controller.println(String.format("*** %s ***", TitleUtils.i(currentRoom)));
         List<Entity> roomEntities = new ArrayList<>();
         roomEntities.addAll(dataSource.getEntities(currentRoom.getId()));
-        roomEntities.addAll(dataSource.getChildEntities(currentRoom.getId(), new Class[]{}));
+        roomEntities.addAll(dataSource.getChildEntities(currentRoom.getId()));
         roomEntities.forEach(entity -> {
             if (entity instanceof Scenable) {
                 ((Scenable) entity).onScene(controller);
@@ -211,46 +181,44 @@ public class App {
     }
 
     private void displayDoors() {
-        List<FreeWayDoor> doors = dataSource.getDoorsFrom(currentCoord);
+        List<Entity> doors = dataSource.getChildEntities(currentRoom.getId(), Enterable.class);
         StringBuilder doorsStringBuilder = new StringBuilder();
-        if (doors.size() > 0) {
-            List<AbsDirection> directions = new ArrayList<>();
-            doors.forEach(item -> {
-                Coord coord = currentCoord.equals(item.getCoordA()) ? item.getCoordB() : item.getCoordA();
-                AbsDirection direction = currentCoord.getAngel(coord);
-                directions.add(direction);
-            });
-            directions.sort(Enum::compareTo);
-            doorsStringBuilder.append("Выходы: ");
-            final boolean[] first = {true};
-            directions.forEach(item -> {
-                if (first[0]) {
-                    first[0] = false;
-                } else {
-                    doorsStringBuilder.append(" ");
-                }
+        List<AbsDirection> directions = new ArrayList<>();
+        doors.forEach(entity -> {
+            Coordinable coordinable = (Coordinable) entity;
+            directions.add(coordinable.getCoord().getAngel());
+        });
+        directions.sort(Enum::compareTo);
+        doorsStringBuilder.append("Выходы: ");
+        final boolean[] first = {true};
+        directions.forEach(item -> {
+            if (first[0]) {
+                first[0] = false;
+            } else {
+                doorsStringBuilder.append(" ");
+            }
 
-                final String t;
-                switch (item) {
-                    case N:
-                        t = "С";
-                        break;
-                    case E:
-                        t = "В";
-                        break;
-                    case S:
-                        t = "Ю";
-                        break;
-                    case W:
-                        t = "З";
-                        break;
-                    default:
-                        t = "";
-                }
-                doorsStringBuilder.append(t);
-            });
-            controller.println(doorsStringBuilder.toString());
-        }
+            final String t;
+            switch (item) {
+                case N:
+                    t = "С";
+                    break;
+                case E:
+                    t = "В";
+                    break;
+                case S:
+                    t = "Ю";
+                    break;
+                case W:
+                    t = "З";
+                    break;
+                default:
+                    t = "";
+            }
+            doorsStringBuilder.append(t);
+        });
+        controller.println(doorsStringBuilder.toString());
     }
 
 }
+

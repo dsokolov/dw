@@ -1,7 +1,6 @@
 package me.ilich.helloworld.app.datasource;
 
 import me.ilich.helloworld.app.entities.*;
-import me.ilich.helloworld.app.entities.Entity;
 import me.ilich.helloworld.app.entities.primitives.Primitive;
 
 import java.util.ArrayList;
@@ -12,8 +11,6 @@ import java.util.stream.Collectors;
 
 public class HardcodeDataSource implements DataSource {
 
-    @Deprecated
-    private static final List<FreeWayDoor> doors = new ArrayList<>();
     private static final List<Entity> entities = new ArrayList<>();
 
     static {
@@ -26,12 +23,30 @@ public class HardcodeDataSource implements DataSource {
                 .title("Начальная комната")
                 .description("Начальная комната.")
                 .build();
+        entities.add(centerRoom);
+        entities.add(new FreeWayDoor.Builder(UUID.randomUUID(), centerRoom.getId()).coord(Coord.north()).create());
+        entities.add(new FreeWayDoor.Builder(UUID.randomUUID(), centerRoom.getId()).coord(Coord.east()).create());
+        entities.add(new FreeWayDoor.Builder(UUID.randomUUID(), centerRoom.getId()).coord(Coord.south()).create());
+        entities.add(new FreeWayDoor.Builder(UUID.randomUUID(), centerRoom.getId()).coord(Coord.west()).create());
 
         Room eastRoom = new Room.Builder(UUID.randomUUID(), null).coord(Coord.xy(1, 0)).title("Восточная комната").description("Восточная комната").build();
+        entities.add(eastRoom);
+        entities.add(new FreeWayDoor.Builder(UUID.randomUUID(), eastRoom.getId()).coord(Coord.south()).create());
+
         Room westRoom = new Room.Builder(UUID.randomUUID(), null).coord(Coord.xy(-1, 0)).title("Западная комната").description("Западная комната").build();
+        entities.add(westRoom);
+        entities.add(new FreeWayDoor.Builder(UUID.randomUUID(), westRoom.getId()).coord(Coord.south()).create());
+
         Room northRoom = new Room.Builder(UUID.randomUUID(), null).coord(Coord.xy(0, 1)).title("Северная комната").description("Северная комната").build();
+        entities.add(northRoom);
+        entities.add(new FreeWayDoor.Builder(UUID.randomUUID(), northRoom.getId()).coord(Coord.south()).create());
+
         Room southRoom = new Room.Builder(UUID.randomUUID(), null).coord(Coord.xy(0, -1)).title("Южная комната").description("Южная комната").build();
+        entities.add(southRoom);
+        entities.add(new FreeWayDoor.Builder(UUID.randomUUID(), southRoom.getId()).coord(Coord.south()).create());
+
         Room warehous = new Room.Builder(UUID.randomUUID(), null).coord(Coord.xy(1, -1)).title("Кладовка").description("Душное и пыльное помещение").build();
+        entities.add(warehous);
 
         PickableItem ball = new PickableItem.Builder(UUID.randomUUID(), centerRoom.getId()).title("мяч|мяч|мячу|мяч|мячом|мяче").scene("Здесь лежит мяч.").look("Красно-синий резиновый мяч.").build();
         ContainerItem box = new ContainerItem.Builder(UUID.randomUUID(), centerRoom.getId()).title("ящик|ящика|ящику|ящик|ящиком|ящике").scene("В деревянный ящик можно что-нибудь положить.").build();
@@ -42,18 +57,8 @@ public class HardcodeDataSource implements DataSource {
         entities.add(box);
         entities.add(trash);
 
-        entities.add(centerRoom);
-        entities.add(eastRoom);
-        entities.add(westRoom);
-        entities.add(northRoom);
-        entities.add(southRoom);
-        entities.add(warehous);
 
-        doors.add(new FreeWayDoor.Builder(UUID.randomUUID(), null).coordA(centerRoom.getCoord()).coordB(eastRoom.getCoord()).create());
-        doors.add(new FreeWayDoor.Builder(UUID.randomUUID(), null).coordA(centerRoom.getCoord()).coordB(westRoom.getCoord()).create());
-        doors.add(new FreeWayDoor.Builder(UUID.randomUUID(), null).coordA(centerRoom.getCoord()).coordB(northRoom.getCoord()).state(FreeWayDoor.State.CLOSE).create());
-        doors.add(new FreeWayDoor.Builder(UUID.randomUUID(), null).coordA(centerRoom.getCoord()).coordB(southRoom.getCoord()).create());
-        doors.add(new FreeWayDoor.Builder(UUID.randomUUID(), null).coordA(southRoom.getCoord()).coordB(warehous.getCoord()).state(FreeWayDoor.State.CLOSE).create());
+
 
         entities.add(new Decoration(UUID.randomUUID(), westRoom.getId(), "кнопка", "Описание кнопки", "На стене находится кнопка."));
 
@@ -74,49 +79,12 @@ public class HardcodeDataSource implements DataSource {
     }
 
     @Override
-    public FreeWayDoor getDoor(Coord fromCoord, Coord toCoord) {
-        FreeWayDoor d = doors.stream().filter(door -> {
-            final boolean result;
-            switch (door.getDirection()) {
-                case AB:
-                    result = door.getCoordA().equals(fromCoord) && door.getCoordB().equals(toCoord);
-                    break;
-                case BA:
-                    result = door.getCoordB().equals(fromCoord) && door.getCoordA().equals(toCoord);
-                    break;
-                default:
-                    result = (door.getCoordB().equals(fromCoord) && door.getCoordA().equals(toCoord)) || (door.getCoordA().equals(fromCoord) && door.getCoordB().equals(toCoord));
-            }
-            return result;
-        }).findFirst().orElse(null);
-        return d;
-    }
-
-    @Override
-    public List<FreeWayDoor> getDoorsFrom(Coord coord) {
-        return doors.stream().filter(door -> {
-            final boolean result;
-            switch (door.getDirection()) {
-                case AB:
-                    result = door.getCoordA().equals(coord);
-                    break;
-                case BA:
-                    result = door.getCoordB().equals(coord);
-                    break;
-                default:
-                    result = door.getCoordA().equals(coord) || door.getCoordB().equals(coord);
-            }
-            return result;
-        }).collect(Collectors.toCollection(ArrayList::new));
-    }
-
-    @Override
     public List<Entity> getEntities(UUID id) {
         return entities.stream().filter(entity -> Objects.equals(id, entity.getId())).collect(Collectors.toCollection(ArrayList::new));
     }
 
     @Override
-    public List<Entity> getEntities(Class<? extends Primitive>[] primitives) {
+    public List<Entity> getEntities(Class<? extends Primitive>... primitives) {
         return entities.stream().filter(entity -> {
             boolean result = true;
             for (Class<? extends Primitive> primitive : primitives) {
@@ -130,7 +98,7 @@ public class HardcodeDataSource implements DataSource {
     }
 
     @Override
-    public List<Entity> getChildEntities(UUID parentId, Class<? extends Primitive>[] primitives) {
+    public List<Entity> getChildEntities(UUID parentId, Class<? extends Primitive>... primitives) {
         return entities.stream().filter(entity -> {
             boolean b = true;
             for (Class<? extends Primitive> primitive : primitives) {

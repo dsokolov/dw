@@ -7,16 +7,22 @@ import me.ilich.helloworld.app.Controller;
  */
 public class Action {
 
+    private final String title;
     private final String[] params;
     private final OnExecute onExecute;
 
-    public Action(String[] params, OnExecute onExecute) {
+    public Action(String title, String[] params, OnExecute onExecute) {
+        this.title = title;
         this.params = params;
         this.onExecute = onExecute;
     }
 
     public void execute(Controller controller) {
         onExecute.onExecute(controller, params);
+    }
+
+    public String getTitle() {
+        return title;
     }
 
     public interface OnExecute {

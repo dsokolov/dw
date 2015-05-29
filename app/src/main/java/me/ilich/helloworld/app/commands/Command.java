@@ -74,7 +74,7 @@ public abstract class Command {
         }
 
         public Action createAction(String[] params) {
-            return new Action(params, onExecute);
+            return new Action(title, params, onExecute);
         }
 
     }

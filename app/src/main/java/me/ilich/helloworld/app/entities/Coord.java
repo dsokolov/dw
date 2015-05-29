@@ -79,6 +79,9 @@ public class Coord {
         z = coord.z;
     }
 
+    public AbsDirection getAngel() {
+        return Coord.zero().getAngel(this);
+    }
 
     public AbsDirection getAngel(Coord coord) {
         AbsDirection d;

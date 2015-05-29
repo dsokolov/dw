@@ -1,14 +1,13 @@
 package me.ilich.helloworld.app.commands;
 
 import me.ilich.helloworld.app.entities.Coord;
-import me.ilich.helloworld.app.entities.FreeWayDoor;
 
 import java.util.List;
 
 public class CloseCommand extends Command {
 
     public CloseCommand() {
-        super("ЗАКРЫТЬ", "Закрыть дверь");
+        super("закрыть", "Закрыть дверь");
     }
 
     @Override
@@ -22,7 +21,7 @@ public class CloseCommand extends Command {
             if (coord == null) {
                 controller.println(String.format("Что такое %s?", param));
             } else {
-                Coord currentCoord = controller.getCurrentCoord();
+/*                Coord currentCoord = controller.getCurrentCoord();
                 Coord doorCoord = Coord.sum(coord, currentCoord);
                 FreeWayDoor door = controller.getDoor(currentCoord, doorCoord);
                 if (door == null) {
@@ -42,7 +41,7 @@ public class CloseCommand extends Command {
                         default:
                             controller.println("Невозможно закрыть.");
                     }
-                }
+                }*/
             }
         };
         cases.add(new Case("закрыть ([\\w\\s]*)", oneParam));

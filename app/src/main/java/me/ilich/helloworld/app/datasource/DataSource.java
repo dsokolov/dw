@@ -14,16 +14,10 @@ public interface DataSource {
     @Deprecated
     Room getRoom(Coord coord);
 
-    @Deprecated
-    FreeWayDoor getDoor(Coord fromCoord, Coord toCoord);
-
-    @Deprecated
-    List<FreeWayDoor> getDoorsFrom(Coord coord);
-
     List<Entity> getEntities(UUID id);
 
     List<Entity> getEntities(Class<? extends Primitive>... primitives);
 
-    List<Entity> getChildEntities(UUID parentId, Class<? extends Primitive>[] primitives);
+    List<Entity> getChildEntities(UUID parentId, Class<? extends Primitive>... primitives);
 
 }

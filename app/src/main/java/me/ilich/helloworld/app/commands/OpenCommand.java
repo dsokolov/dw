@@ -1,7 +1,6 @@
 package me.ilich.helloworld.app.commands;
 
 import me.ilich.helloworld.app.entities.Coord;
-import me.ilich.helloworld.app.entities.FreeWayDoor;
 
 import java.util.List;
 
@@ -22,7 +21,7 @@ public class OpenCommand extends Command {
             if (coord == null) {
                 controller.println(String.format("Что такое %s?", param));
             } else {
-                Coord currentCoord = controller.getCurrentCoord();
+/*                Coord currentCoord = controller.getCurrentCoord();
                 Coord doorCoord = Coord.sum(coord, currentCoord);
                 FreeWayDoor door = controller.getDoor(currentCoord, doorCoord);
                 if (door == null) {
@@ -42,7 +41,7 @@ public class OpenCommand extends Command {
                         default:
                             controller.println("Невозможно открыть.");
                     }
-                }
+                }*/
             }
         };
         cases.add(new Case("открыть ([\\w\\s]*)", oneParam));

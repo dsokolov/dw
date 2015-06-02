@@ -1,7 +1,6 @@
 package me.ilich.helloworld.app;
 
 import me.ilich.helloworld.app.commands.Command;
-import me.ilich.helloworld.app.datasource.DataSource;
 import me.ilich.helloworld.app.entities.*;
 import me.ilich.helloworld.app.entities.Entity;
 import me.ilich.helloworld.app.entities.primitives.Primitive;

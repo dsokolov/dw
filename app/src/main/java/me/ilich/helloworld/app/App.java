@@ -4,11 +4,16 @@ import me.ilich.helloworld.app.commands.*;
 import me.ilich.helloworld.app.data.AbsDirection;
 import me.ilich.helloworld.app.datasource.DataSource;
 import me.ilich.helloworld.app.datasource.HardcodeDataSource;
-import me.ilich.helloworld.app.entities.*;
+import me.ilich.helloworld.app.datasource.ReadDataSource;
+import me.ilich.helloworld.app.entities.Coord;
+import me.ilich.helloworld.app.entities.Entity;
+import me.ilich.helloworld.app.entities.Player;
+import me.ilich.helloworld.app.entities.Room;
 import me.ilich.helloworld.app.entities.primitives.Coordinable;
 import me.ilich.helloworld.app.entities.primitives.Enterable;
 import me.ilich.helloworld.app.entities.primitives.Primitive;
 import me.ilich.helloworld.app.entities.primitives.Scenable;
+import me.ilich.helloworld.app.stories.SandboxStory;
 import me.ilich.helloworld.app.utils.TitleUtils;
 
 import java.io.BufferedReader;
@@ -46,6 +51,7 @@ public class App {
     public static void main(String... args) {
         System.out.println("begin");
         App app = new App();
+        app.init();
         app.run();
         System.out.println("end");
     }
@@ -61,9 +67,7 @@ public class App {
         return result;
     }
 
-    private DataSource dataSource = new HardcodeDataSource();
-
-    /*private final List<Item> inventory = new ArrayList<>();*/
+    private ReadDataSource dataSource;
 
     private Coord currentCoord = Coord.zero();
     private boolean working = true;
@@ -102,6 +106,9 @@ public class App {
                     collect(Collectors.toCollection(ArrayList::new));
             if (entities.size() == 1) {
                 App.this.currentCoord.add(coord);
+                List<Entity> roomEntities = dataSource.getEntities(Room.class);
+                currentRoom = (Room) roomEntities.stream().filter(entity -> ((Room) entity).getCoord().equals(currentCoord)).findFirst().orElse(null);
+                player.setParentId(currentRoom.getId());
                 roomDescriptionVisible = true;
             } else {
                 controller.println("Вы не можете идти в этом направлении.");
@@ -140,10 +147,36 @@ public class App {
 
     };
 
-    public void run() {
+    public App() {
+        DataSource dataSource = new HardcodeDataSource();
+        new SandboxStory().loadTo(dataSource);
+        this.dataSource = dataSource;
+    }
+
+    public void init() {
+        initPlayer();
+        initRoom();
+    }
+
+    private void initRoom() {
+        List<Entity> roomEntities = dataSource.getEntities(player.getParentId());
+        if (roomEntities.isEmpty()) {
+            throw new RuntimeException("no room");
+        } else {
+            currentRoom = (Room) roomEntities.get(0);
+        }
+        currentCoord = Coord.coord(currentRoom.getCoord());
+    }
+
+    private void initPlayer() {
         player = (Player) dataSource.getEntities(Player.class).stream().findFirst().orElse(null);
+        if (player == null) {
+            throw new RuntimeException("no player");
+        }
+    }
+
+    public void run() {
         while (working) {
-            currentRoom = dataSource.getRoom(currentCoord);
             if (roomDescriptionVisible) {
                 displayRoom();
                 displayDoors();

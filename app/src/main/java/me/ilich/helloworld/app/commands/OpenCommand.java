@@ -23,14 +23,14 @@ public class OpenCommand extends Command {
             } else {
 /*                Coord currentCoord = controller.getCurrentCoord();
                 Coord doorCoord = Coord.sum(coord, currentCoord);
-                FreeWayDoor door = controller.getDoor(currentCoord, doorCoord);
+                FreeWayByCoordDoor door = controller.getDoor(currentCoord, doorCoord);
                 if (door == null) {
                     controller.println("В этом направлении нечего открывать.");
                 } else {
                     switch (door.getState()){
                         case CLOSE:
                             controller.println("Вы открыли дверь.");
-                            door.setState(FreeWayDoor.State.OPEN);
+                            door.setState(FreeWayByCoordDoor.State.OPEN);
                             break;
                         case OPEN:
                             controller.println("Уже открыто.");

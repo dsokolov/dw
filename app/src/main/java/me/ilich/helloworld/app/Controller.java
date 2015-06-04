@@ -31,4 +31,8 @@ public interface Controller {
     Player getPlayer();
 
     List<Entity> getChildEntities(UUID parentId, Class<? extends Primitive>... primitives);
+
+    void setCurrentRoom(Room newRoom);
+
+    List<Entity> getEntities(Class<? extends Primitive>... primitives);
 }

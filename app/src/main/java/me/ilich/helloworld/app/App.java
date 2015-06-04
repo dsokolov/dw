@@ -1,7 +1,6 @@
 package me.ilich.helloworld.app;
 
 import me.ilich.helloworld.app.commands.*;
-import me.ilich.helloworld.app.data.AbsDirection;
 import me.ilich.helloworld.app.datasource.DataSource;
 import me.ilich.helloworld.app.datasource.HardcodeDataSource;
 import me.ilich.helloworld.app.datasource.ReadDataSource;
@@ -13,7 +12,7 @@ import me.ilich.helloworld.app.entities.primitives.Coordinable;
 import me.ilich.helloworld.app.entities.primitives.Enterable;
 import me.ilich.helloworld.app.entities.primitives.Primitive;
 import me.ilich.helloworld.app.entities.primitives.Scenable;
-import me.ilich.helloworld.app.stories.SandboxStory;
+import me.ilich.helloworld.app.stories.DachaStory;
 import me.ilich.helloworld.app.utils.TitleUtils;
 
 import java.io.BufferedReader;
@@ -105,11 +104,8 @@ public class App {
                     filter(entity -> ((Coordinable) entity).getCoord().equals(coord)).
                     collect(Collectors.toCollection(ArrayList::new));
             if (entities.size() == 1) {
-                App.this.currentCoord.add(coord);
-                List<Entity> roomEntities = dataSource.getEntities(Room.class);
-                currentRoom = (Room) roomEntities.stream().filter(entity -> ((Room) entity).getCoord().equals(currentCoord)).findFirst().orElse(null);
-                player.setParentId(currentRoom.getId());
-                roomDescriptionVisible = true;
+                Enterable enterable = (Enterable) entities.get(0);
+                enterable.onEnter(this);
             } else {
                 controller.println("Вы не можете идти в этом направлении.");
             }
@@ -145,11 +141,25 @@ public class App {
             return dataSource.getChildEntities(parentId, primitives);
         }
 
+        @Override
+        public void setCurrentRoom(Room newRoom) {
+            App.this.currentCoord.set(newRoom.getCoord());
+            currentRoom = newRoom;
+            player.setParentId(currentRoom.getId());
+            roomDescriptionVisible = true;
+        }
+
+        @Override
+        public List<Entity> getEntities(Class<? extends Primitive>... primitives) {
+            return dataSource.getEntities(primitives);
+        }
+
     };
 
     public App() {
         DataSource dataSource = new HardcodeDataSource();
-        new SandboxStory().loadTo(dataSource);
+        //new SandboxStory().loadTo(dataSource);
+        new DachaStory().loadTo(dataSource);
         this.dataSource = dataSource;
     }
 
@@ -216,40 +226,46 @@ public class App {
     private void displayDoors() {
         List<Entity> doors = dataSource.getChildEntities(currentRoom.getId(), Enterable.class);
         StringBuilder doorsStringBuilder = new StringBuilder();
-        List<AbsDirection> directions = new ArrayList<>();
+        List<Coordinable> coordinableDoors = new ArrayList<>();
         doors.forEach(entity -> {
-            Coordinable coordinable = (Coordinable) entity;
-            directions.add(coordinable.getCoord().getAngel());
-        });
-        directions.sort(Enum::compareTo);
-        doorsStringBuilder.append("Выходы: ");
-        final boolean[] first = {true};
-        directions.forEach(item -> {
-            if (first[0]) {
-                first[0] = false;
+            if (entity instanceof Coordinable) {
+                Coordinable coordinable = (Coordinable) entity;
+                coordinableDoors.add(coordinable);
             } else {
-                doorsStringBuilder.append(" ");
+                //TODO non-coordinable door
             }
-
-            final String t;
-            switch (item) {
-                case N:
-                    t = "С";
-                    break;
-                case E:
-                    t = "В";
-                    break;
-                case S:
-                    t = "Ю";
-                    break;
-                case W:
-                    t = "З";
-                    break;
-                default:
-                    t = "";
-            }
-            doorsStringBuilder.append(t);
         });
+        if (coordinableDoors.size() > 0) {
+            coordinableDoors.sort((o1, o2) -> o1.getCoord().getAngel().compareTo(o2.getCoord().getAngel()));
+            doorsStringBuilder.append("Выходы: ");
+            final boolean[] first = {true};
+            coordinableDoors.forEach(item -> {
+                if (first[0]) {
+                    first[0] = false;
+                } else {
+                    doorsStringBuilder.append(" ");
+                }
+
+                final String t;
+                switch (item.getCoord().getAngel()) {
+                    case N:
+                        t = "С";
+                        break;
+                    case E:
+                        t = "В";
+                        break;
+                    case S:
+                        t = "Ю";
+                        break;
+                    case W:
+                        t = "З";
+                        break;
+                    default:
+                        t = "";
+                }
+                doorsStringBuilder.append(String.format("%s (%s)", t, ((Enterable) item).getTitle()));
+            });
+        }
         controller.println(doorsStringBuilder.toString());
     }
 

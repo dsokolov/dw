@@ -13,8 +13,8 @@ public class Room extends Entity implements Titlelable, Scenable, Coordinable {
     private Scenable scenable;
     private Coordinable coordinable;
 
-    private Room(UUID id, UUID parentId) {
-        super(id, parentId);
+    private Room(Entity parent) {
+        super(parent);
     }
 
     @Override
@@ -46,8 +46,8 @@ public class Room extends Entity implements Titlelable, Scenable, Coordinable {
 
         private final Room room;
 
-        public Builder(UUID roomId, UUID locationId) {
-            this.room = new Room(roomId, locationId);
+        public Builder(Entity location) {
+            this.room = new Room(location);
         }
 
         public Builder coord(Coord coord) {

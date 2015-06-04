@@ -23,14 +23,14 @@ public class CloseCommand extends Command {
             } else {
 /*                Coord currentCoord = controller.getCurrentCoord();
                 Coord doorCoord = Coord.sum(coord, currentCoord);
-                FreeWayDoor door = controller.getDoor(currentCoord, doorCoord);
+                FreeWayByCoordDoor door = controller.getDoor(currentCoord, doorCoord);
                 if (door == null) {
                     controller.println("В этом направлении нечего закрыть.");
                 } else {
                     switch (door.getState()){
                         case OPEN:
                             controller.println("Вы закрыли дверь.");
-                            door.setState(FreeWayDoor.State.CLOSE);
+                            door.setState(FreeWayByCoordDoor.State.CLOSE);
                             break;
                         case CLOSE:
                             controller.println("Уже закрыто.");

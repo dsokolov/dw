@@ -15,8 +15,8 @@ public class PickableItem extends Entity implements Titlelable, Scenable, Lookab
     private Lookable lookable;
     private Pickable pickable;
 
-    private PickableItem(UUID id, UUID parentId) {
-        super(id, parentId);
+    private PickableItem(Entity parent) {
+        super(parent);
         pickable = new Pickable.Impl();
     }
 
@@ -49,8 +49,8 @@ public class PickableItem extends Entity implements Titlelable, Scenable, Lookab
 
         private final PickableItem item;
 
-        public Builder(UUID id, UUID parentId) {
-            item = new PickableItem(id, parentId);
+        public Builder(Entity parent) {
+            item = new PickableItem(parent);
         }
 
         public Builder title(String s) {

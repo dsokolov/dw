@@ -1,6 +1,5 @@
 package me.ilich.helloworld.app.entities.primitives;
 
-import me.ilich.helloworld.app.entities.Entity;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;

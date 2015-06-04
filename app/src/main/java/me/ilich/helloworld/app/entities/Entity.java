@@ -14,14 +14,17 @@ public class Entity implements Primitive {
     private final UUID id;
     private UUID parentId;
 
-    public Entity(UUID id) {
-        this.id = id;
-        this.parentId = null;
+    public Entity() {
+        this((UUID) null);
     }
 
-    public Entity(UUID id, UUID parentId) {
-        this.id = id;
+    public Entity(UUID parentId) {
+        this.id = UUID.randomUUID();
         this.parentId = parentId;
+    }
+
+    public Entity(Entity parentEntity) {
+        this(parentEntity.getId());
     }
 
     public UUID getId() {

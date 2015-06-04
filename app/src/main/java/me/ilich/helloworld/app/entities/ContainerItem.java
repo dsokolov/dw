@@ -15,8 +15,8 @@ public class ContainerItem extends Entity implements Titlelable, Scenable, Looka
     private Lookable lookable;
     private Containable containable;
 
-    private ContainerItem(UUID id, UUID parentId) {
-        super(id, parentId);
+    private ContainerItem(Entity parent) {
+        super(parent);
         containable = new Containable.Impl();
     }
 
@@ -49,8 +49,8 @@ public class ContainerItem extends Entity implements Titlelable, Scenable, Looka
 
         private final ContainerItem item;
 
-        public Builder(UUID id, UUID parentId) {
-            item = new ContainerItem(id, parentId);
+        public Builder(Entity parent) {
+            item = new ContainerItem(parent);
         }
 
         public Builder title(String s) {

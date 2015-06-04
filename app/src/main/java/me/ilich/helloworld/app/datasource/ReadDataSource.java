@@ -1,8 +1,5 @@
 package me.ilich.helloworld.app.datasource;
 
-import me.ilich.helloworld.app.entities.Coord;
-import me.ilich.helloworld.app.entities.FreeWayDoor;
-import me.ilich.helloworld.app.entities.Room;
 import me.ilich.helloworld.app.entities.Entity;
 import me.ilich.helloworld.app.entities.primitives.Primitive;
 

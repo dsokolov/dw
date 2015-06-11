@@ -3,8 +3,6 @@ package me.ilich.helloworld.app.stories;
 import me.ilich.helloworld.app.datasource.WriteDataSource;
 import me.ilich.helloworld.app.entities.*;
 
-import java.util.UUID;
-
 public class SandboxStory implements Story {
 
     @Override
@@ -21,10 +19,10 @@ public class SandboxStory implements Story {
                     .description("Начальная комната.")
                     .build();
             entities.add(centerRoom);
-            entities.add(new FreeWayByCoordDoor.Builder(centerRoom).coord(Coord.north()).create());
-            entities.add(new FreeWayByCoordDoor.Builder(centerRoom).coord(Coord.east()).create());
-            entities.add(new FreeWayByCoordDoor.Builder(centerRoom).coord(Coord.south()).create());
-            entities.add(new FreeWayByCoordDoor.Builder(centerRoom).coord(Coord.west()).create());
+            entities.add(new FreeWayDoor.Builder(centerRoom).coord(Coord.north()).create());
+            entities.add(new FreeWayDoor.Builder(centerRoom).coord(Coord.east()).create());
+            entities.add(new FreeWayDoor.Builder(centerRoom).coord(Coord.south()).create());
+            entities.add(new FreeWayDoor.Builder(centerRoom).coord(Coord.west()).create());
 
             PickableItem ball = new PickableItem.Builder(centerRoom).title("мяч|мяч|мячу|мяч|мячом|мяче").scene("Здесь лежит мяч.").look("Красно-синий резиновый мяч.").build();
             ContainerItem box = new ContainerItem.Builder(centerRoom).title("ящик|ящика|ящику|ящик|ящиком|ящике").scene("В деревянный ящик можно что-нибудь положить.").build();
@@ -42,13 +40,13 @@ public class SandboxStory implements Story {
         {
             Room eastRoom = new Room.Builder(sanboxLocation).coord(Coord.xy(1, 0)).title("Восточная комната").description("Восточная комната").build();
             entities.add(eastRoom);
-            entities.add(new FreeWayByCoordDoor.Builder(eastRoom).coord(Coord.west()).create());
+            entities.add(new FreeWayDoor.Builder(eastRoom).coord(Coord.west()).create());
         }
 
         {
             Room westRoom = new Room.Builder(sanboxLocation).coord(Coord.xy(-1, 0)).title("Западная комната").description("Западная комната").build();
             entities.add(westRoom);
-            entities.add(new FreeWayByCoordDoor.Builder(westRoom).coord(Coord.east()).create());
+            entities.add(new FreeWayDoor.Builder(westRoom).coord(Coord.east()).create());
 
             entities.add(new Decoration(westRoom, "кнопка", "Описание кнопки", "На стене находится кнопка."));
 
@@ -57,20 +55,20 @@ public class SandboxStory implements Story {
         {
             Room northRoom = new Room.Builder(sanboxLocation).coord(Coord.xy(0, 1)).title("Северная комната").description("Северная комната").build();
             entities.add(northRoom);
-            entities.add(new FreeWayByCoordDoor.Builder(northRoom).coord(Coord.south()).create());
+            entities.add(new FreeWayDoor.Builder(northRoom).coord(Coord.south()).create());
         }
 
         {
             Room southRoom = new Room.Builder(sanboxLocation).coord(Coord.xy(0, -1)).title("Южная комната").description("Южная комната").build();
             entities.add(southRoom);
-            entities.add(new FreeWayByCoordDoor.Builder(southRoom).coord(Coord.north()).create());
-            entities.add(new FreeWayByCoordDoor.Builder(southRoom).coord(Coord.east()).create());
+            entities.add(new FreeWayDoor.Builder(southRoom).coord(Coord.north()).create());
+            entities.add(new FreeWayDoor.Builder(southRoom).coord(Coord.east()).create());
         }
 
         {
             Room warehous = new Room.Builder(sanboxLocation).coord(Coord.xy(1, -1)).title("Кладовка").description("Душное и пыльное помещение").build();
             entities.add(warehous);
-            entities.add(new FreeWayByCoordDoor.Builder(warehous).coord(Coord.west()).create());
+            entities.add(new FreeWayDoor.Builder(warehous).coord(Coord.west()).create());
         }
     }
 

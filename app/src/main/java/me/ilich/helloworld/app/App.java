@@ -8,10 +8,7 @@ import me.ilich.helloworld.app.entities.Coord;
 import me.ilich.helloworld.app.entities.Entity;
 import me.ilich.helloworld.app.entities.Player;
 import me.ilich.helloworld.app.entities.Room;
-import me.ilich.helloworld.app.entities.primitives.Coordinable;
-import me.ilich.helloworld.app.entities.primitives.Enterable;
-import me.ilich.helloworld.app.entities.primitives.Primitive;
-import me.ilich.helloworld.app.entities.primitives.Scenable;
+import me.ilich.helloworld.app.entities.primitives.*;
 import me.ilich.helloworld.app.stories.DachaStory;
 import me.ilich.helloworld.app.utils.TitleUtils;
 
@@ -103,9 +100,23 @@ public class App {
                     stream().
                     filter(entity -> ((Coordinable) entity).getCoord().equals(coord)).
                     collect(Collectors.toCollection(ArrayList::new));
+            //TODO количество элементов
             if (entities.size() == 1) {
-                Enterable enterable = (Enterable) entities.get(0);
-                enterable.onEnter(this);
+                Entity entity = entities.get(0);
+                if (entity instanceof Openable) {
+                    switch (((Openable) entity).getOpenState()) {
+                        case OPEN:
+                            Enterable enterable = (Enterable) entity;
+                            enterable.onEnter(this);
+                            break;
+                        case CLOSE:
+                            controller.println("Закрыто.");
+                            break;
+                    }
+                } else {
+                    Enterable enterable = (Enterable) entities.get(0);
+                    enterable.onEnter(this);
+                }
             } else {
                 controller.println("Вы не можете идти в этом направлении.");
             }

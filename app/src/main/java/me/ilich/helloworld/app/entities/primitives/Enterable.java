@@ -3,11 +3,14 @@ package me.ilich.helloworld.app.entities.primitives;
 import me.ilich.helloworld.app.Controller;
 import me.ilich.helloworld.app.entities.Coord;
 import me.ilich.helloworld.app.entities.Entity;
+import me.ilich.helloworld.app.entities.Location;
 import me.ilich.helloworld.app.entities.Room;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 
 public interface Enterable extends Primitive {
 
@@ -78,10 +81,28 @@ public interface Enterable extends Primitive {
         public Room getRoom(Controller controller) {
             List<Entity> roomEntities = controller.getEntities(Room.class);
             Coord coord = Coord.sum(controller.getCurrentRoom().getCoord(), coordinable.getCoord());
-            Room room = (Room) roomEntities.stream().filter(entity -> ((Room) entity).getCoord().equals(coord)).findFirst().orElse(null);
+            Room room = (Room) roomEntities.stream().filter(entity -> ((Room) entity).getCoord().equals(coord) && Objects.equals(entity.getParentId(), controller.getCurrentRoom().getParentId())).findFirst().orElse(null);
             return room;
         }
 
+    }
+
+    class LocationRoomSource implements RoomSource {
+
+        private final UUID locationId;
+        private final Coord roomCoord;
+
+        public LocationRoomSource(Location location, Coord roomCoord) {
+            this.locationId = location.getId();
+            this.roomCoord = roomCoord;
+        }
+
+        @Override
+        public Room getRoom(Controller controller) {
+            List<Entity> roomEntities = controller.getEntities(Room.class);
+            Room room = (Room) roomEntities.stream().filter(entity -> Objects.equals(entity.getParentId(), locationId) && ((Room) entity).getCoord().equals(roomCoord)).findFirst().orElse(null);
+            return room;
+        }
     }
 
 }

@@ -4,14 +4,12 @@ import me.ilich.helloworld.app.Controller;
 import me.ilich.helloworld.app.entities.primitives.Coordinable;
 import me.ilich.helloworld.app.entities.primitives.Enterable;
 
-import java.util.UUID;
-
-public class FreeWayByCoordDoor extends Entity implements Coordinable, Enterable {
+public class FreeWayDoor extends Entity implements Coordinable, Enterable {
 
     private Coordinable coordinable;
     private Enterable enterable;
 
-    private FreeWayByCoordDoor(Entity parent) {
+    private FreeWayDoor(Entity parent) {
         super(parent);
     }
 
@@ -42,13 +40,13 @@ public class FreeWayByCoordDoor extends Entity implements Coordinable, Enterable
 
     public static class Builder {
 
-        private final FreeWayByCoordDoor door;
+        private final FreeWayDoor door;
         private String title = "";
         private boolean visible = true;
         private RoomSource roomSource;
 
         public Builder(Entity parent) {
-            door = new FreeWayByCoordDoor(parent);
+            door = new FreeWayDoor(parent);
         }
 
         public Builder coord(Coord c) {
@@ -71,7 +69,7 @@ public class FreeWayByCoordDoor extends Entity implements Coordinable, Enterable
             return this;
         }
 
-        public FreeWayByCoordDoor create() {
+        public FreeWayDoor create() {
             if (roomSource == null) {
                 roomSource = new RelativeCoordRoomSource(door.coordinable);
             }

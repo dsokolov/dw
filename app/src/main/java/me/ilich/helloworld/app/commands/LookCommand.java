@@ -31,9 +31,9 @@ public class LookCommand extends Command {
             MultiEntitiesUtils.process(controller, param, roomEntities, new MultiEntitiesUtils.GroundProcessor() {
                 @Override
                 public void onOne(Controller controller, String userInput, Entity entity) {
-                    controller.println(String.format("Вы смотрите на %s.", TitleUtils.v(entity)));
+/*                    controller.println(String.format("Вы смотрите на %s.", TitleUtils.v(entity)));*/
                     ((Lookable) entity).onLook(controller);
-                    if (entity instanceof Pickable) {
+/*                    if (entity instanceof Pickable) {
                         controller.println(String.format("%s можно взять с собой.", TitleUtils.V(entity)));
                     }
                     if (entity instanceof Containable) {
@@ -47,7 +47,7 @@ public class LookCommand extends Command {
                                 controller.println(String.format("Сейчас %s содержит в себе:", TitleUtils.i(entity)));
                                 containItems.forEach(entity1 -> controller.println(String.format("\t%s", TitleUtils.v(entity1))));
                         }
-                    }
+                    }*/
                 }
             });
         };

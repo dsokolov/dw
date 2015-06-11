@@ -10,13 +10,16 @@ import java.util.UUID;
 
 public class ContainerItem extends Entity implements Titlelable, Scenable, Lookable, Containable {
 
-    private Titlelable titlelable;
-    private Scenable scenable;
-    private Lookable lookable;
+    protected Titlelable titlelable;
+    protected Scenable scenable;
+    protected Lookable lookable;
     private Containable containable;
 
-    private ContainerItem(Entity parent) {
-        super(parent);
+    protected ContainerItem(Builder builder) {
+        super(builder);
+        titlelable = builder.titlelable;
+        scenable = builder.scenable;
+        lookable = builder.lookable;
         containable = new Containable.Impl();
     }
 
@@ -45,40 +48,39 @@ public class ContainerItem extends Entity implements Titlelable, Scenable, Looka
         return titlelable.isTitleSuitable(s);
     }
 
-    public static class Builder {
+    public static class Builder<B extends Builder<B>> extends Entity.Builder<Builder<B>> {
 
-        private final ContainerItem item;
+        private Titlelable titlelable;
+        private Scenable scenable;
+        private Lookable lookable;
 
         public Builder(Entity parent) {
-            item = new ContainerItem(parent);
+            super(parent);
         }
 
-        public Builder title(String s) {
-            item.titlelable = new Titlelable.Impl(s);
-            return this;
+        @Override
+        protected B getThis() {
+            return (B) this;
         }
 
-        public Builder scene(String s) {
-            item.scenable = new Scenable.Impl(s);
-            return this;
+        public B title(String s) {
+            titlelable = new Titlelable.Impl(s);
+            return getThis();
+        }
+
+        public B scene(String s) {
+            scenable = new Scenable.Impl(s);
+            return getThis();
         }
 
         public Builder look(String s) {
-            item.lookable = new Lookable.Impl(s);
+            lookable = new Lookable.Impl(s);
             return this;
         }
 
+        @Override
         public ContainerItem build() {
-            if (item.titlelable == null) {
-                item.titlelable = new Titlelable.Impl("");
-            }
-            if (item.scenable == null) {
-                item.scenable = new Scenable.Impl("");
-            }
-            if (item.lookable == null) {
-                item.lookable = new Lookable.Impl("");
-            }
-            return item;
+            return new ContainerItem(this);
         }
 
     }

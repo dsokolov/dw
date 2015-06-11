@@ -41,7 +41,7 @@ public class OpenCommand extends Command {
             MultiEntitiesUtils.process(controller, param, suitableEntities, new MultiEntitiesUtils.GroundProcessor() {
                 @Override
                 public void onOne(Controller controller, String userInput, Entity entity) {
-                    ((Openable) entity).open();
+                    ((Openable) entity).open(controller);
                 }
             });
         };

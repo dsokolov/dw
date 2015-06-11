@@ -20,13 +20,13 @@ public class Chest extends ContainerItem implements Openable {
     }
 
     @Override
-    public void open() {
-        openable.open();
+    public void open(Controller controller) {
+        openable.open(controller);
     }
 
     @Override
-    public void close() {
-        openable.close();
+    public void close(Controller controller) {
+        openable.close(controller);
     }
 
     @Override

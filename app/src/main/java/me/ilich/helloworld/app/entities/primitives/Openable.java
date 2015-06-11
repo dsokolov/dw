@@ -1,13 +1,14 @@
 package me.ilich.helloworld.app.entities.primitives;
 
+import me.ilich.helloworld.app.Controller;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public interface Openable extends Primitive {
 
-    void open();
+    void open(Controller controller);
 
-    void close();
+    void close(Controller controller);
 
     enum OpenState {
         OPEN,
@@ -26,12 +27,12 @@ public interface Openable extends Primitive {
         }
 
         @Override
-        public void open() {
+        public void open(Controller controller) {
             openState = OpenState.OPEN;
         }
 
         @Override
-        public void close() {
+        public void close(Controller controller) {
             openState = OpenState.CLOSE;
         }
 

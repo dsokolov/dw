@@ -46,7 +46,6 @@ public interface Enterable extends Primitive {
 
         @Override
         public void onEnter(Controller controller) {
-            controller.println("enter"); //TODO
             Room newRoom = roomSource.getRoom(controller);
             //TODO null check
             controller.setCurrentRoom(newRoom);

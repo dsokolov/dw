@@ -1,6 +1,6 @@
 package me.ilich.helloworld.app.datasource;
 
-import me.ilich.helloworld.app.entities.*;
+import me.ilich.helloworld.app.entities.Entity;
 import me.ilich.helloworld.app.entities.primitives.Primitive;
 
 import java.util.ArrayList;

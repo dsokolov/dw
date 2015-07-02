@@ -36,17 +36,18 @@ public class DachaStory implements Story {
             }
         }
         {
+            OpenableTrigger openableTrigger1=  new OpenableTrigger();
             {
                 Room houseVerandaRoom = new Room.Builder(inHouseLocation).coord(Coord.xy(0, 0)).title("Веранда").description("Вы стоите на веранде дачного дома").build();
                 dataSource.add(houseVerandaRoom);
                 dataSource.add(new FreeWayDoor.Builder(houseVerandaRoom).coord(Coord.north()).title("В сад").roomSource(new Enterable.LocationRoomSource(gardenLocation, Coord.zero())).create());
-                dataSource.add(new OpenCloseDoor.Builder(houseVerandaRoom).coord(Coord.south()).title("Зайти в дом").create());
+                dataSource.add(new OpenCloseDoor.Builder(houseVerandaRoom).coord(Coord.south()).title("Зайти в дом").openTrigger(openableTrigger1).create());
 
             }
             {
                 Room houseKitchenRoom = new Room.Builder(inHouseLocation).coord(Coord.xy(0, -1)).title("Кухока").description("Вы находитесь в крошечной кухне.").build();
                 dataSource.add(houseKitchenRoom);
-                dataSource.add(new OpenCloseDoor.Builder(houseKitchenRoom).coord(Coord.north()).title("Выйти из дома").create());
+                dataSource.add(new OpenCloseDoor.Builder(houseKitchenRoom).coord(Coord.north()).title("Выйти из дома").openTrigger(openableTrigger1).create());
 
                 Chest chest = new Chest.Builder<>(houseKitchenRoom).
                         title("холодильник|холодильника|холодильнику|холодильник|холодильником|холодильнике").

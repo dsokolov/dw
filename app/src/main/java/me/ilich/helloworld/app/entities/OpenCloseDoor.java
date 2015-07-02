@@ -10,6 +10,7 @@ public class OpenCloseDoor extends Entity implements Coordinable, Enterable, Ope
     private Coordinable coordinable;
     private Enterable enterable;
     private Openable openable;
+    private OpenableTrigger openableTrigger;
 
     private OpenCloseDoor(Entity parent) {
         super(parent);
@@ -44,16 +45,23 @@ public class OpenCloseDoor extends Entity implements Coordinable, Enterable, Ope
     @Override
     public void open(Controller controller) {
         openable.open(controller);
+        openableTrigger.onOpened(this);
     }
 
     @Override
     public void close(Controller controller) {
         openable.close(controller);
+        openableTrigger.onClosed(this);
     }
 
     @Override
     public OpenState getOpenState() {
         return openable.getOpenState();
+    }
+
+    @Override
+    public void setOpenState(OpenState openState) {
+        openable.setOpenState(openState);
     }
 
     public static class Builder {
@@ -62,6 +70,7 @@ public class OpenCloseDoor extends Entity implements Coordinable, Enterable, Ope
         private String title = "";
         private boolean visible = true;
         private RoomSource roomSource;
+        private OpenableTrigger openableTrigger;
 
         public Builder(Entity parent) {
             door = new OpenCloseDoor(parent);
@@ -87,11 +96,23 @@ public class OpenCloseDoor extends Entity implements Coordinable, Enterable, Ope
             return this;
         }
 
+        public Builder openTrigger(OpenableTrigger openableTrigger) {
+            this.openableTrigger = openableTrigger;
+            return this;
+        }
+
         public OpenCloseDoor create() {
             if (roomSource == null) {
                 roomSource = new RelativeCoordRoomSource(door.coordinable);
             }
             door.enterable = new Enterable.Impl(title, visible, roomSource);
+            if (openableTrigger == null) {
+                door.openableTrigger = new OpenableTrigger();
+                door.openableTrigger.add(door);
+            } else {
+                door.openableTrigger = openableTrigger;
+                openableTrigger.add(door);
+            }
             return door;
         }
 

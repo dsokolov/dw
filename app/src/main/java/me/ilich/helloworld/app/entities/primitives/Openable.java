@@ -6,16 +6,18 @@ import org.json.JSONObject;
 
 public interface Openable extends Primitive {
 
-    void open(Controller controller);
-
-    void close(Controller controller);
-
     enum OpenState {
         OPEN,
         CLOSE
     }
 
+    void open(Controller controller);
+
+    void close(Controller controller);
+
     OpenState getOpenState();
+
+    void setOpenState(OpenState openState);
 
     class Impl extends Primitive.Impl implements Openable {
 
@@ -39,6 +41,11 @@ public interface Openable extends Primitive {
         @Override
         public OpenState getOpenState() {
             return openState;
+        }
+
+        @Override
+        public void setOpenState(OpenState openState) {
+            this.openState = openState;
         }
     }
 

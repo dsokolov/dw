@@ -112,6 +112,7 @@ public class DefaultMoveCommand extends Command {
 
         @Override
         public void onExecute(Controller controller, String[] params) {
+            controller.println("Вы идёте на " + coord.toString());
             controller.tryMoveBy(coord);
         }
 

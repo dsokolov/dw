@@ -57,6 +57,11 @@ public class Chest extends ContainerItem implements Openable {
         return openable.getOpenState();
     }
 
+    @Override
+    public void setOpenState(OpenState openState) {
+        openable.setOpenState(openState);
+    }
+
     public static class Builder<B extends Builder<B>> extends ContainerItem.Builder<Builder<B>> {
 
         public Builder(Entity parent) {

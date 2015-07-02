@@ -25,6 +25,7 @@ public interface Coordinable extends Primitive {
         public Coord getCoord() {
             return coord;
         }
+
     }
 
 }
